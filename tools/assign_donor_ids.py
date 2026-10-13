@@ -228,13 +228,20 @@ def _set_ids(entry: dict, ids: list[str]) -> None:
 
 
 def _ids_for_spelling(register: dict, text: str) -> list[str]:
-    """Every donor a spelling has been given: its alias owner and the pinned entries printing it."""
-    found = {did for did, donor in register["donors"].items() if text in donor["aliases"]}
+    """Every donor a held spelling might mean: its alias owner, the pinned entries
+    printing it, donors with the same name in any place, and anyone already being
+    asked about one of those."""
+    key = strict_key(text)
+    found = {did for did, donor in register["donors"].items()
+             if text in donor["aliases"] or any(strict_key(x) == key for x in donor["aliases"])}
     for pin in register["pins"].values():
         people = split_people(pin["name"])
         if len(people) == len(pin["donorIds"]):
             found |= {resolve(register, did) or did
                       for person, did in zip(people, pin["donorIds"]) if person["text"] == text}
+    for pair in register.get("ask", []):
+        if found & set(pair):
+            found |= {resolve(register, did) or did for did in pair}
     return sorted(found)
 
 
@@ -260,8 +267,8 @@ def assign(register: dict, lists: list[tuple[str, dict]]) -> dict[str, str]:
                 for person in split_people(printed):
                     if person["text"] in ambiguous:
                         raise ValueError(
-                            f"{ref} uses the spelling {person['text']!r}, which the samaj said "
-                            f"belongs to more than one person. Add a pin for {ref} in "
+                            f"{ref} uses the spelling {person['text']!r}, which is marked as "
+                            f"belonging to more than one person. Add a pin for {ref} in "
                             f"data/donors.json naming the right ID "
                             f"({', '.join(_ids_for_spelling(register, person['text']))}).")
                     did = lookup.find_or_create(person)

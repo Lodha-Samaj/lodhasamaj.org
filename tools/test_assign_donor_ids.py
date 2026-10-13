@@ -441,11 +441,27 @@ def test_a_spelling_split_by_the_samaj_stops_the_run_where_it_is_printed_again()
     with pytest.raises(ValueError) as exc:
         a.assign(reg, later)
     assert str(exc.value) == (
-        "2026#2 uses the spelling 'श्री अजय जाट', which the samaj said belongs to more than "
+        "2026#2 uses the spelling 'श्री अजय जाट', which is marked as belonging to more than "
         "one person. Add a pin for 2026#2 in data/donors.json naming the right ID (D0001, D0003).")
     reg["pins"]["2026#2"] = {"name": "श्री अजय जाट", "donorIds": ["D0003"]}
     a.assign(reg, later)
     assert ids(later, "2026") == [["D0002"], ["D0003"]]
+
+
+def test_a_held_spelling_offers_every_candidate_not_only_the_pinned_one():
+    """A spelling held back pending the samaj's answer: the stop message lists the
+    same-name donors and the ones already asked about, so a maintainer cannot
+    pin to the only ID shown without seeing the others."""
+    reg = a.new_register()
+    reg["donors"] = {
+        "D0001": {"name": {"hi": "श्री कालू जमदार (गजक)"}, "aliases": ["श्री कालू जमदार (गजक)"]},
+        "D0002": {"name": {"hi": "श्री कालू हजारीलाल जी जमदार"}, "aliases": ["श्री कालू हजारीलाल जी जमदार"]},
+        "D0003": {"name": {"hi": "श्री कालू जमदार"}, "aliases": []}}
+    reg["pins"] = {"mandir#1": {"name": "श्री कालू जमदार", "donorIds": ["D0003"]}}
+    reg["ask"] = [["D0001", "D0003"], ["D0002", "D0003"]]
+    reg["ambiguous"] = ["श्री कालू जमदार"]
+    with pytest.raises(ValueError, match=r"naming the right ID \(D0001, D0002, D0003\)"):
+        a.assign(reg, lists_of(**{"2026": ["श्री कालू जमदार"]}))
 
 
 def test_ids_no_list_uses_any_more_are_named_with_what_to_do(tmp_path, monkeypatch, capsys):
