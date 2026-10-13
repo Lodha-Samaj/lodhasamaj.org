@@ -215,3 +215,65 @@ def test_merge_repoints_earlier_merges_distinct_pairs_and_pins():
     assert reg["merged"] == {"D0009": "D0001", "D0003": "D0001"}
     assert reg["distinct"] == [["D0001", "D0002"]]
     assert reg["pins"]["2024#4"]["donorIds"] == ["D0001"]
+
+
+def site(tmp_path, index, files):
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "donors-index.json").write_text(json.dumps(index), encoding="utf-8")
+    for name, names in files.items():
+        (data / name).write_text(json.dumps({"donors": [entry(n) for n in names]},
+                                            ensure_ascii=False), encoding="utf-8")
+    return data, tmp_path / "docs" / "donor-review.json"
+
+
+def snapshot(tmp_path):
+    return {p.relative_to(tmp_path).as_posix(): p.read_bytes()
+            for p in sorted(tmp_path.rglob("*.json"))}
+
+
+def test_a_second_run_changes_nothing(tmp_path):
+    data, review = site(tmp_path, {"years": [2024], "lists": ["hanuman-mandir"]},
+                        {"donors-2024.json": ["श्री अजय कोतुल", "श्री क"],
+                         "hanuman-mandir.json": ["श्री अजय जी कौतूल", "श्री क"]})
+    a.run(data, review)
+    first = snapshot(tmp_path)
+    a.run(data, review)
+    assert snapshot(tmp_path) == first
+    assert json.loads(review.read_text(encoding="utf-8"))[0]["reason"].startswith("spelling")
+
+
+def test_a_reconverted_list_gets_its_ids_back(tmp_path):
+    data, review = site(tmp_path, {"years": [2024, 2025]},
+                        {"donors-2024.json": ["श्री क"], "donors-2025.json": ["श्री ख", "श्री क"]})
+    a.run(data, review)
+    before = (data / "donors-2025.json").read_text(encoding="utf-8")
+    (data / "donors-2025.json").write_text(json.dumps(
+        {"donors": [entry("श्री ख"), entry("श्री क")]}, ensure_ascii=False), encoding="utf-8")
+    a.run(data, review)
+    assert (data / "donors-2025.json").read_text(encoding="utf-8") == before
+
+
+def test_answers_in_the_review_file_are_applied_and_leave_it(tmp_path):
+    data, review = site(tmp_path, {"years": [2024, 2025]},
+                        {"donors-2024.json": ["श्री अजय कोतुल"], "donors-2025.json": ["श्री अजय जी कौतूल"]})
+    a.run(data, review)
+    items = json.loads(review.read_text(encoding="utf-8"))
+    review.write_text(json.dumps(answer(items, True), ensure_ascii=False), encoding="utf-8")
+    assert a.run(data, review)["applied"] == 1
+    assert json.loads(review.read_text(encoding="utf-8")) == []
+    register = json.loads((data / "donors.json").read_text(encoding="utf-8"))
+    assert list(register) == ["donors", "merged", "distinct", "sameInList", "pins"]
+    assert register["merged"] == {"D0002": "D0001"}
+
+
+def test_check_writes_nothing_and_a_bad_answer_fails_without_writing(tmp_path, capsys):
+    data, review = site(tmp_path, {"years": [2024]}, {"donors-2024.json": ["श्री क"]})
+    a.run(data, review, write=False)
+    assert not (data / "donors.json").exists()
+    review.parent.mkdir()
+    review.write_text('[{"kind": "pair", "a": {"id": "D0001"}, "b": {"id": "D0002"}, "same": "हाँ"}]',
+                      encoding="utf-8")
+    with pytest.raises(ValueError, match="write true, false or null"):
+        a.run(data, review)
+    assert not (data / "donors.json").exists()

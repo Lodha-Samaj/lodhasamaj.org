@@ -332,3 +332,68 @@ def apply_answers(register: dict, items: list, lists: list[tuple[str, dict]]) ->
     register["distinct"].sort()
     register["sameInList"].sort()
     return applied
+
+
+def _dump(obj) -> str:
+    return json.dumps(obj, ensure_ascii=False, indent=2) + "\n"
+
+
+def load_lists(data_dir: Path) -> list[tuple[str, Path, dict]]:
+    """Every list in processing order: years ascending, then named lists."""
+    index = json.loads((data_dir / "donors-index.json").read_text(encoding="utf-8"))
+    order = [(str(y), data_dir / f"donors-{y}.json") for y in sorted(index.get("years", []))]
+    order += [(slug, data_dir / f"{slug}.json") for slug in index.get("lists", [])]
+    return [(key, path, json.loads(path.read_text(encoding="utf-8"))) for key, path in order]
+
+
+def run(data_dir: Path, review_path: Path, write: bool = True) -> dict:
+    register_path = data_dir / "donors.json"
+    register = new_register()
+    if register_path.exists():
+        register.update(json.loads(register_path.read_text(encoding="utf-8")))
+    loaded = load_lists(data_dir)
+    lists = [(key, data) for key, _, data in loaded]
+
+    assign(register, lists)                  # pass 1: IDs the answers can refer to
+    answers = json.loads(review_path.read_text(encoding="utf-8")) if review_path.exists() else []
+    if not isinstance(answers, list):
+        raise ValueError("docs/donor-review.json must be a list: [ {...}, {...} ]")
+    applied = apply_answers(register, answers, lists)
+    rename(register, assign(register, lists))   # pass 2: merges and pins applied
+    items = review_items(register, lists)
+
+    if write:
+        ordered = {"donors": dict(sorted(register["donors"].items())),
+                   "merged": dict(sorted(register["merged"].items())),
+                   "distinct": register["distinct"],
+                   "sameInList": register["sameInList"],
+                   "pins": dict(sorted(register["pins"].items()))}
+        register_path.write_text(_dump(ordered), encoding="utf-8")
+        for _, path, data in loaded:
+            path.write_text(_dump(data), encoding="utf-8")
+        review_path.parent.mkdir(parents=True, exist_ok=True)
+        review_path.write_text(_dump(items), encoding="utf-8")
+    return {"entries": sum(len(d["donors"]) for _, d in lists),
+            "donors": len(register["donors"]), "applied": applied, "review": len(items)}
+
+
+def main(argv: list[str]) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--check", action="store_true", help="report, write nothing")
+    args = ap.parse_args(argv[1:])
+    try:
+        summary = run(DATA, REVIEW, write=not args.check)
+    except (ValueError, OSError, json.JSONDecodeError) as exc:
+        print(f"FAILED: {exc}")
+        return 1
+    print(f"{summary['entries']} list entries -> {summary['donors']} donors")
+    print(f"answers applied from the review file: {summary['applied']}")
+    print(f"review items awaiting the समाज: {summary['review']} "
+          f"(docs/donor-review.json - set \"same\" to true or false, then run again)")
+    if args.check:
+        print("--check: nothing written")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
