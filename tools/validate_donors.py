@@ -208,6 +208,12 @@ def read_index_lists(index_path: Path) -> tuple[list[str], list[str]]:
     return lists, []
 
 
+def _hi(donor) -> object:
+    """donor's name.hi, or None when the name or the donor is not an object."""
+    name = donor.get("name") if isinstance(donor, dict) else None
+    return name.get("hi") if isinstance(name, dict) else None
+
+
 def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
     """data/donors.json is sound and every donorIds value in every list resolves."""
     entries = []
@@ -230,6 +236,8 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
         reg = json.loads(reg_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         return [f"donors.json: invalid JSON at line {exc.lineno}, column {exc.colno}: {exc.msg}"]
+    if not isinstance(reg, dict):
+        return ['donors.json: must have "donors" and "merged" objects']
     donors, merged = reg.get("donors"), reg.get("merged", {})
     if not isinstance(donors, dict) or not isinstance(merged, dict):
         return ['donors.json: must have "donors" and "merged" objects']
@@ -240,13 +248,22 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
         if not DONOR_ID.match(did):
             errors.append(f"donors.json: {did!r} is not a Donor ID like D0042")
         donor = donor if isinstance(donor, dict) else {}
-        name = (donor.get("name") or {}).get("hi")
+        name = _hi(donor)
         if not isinstance(name, str) or not name.strip():
             errors.append(f"donors.json: {did} has no name.hi")
-        for alias in donor.get("aliases") or []:
+        aliases = donor.get("aliases") or []
+        if not isinstance(aliases, list):
+            errors.append(f"donors.json: {did} has aliases that are not a list")
+            aliases = []
+        for alias in aliases:
+            if not isinstance(alias, str):
+                errors.append(f"donors.json: {did} has an alias that is not text: {alias!r}")
+                continue
             if alias in owner:
                 errors.append(f"donors.json: the spelling {alias!r} belongs to both {owner[alias]} and {did}")
             owner[alias] = did
+    for old in [k for k, v in merged.items() if not isinstance(v, str)]:
+        errors.append(f"donors.json: {old} is merged into {merged.pop(old)!r}, which is not a Donor ID")
     for old, target in merged.items():
         if old in donors:
             errors.append(f"donors.json: {old} is merged into {target} but is still listed as a donor")
@@ -257,13 +274,23 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
         return did in donors or merged.get(did) in donors
 
     for pair in reg.get("distinct", []):
+        if not isinstance(pair, list):
+            errors.append(f'donors.json: a "distinct" entry must be a list of two IDs, got {pair!r}')
+            continue
         for did in pair:
-            if not resolves(did):
+            if not isinstance(did, str) or not resolves(did):
                 errors.append(f'donors.json: "distinct" names {did}, which is not a donor')
     used: set[str] = set()
-    for ref, pin in (reg.get("pins") or {}).items():
+    pins = reg.get("pins") or {}
+    if not isinstance(pins, dict):
+        errors.append('donors.json: "pins" must be an object')
+        pins = {}
+    for ref, pin in pins.items():
+        if not isinstance(pin, dict):
+            errors.append(f"donors.json: pin {ref} must be an object with donorIds")
+            continue
         for did in pin.get("donorIds", []):
-            if resolves(did):
+            if isinstance(did, str) and resolves(did):
                 used.add(did if did in donors else merged.get(did))
             else:
                 errors.append(f"donors.json: pin {ref} names {did}, which is not a donor")
@@ -276,12 +303,12 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
                           f"run python3 tools/assign_donor_ids.py")
             continue
         for did in ids:
-            if resolves(did):
+            if isinstance(did, str) and resolves(did):
                 used.add(did if did in donors else merged.get(did))
             else:
                 errors.append(f"{fname}: entry #{pos} ({who}) names {did!r}, which is not in data/donors.json")
     for did in sorted(set(donors) - used):
-        name = ((donors[did] or {}).get("name") or {}).get("hi", "") if isinstance(donors[did], dict) else ""
+        name = _hi(donors[did]) or ""
         errors.append(f"donors.json: {did} ({name}) is not used by any list entry")
     return errors
 

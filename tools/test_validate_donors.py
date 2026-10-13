@@ -419,3 +419,21 @@ def test_index_lists_must_match_the_named_list_pages(tmp_path, capsys):
     out = capsys.readouterr().out
     assert 'data-list="hanuman-mandir" pages exist but donors-index.json "lists" does not name it' in out
     assert 'donors-index.json "lists" names old-campaign but no page shows data-list="old-campaign"' in out
+
+
+ONE = {"D0001": {"name": {"hi": "x"}, "aliases": []}}
+
+
+@pytest.mark.parametrize("reg, data", [
+    ([], with_ids(["D0001"])),
+    ({"donors": {"D0001": {"name": "x", "aliases": []}}, "merged": {}}, with_ids(["D0001"])),
+    ({"donors": {"D0001": {"name": {"hi": "x"}, "aliases": [["a"]]}}, "merged": {}}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "pins": {"a": "x"}}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "distinct": [5]}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {"D0002": ["D0001"]}}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}}, with_ids([["D0001"]])),
+])
+def test_malformed_register_shapes_are_reported_not_raised(tmp_path, reg, data):
+    write(tmp_path, reg, "donors.json")
+    errors = check_register(tmp_path, [Path(write(tmp_path, data))])
+    assert errors and all(isinstance(e, str) for e in errors)
