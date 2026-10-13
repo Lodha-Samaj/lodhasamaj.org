@@ -111,3 +111,92 @@ def split_people(name: str) -> list[dict]:
         people.append({"text": text, "memorial": is_memorial(text)})
     living = [p for p in people if not p["memorial"]]
     return living or people
+
+
+def new_register() -> dict:
+    return {"donors": {}, "merged": {}, "distinct": [], "sameInList": [], "pins": {}}
+
+
+def resolve(register: dict, did: str) -> str | None:
+    """The kept ID for `did` (following a merge), or None if it is not a donor."""
+    did = register["merged"].get(did, did)
+    return did if did in register["donors"] else None
+
+
+def _next_id(register: dict) -> str:
+    used = [int(i[1:]) for i in [*register["donors"], *register["merged"]]]
+    return f"D{max(used, default=0) + 1:04d}"
+
+
+class _Lookup:
+    """Alias and key indexes over the register, kept current as donors are added."""
+
+    def __init__(self, register: dict):
+        self.register = register
+        self.by_alias: dict[str, str] = {}
+        self.by_key: dict[str, list[tuple[str, str]]] = defaultdict(list)
+        for did, donor in register["donors"].items():
+            for alias in donor["aliases"]:
+                self._add(did, alias)
+
+    def _add(self, did: str, alias: str) -> None:
+        self.by_alias[alias] = did
+        self.by_key[strict_key(alias)].append((did, alias))
+
+    def find_or_create(self, person: dict) -> str:
+        text = person["text"]
+        if text in self.by_alias:
+            return self.by_alias[text]
+        place = place_of(text)
+        compatible = sorted({did for did, alias in self.by_key.get(strict_key(text), [])
+                             if places_compatible(place, place_of(alias))
+                             and is_memorial(alias) == person["memorial"]})
+        if len(compatible) == 1:
+            did = compatible[0]
+        else:
+            did = _next_id(self.register)
+            self.register["donors"][did] = {"name": {"hi": text}, "aliases": []}
+        self.register["donors"][did]["aliases"].append(text)
+        self._add(did, text)
+        return did
+
+
+def _set_ids(entry: dict, ids: list[str]) -> None:
+    name = entry["name"]
+    rest = {k: v for k, v in entry.items() if k not in ("name", "donorIds")}
+    entry.clear()
+    entry.update({"name": name, "donorIds": ids, **rest})
+
+
+def assign(register: dict, lists: list[tuple[str, dict]]) -> dict[str, str]:
+    """Write donorIds into every entry; return {id: last spelling seen}."""
+    lookup = _Lookup(register)
+    last_seen: dict[str, str] = {}
+    for key, data in lists:
+        for pos, item in enumerate(data["donors"], 1):
+            ref = f"{key}#{pos}"
+            printed = item["name"]["hi"]
+            pin = register["pins"].get(ref)
+            if pin:
+                if pin["name"] != printed:
+                    raise ValueError(
+                        f"{ref} is pinned to {pin['name']!r} but the list now reads "
+                        f"{printed!r}. The list has changed: re-review that pin in "
+                        f"data/donors.json before running again.")
+                ids = list(pin["donorIds"])
+            else:
+                ids = []
+                for person in split_people(printed):
+                    did = lookup.find_or_create(person)
+                    if did not in ids:
+                        ids.append(did)
+                    last_seen[did] = person["text"]
+            _set_ids(item, ids)
+    return last_seen
+
+
+def rename(register: dict, last_seen: dict[str, str]) -> None:
+    for did, text in last_seen.items():
+        donor = register["donors"].get(did)
+        if donor and not donor.get("fixedName"):
+            donor["name"]["hi"] = text

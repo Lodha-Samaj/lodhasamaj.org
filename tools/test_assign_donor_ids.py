@@ -53,3 +53,83 @@ def test_places_agree_when_absent_or_contained():
     assert a.places_compatible("", "दिल्ली")
     assert a.places_compatible("उपाध्यक्ष, लोधा समाज", "उपाध्यक्ष, लोधा समाज इंदौर")
     assert not a.places_compatible("दिल्ली", "महू")
+
+
+def entry(name, **extra):
+    return {"name": {"hi": name}, "items": [{"type": "cash", "qty": 1, "unit": "inr"}], **extra}
+
+
+def lists_of(**named):
+    return [(key, {"donors": [entry(n) for n in names]}) for key, names in named.items()]
+
+
+def ids(lists, key):
+    return [e["donorIds"] for k, d in lists if k == key for e in d["donors"]]
+
+
+def test_same_name_across_lists_gets_one_id_and_every_spelling_is_kept():
+    reg = a.new_register()
+    lists = lists_of(**{"2024": ["श्री विक्रम जाट (उपाध्यक्ष, लोधा समाज)"],
+                        "2025": ["श्री विक्रम जी जाट (उपाध्यक्ष, लोधा समाज इंदौर)"]})
+    a.assign(reg, lists)
+    assert ids(lists, "2024") == [["D0001"]] and ids(lists, "2025") == [["D0001"]]
+    assert reg["donors"]["D0001"]["aliases"] == [
+        "श्री विक्रम जाट (उपाध्यक्ष, लोधा समाज)", "श्री विक्रम जी जाट (उपाध्यक्ष, लोधा समाज इंदौर)"]
+
+
+def test_conflicting_places_spelling_variants_and_memorial_status_are_never_linked():
+    reg = a.new_register()
+    lists = lists_of(**{"2024": ["श्री शिव भवानी (दिल्ली)", "श्री अजय कोतुल", "स्व. श्री कैलाश चौधरी"],
+                        "2025": ["श्री शिव भवानी (महू)", "श्री अजय जी कौतूल", "श्री कैलाश चौधरी"]})
+    a.assign(reg, lists)
+    assert ids(lists, "2024") == [["D0001"], ["D0002"], ["D0003"]]
+    assert ids(lists, "2025") == [["D0004"], ["D0005"], ["D0006"]]
+
+
+def test_joint_entries_carry_one_id_per_person_and_anonymous_none():
+    reg = a.new_register()
+    lists = lists_of(**{"2025": ["श्री संजू जी जाट श्री कमल जी जाट"],
+                        "hanuman-mandir": ["श्री संजू जाट एवं श्री कमल जाट", "गुप्त दान — जय श्री राम"]})
+    a.assign(reg, lists)
+    assert ids(lists, "2025") == [["D0001", "D0002"]]
+    assert ids(lists, "hanuman-mandir") == [["D0001", "D0002"], []]
+
+
+def test_donor_ids_sit_right_after_the_name():
+    reg = a.new_register()
+    lists = lists_of(**{"2025": ["श्री क"]})
+    a.assign(reg, lists)
+    assert list(lists[0][1]["donors"][0]) == ["name", "donorIds", "items"]
+
+
+def test_existing_ids_are_reused_and_new_ones_continue_after_merged_ids():
+    reg = a.new_register()
+    reg["donors"]["D0007"] = {"name": {"hi": "श्री क"}, "aliases": ["श्री क"]}
+    reg["merged"]["D0009"] = "D0007"
+    lists = lists_of(**{"2026": ["श्री क", "श्री ख"]})
+    a.assign(reg, lists)
+    assert ids(lists, "2026") == [["D0007"], ["D0010"]]
+    assert a.resolve(reg, "D0009") == "D0007" and a.resolve(reg, "D0999") is None
+
+
+def test_rename_uses_the_last_spelling_unless_the_name_is_fixed():
+    reg = a.new_register()
+    lists = lists_of(**{"2024": ["श्री विक्रम जाट"], "2025": ["श्री विक्रम जी जाट"]})
+    a.rename(reg, a.assign(reg, lists))
+    assert reg["donors"]["D0001"]["name"] == {"hi": "श्री विक्रम जी जाट"}
+    reg["donors"]["D0001"].update(name={"hi": "श्री विक्रम जाट", "en": "Vikram Jat"}, fixedName=True)
+    a.rename(reg, a.assign(reg, lists))
+    assert reg["donors"]["D0001"]["name"] == {"hi": "श्री विक्रम जाट", "en": "Vikram Jat"}
+
+
+def test_a_pin_is_applied_as_is_and_a_changed_list_stops_the_run():
+    reg = a.new_register()
+    reg["donors"]["D0001"] = {"name": {"hi": "श्री अजय जाट"}, "aliases": ["श्री अजय जाट"]}
+    reg["donors"]["D0002"] = {"name": {"hi": "श्री अजय जाट"}, "aliases": []}
+    reg["pins"]["2024#2"] = {"name": "श्री अजय जाट", "donorIds": ["D0002"]}
+    lists = lists_of(**{"2024": ["श्री अजय जाट", "श्री अजय जाट"]})
+    a.assign(reg, lists)
+    assert ids(lists, "2024") == [["D0001"], ["D0002"]]
+    changed = lists_of(**{"2024": ["श्री अजय जाट", "श्री विजय जाट"]})
+    with pytest.raises(ValueError, match="pinned"):
+        a.assign(reg, changed)
