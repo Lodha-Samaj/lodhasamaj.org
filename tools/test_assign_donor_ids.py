@@ -133,3 +133,85 @@ def test_a_pin_is_applied_as_is_and_a_changed_list_stops_the_run():
     changed = lists_of(**{"2024": ["श्री अजय जाट", "श्री विजय जाट"]})
     with pytest.raises(ValueError, match="pinned"):
         a.assign(reg, changed)
+
+
+def assigned(**named):
+    reg = a.new_register()
+    lists = lists_of(**named)
+    a.rename(reg, a.assign(reg, lists))
+    return reg, lists
+
+
+def test_review_suggests_spelling_place_and_memorial_pairs_with_reasons():
+    reg, lists = assigned(**{"2024": ["श्री अजय कोतुल", "श्री शिव भवानी (दिल्ली)", "स्व. श्री कैलाश चौधरी"],
+                             "2025": ["श्री अजय जी कौतूल", "श्री शिव भवानी (महू)", "श्री कैलाश चौधरी"]})
+    reasons = {(i["a"]["id"], i["b"]["id"]): i["reason"] for i in a.review_items(reg, lists)}
+    assert reasons == {("D0001", "D0004"): "spelling: अजय कोतुल / अजय कौतूल",
+                       ("D0002", "D0005"): "same name, different place",
+                       ("D0003", "D0006"): "one name is स्वर्गीय"}
+    item = a.review_items(reg, lists)[0]
+    assert item["a"] == {"id": "D0001", "name": "श्री अजय कोतुल", "lists": ["2024"]}
+    assert item["same"] is None
+
+
+def test_review_reports_the_same_name_twice_in_one_list():
+    reg, lists = assigned(**{"2024": ["श्री अजय जाट", "श्री ख", "श्री अजय जाट"]})
+    [item] = a.review_items(reg, lists)
+    assert item == {"kind": "repeat", "id": "D0001", "name": "श्री अजय जाट", "list": "2024",
+                    "entries": [{"ref": "2024#1", "name": "श्री अजय जाट"},
+                                {"ref": "2024#3", "name": "श्री अजय जाट"}],
+                    "reason": "same name twice in one list", "same": None}
+
+
+def answer(items, same):
+    return [{**i, "same": same} for i in items]
+
+
+def test_true_merges_keeping_the_lower_id_and_old_ids_redirect():
+    reg, lists = assigned(**{"2024": ["श्री अजय कोतुल"], "2025": ["श्री अजय जी कौतूल"]})
+    assert a.apply_answers(reg, answer(a.review_items(reg, lists), True), lists) == 1
+    a.assign(reg, lists)
+    assert ids(lists, "2024") == ids(lists, "2025") == [["D0001"]]
+    assert reg["merged"] == {"D0002": "D0001"}
+    assert reg["donors"]["D0001"]["aliases"] == ["श्री अजय कोतुल", "श्री अजय जी कौतूल"]
+    assert a.review_items(reg, lists) == []
+
+
+def test_false_is_remembered_and_never_asked_again():
+    reg, lists = assigned(**{"2024": ["श्री अजय कोतुल"], "2025": ["श्री अजय जी कौतूल"]})
+    a.apply_answers(reg, answer(a.review_items(reg, lists), False), lists)
+    assert reg["distinct"] == [["D0001", "D0002"]]
+    assert a.review_items(reg, lists) == []
+
+
+def test_repeat_true_is_remembered_and_repeat_false_pins_a_new_id():
+    reg, lists = assigned(**{"2024": ["श्री अजय जाट", "श्री अजय जाट"]})
+    keep = a.review_items(reg, lists)
+    a.apply_answers(reg, answer(keep, True), lists)
+    assert reg["sameInList"] == ["2024:D0001"] and a.review_items(reg, lists) == []
+
+    reg, lists = assigned(**{"2024": ["श्री अजय जाट", "श्री अजय जाट"]})
+    a.apply_answers(reg, answer(a.review_items(reg, lists), False), lists)
+    a.assign(reg, lists)
+    assert ids(lists, "2024") == [["D0001"], ["D0002"]]
+    assert reg["pins"] == {"2024#2": {"name": "श्री अजय जाट", "donorIds": ["D0002"]}}
+
+
+@pytest.mark.parametrize("bad", ["हाँ", "yes", 1, 0, "true"])
+def test_an_answer_other_than_true_false_or_null_stops_with_a_plain_message(bad):
+    reg, lists = assigned(**{"2024": ["श्री अजय कोतुल"], "2025": ["श्री अजय जी कौतूल"]})
+    with pytest.raises(ValueError, match="write true, false or null"):
+        a.apply_answers(reg, answer(a.review_items(reg, lists), bad), lists)
+
+
+def test_merge_repoints_earlier_merges_distinct_pairs_and_pins():
+    reg = a.new_register()
+    for did in ("D0001", "D0002", "D0003"):
+        reg["donors"][did] = {"name": {"hi": did}, "aliases": [did]}
+    reg["merged"]["D0009"] = "D0003"
+    reg["distinct"] = [["D0002", "D0003"]]
+    reg["pins"]["2024#4"] = {"name": "x", "donorIds": ["D0003"]}
+    a.merge(reg, "D0003", "D0001")
+    assert reg["merged"] == {"D0009": "D0001", "D0003": "D0001"}
+    assert reg["distinct"] == [["D0001", "D0002"]]
+    assert reg["pins"]["2024#4"]["donorIds"] == ["D0001"]

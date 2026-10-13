@@ -200,3 +200,135 @@ def rename(register: dict, last_seen: dict[str, str]) -> None:
         donor = register["donors"].get(did)
         if donor and not donor.get("fixedName"):
             donor["name"]["hi"] = text
+
+
+def _why(kind: str, x: str, y: str) -> str:
+    if kind == "loose":
+        return f"spelling: {strict_key(x)} / {strict_key(y)}"
+    if is_memorial(x) != is_memorial(y):
+        return "one name is स्वर्गीय"
+    if not places_compatible(place_of(x), place_of(y)):
+        return "same name, different place"
+    return "same name, kept apart"
+
+
+def review_items(register: dict, lists: list[tuple[str, dict]]) -> list[dict]:
+    donors = register["donors"]
+    distinct = {tuple(p) for p in register["distinct"]}
+    where: dict[str, list[str]] = defaultdict(list)
+    for key, data in lists:
+        for item in data["donors"]:
+            for did in item.get("donorIds", []):
+                if key not in where[did]:
+                    where[did].append(key)
+
+    def side(did):
+        return {"id": did, "name": donors[did]["name"]["hi"], "lists": where.get(did, [])}
+
+    by_strict: dict[str, list] = defaultdict(list)
+    by_loose: dict[str, list] = defaultdict(list)
+    for did, donor in donors.items():
+        for alias in donor["aliases"]:
+            by_strict[strict_key(alias)].append((did, alias))
+            by_loose[loose_key(alias)].append((did, alias))
+    found: dict[tuple[str, str], str] = {}
+    for kind, index in (("strict", by_strict), ("loose", by_loose)):
+        for members in index.values():
+            for (x_id, x), (y_id, y) in combinations(sorted(members), 2):
+                pair = (x_id, y_id)
+                if x_id == y_id or pair in distinct or pair in found:
+                    continue
+                found[pair] = _why(kind, x, y)
+    items = [{"kind": "pair", "a": side(x), "b": side(y), "reason": why, "same": None}
+             for (x, y), why in sorted(found.items())]
+
+    same_in_list = set(register["sameInList"])
+    for key, data in lists:
+        positions: dict[str, list[int]] = defaultdict(list)
+        for pos, item in enumerate(data["donors"], 1):
+            for did in item.get("donorIds", []):
+                positions[did].append(pos)
+        for did, where_in in sorted(positions.items()):
+            if len(where_in) > 1 and f"{key}:{did}" not in same_in_list:
+                items.append({
+                    "kind": "repeat", "id": did, "name": donors[did]["name"]["hi"], "list": key,
+                    "entries": [{"ref": f"{key}#{p}", "name": data["donors"][p - 1]["name"]["hi"]}
+                                for p in where_in],
+                    "reason": "same name twice in one list", "same": None})
+    return items
+
+
+def merge(register: dict, a_id: str, b_id: str) -> None:
+    keep, gone = sorted([a_id, b_id])
+    donors = register["donors"]
+    for alias in donors[gone]["aliases"]:
+        if alias not in donors[keep]["aliases"]:
+            donors[keep]["aliases"].append(alias)
+    del donors[gone]
+    register["merged"][gone] = keep
+    for old, target in list(register["merged"].items()):
+        if target == gone:
+            register["merged"][old] = keep
+    pairs = {tuple(sorted(keep if d == gone else d for d in p)) for p in register["distinct"]}
+    register["distinct"] = [list(p) for p in sorted(pairs) if p[0] != p[1]]
+    for pin in register["pins"].values():
+        pin["donorIds"] = list(dict.fromkeys(keep if d == gone else d for d in pin["donorIds"]))
+    register["sameInList"] = sorted({s[: -len(gone)] + keep if s.endswith(":" + gone) else s
+                                     for s in register["sameInList"]})
+
+
+def _label(item: dict) -> str:
+    if item.get("kind") == "repeat":
+        return f"{item.get('id')} in {item.get('list')}"
+    return f"{item.get('a', {}).get('id')} / {item.get('b', {}).get('id')}"
+
+
+def apply_answers(register: dict, items: list, lists: list[tuple[str, dict]]) -> int:
+    by_key = dict(lists)
+    applied = 0
+    for n, item in enumerate(items, 1):
+        if not isinstance(item, dict):
+            raise ValueError(f"docs/donor-review.json item #{n} is not an object")
+        same = item.get("same")
+        if not (same is None or same is True or same is False):
+            raise ValueError(f"docs/donor-review.json item #{n} ({_label(item)}): "
+                             f"\"same\" is {same!r} - write true, false or null")
+        if same is None:
+            continue
+        applied += 1
+        try:
+            if item["kind"] == "repeat":
+                old = resolve(register, item["id"])
+                tag = f"{item['list']}:{old}"
+                if same:
+                    if tag not in register["sameInList"]:
+                        register["sameInList"].append(tag)
+                    continue
+                for ent in item["entries"][1:]:
+                    key, pos = ent["ref"].rsplit("#", 1)
+                    target = by_key[key]["donors"][int(pos) - 1]
+                    if target["name"]["hi"] != ent["name"]:
+                        raise ValueError(
+                            f"{ent['ref']} now reads {target['name']['hi']!r}, not "
+                            f"{ent['name']!r}: the list changed after the review file was "
+                            f"written. Set this item back to null and run again.")
+                    new = _next_id(register)
+                    register["donors"][new] = {"name": dict(register["donors"][old]["name"]),
+                                               "aliases": []}
+                    register["pins"][ent["ref"]] = {
+                        "name": ent["name"],
+                        "donorIds": [new if resolve(register, d) == old else d
+                                     for d in target["donorIds"]]}
+            else:
+                x, y = resolve(register, item["a"]["id"]), resolve(register, item["b"]["id"])
+                if x is None or y is None or x == y:
+                    continue
+                if same:
+                    merge(register, x, y)
+                elif sorted([x, y]) not in register["distinct"]:
+                    register["distinct"].append(sorted([x, y]))
+        except KeyError as exc:
+            raise ValueError(f"docs/donor-review.json item #{n} is missing {exc}") from None
+    register["distinct"].sort()
+    register["sameInList"].sort()
+    return applied
