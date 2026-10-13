@@ -308,7 +308,7 @@ def test_named_list_must_name_itself_and_carry_a_hindi_title(tmp_path):
 
 def _site(tmp_path):
     write(tmp_path, VALID, "donors-2025.json")
-    write(tmp_path, {"years": [2025]}, "donors-index.json")
+    write(tmp_path, {"years": [2025], "lists": ["hanuman-mandir"]}, "donors-index.json")
     make_pages(tmp_path, 2025)
 
 
@@ -345,3 +345,77 @@ def test_a_complete_named_list_passes(tmp_path, capsys):
     make_list_pages(tmp_path, "hanuman-mandir")
     write(tmp_path, LIST, "hanuman-mandir.json")
     assert main(["v"], data_dir=tmp_path, site_root=tmp_path) == 0
+
+
+from validate_donors import check_register
+
+REG = {"donors": {"D0001": {"name": {"hi": "श्री क"}, "aliases": ["श्री क"]},
+                  "D0002": {"name": {"hi": "श्री ख"}, "aliases": ["श्री ख"]}},
+       "merged": {"D0003": "D0002"}, "distinct": [], "sameInList": [], "pins": {}}
+
+
+def with_ids(*id_lists):
+    return {"year": 2025, "donors": [
+        {"name": {"hi": f"n{i}"}, "donorIds": ids, "items": [{"type": "cash", "qty": 1, "unit": "inr"}]}
+        for i, ids in enumerate(id_lists, 1)]}
+
+
+def test_register_and_ids_that_resolve_pass(tmp_path):
+    write(tmp_path, REG, "donors.json")
+    p = write(tmp_path, with_ids(["D0001"], ["D0003"], []))
+    assert check_register(tmp_path, [Path(p)]) == []
+
+
+def test_unknown_id_names_the_list_and_entry(tmp_path):
+    write(tmp_path, REG, "donors.json")
+    p = write(tmp_path, with_ids(["D0001"], ["D0002", "D0042"]))
+    assert check_register(tmp_path, [Path(p)]) == [
+        "donors-2025.json: entry #2 (n2) names 'D0042', which is not in data/donors.json"]
+
+
+def test_an_entry_without_donor_ids_says_to_run_the_tool(tmp_path):
+    write(tmp_path, REG, "donors.json")
+    data = with_ids(["D0001"], ["D0002"])
+    del data["donors"][1]["donorIds"]
+    errors = check_register(tmp_path, [Path(write(tmp_path, data))])
+    assert ("donors-2025.json: entry #2 (n2) has no donorIds - "
+            "run python3 tools/assign_donor_ids.py") in errors
+
+
+def test_register_rules(tmp_path):
+    bad = {"donors": {"D1": {"name": {"hi": "x"}, "aliases": ["श्री क"]},
+                      "D0002": {"name": {}, "aliases": ["श्री क"]},
+                      "D0004": {"name": {"hi": "y"}, "aliases": []}},
+           "merged": {"D0002": "D0004", "D0005": "D0003"},
+           "distinct": [["D0004", "D0009"]], "sameInList": [], "pins": {}}
+    write(tmp_path, bad, "donors.json")
+    errors = check_register(tmp_path, [Path(write(tmp_path, with_ids(["D1"], ["D0002"])))])
+    joined = "\n".join(errors)
+    assert "'D1' is not a Donor ID like D0042" in joined
+    assert "D0002 has no name.hi" in joined
+    assert "belongs to both D1 and D0002" in joined
+    assert "D0002 is merged into D0004 but is still listed as a donor" in joined
+    assert "D0005 is merged into D0003, which is not a donor" in joined
+    assert "\"distinct\" names D0009" in joined
+    assert "D0004 (y) is not used by any list entry" in joined
+
+
+def test_ids_without_a_register_are_an_error_but_old_lists_are_fine(tmp_path):
+    p = write(tmp_path, with_ids(["D0001"]))
+    assert check_register(tmp_path, [Path(p)]) == [
+        "data/donors.json is missing but list entries carry donorIds - "
+        "run python3 tools/assign_donor_ids.py"]
+    q = write(tmp_path, VALID)
+    assert check_register(tmp_path, [Path(q)]) == []
+
+
+def test_index_lists_must_match_the_named_list_pages(tmp_path, capsys):
+    write(tmp_path, VALID, "donors-2025.json")
+    write(tmp_path, {"years": [2025], "lists": ["old-campaign"]}, "donors-index.json")
+    make_pages(tmp_path, 2025)
+    make_list_pages(tmp_path, "hanuman-mandir")
+    write(tmp_path, LIST, "hanuman-mandir.json")
+    assert main(["v"], data_dir=tmp_path, site_root=tmp_path) == 1
+    out = capsys.readouterr().out
+    assert 'data-list="hanuman-mandir" pages exist but donors-index.json "lists" does not name it' in out
+    assert 'donors-index.json "lists" names old-campaign but no page shows data-list="old-campaign"' in out

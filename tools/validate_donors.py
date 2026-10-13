@@ -17,6 +17,7 @@ TYPES = {"sugar", "flour", "oil", "salt", "ghee", "mawa", "cash",
          "cement", "brick", "rebar", "tiles", "fan", "other"}
 UNITS = {"kg", "tin", "inr", "jar", "cylinder", "piece", "bag", "count"}
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+DONOR_ID = re.compile(r"^D\d{4}$")
 
 
 def _is_number(value) -> bool:
@@ -195,6 +196,96 @@ def check_named_lists(site_root: Path, data_dir: Path) -> tuple[list[Path], list
     return files, errors
 
 
+def read_index_lists(index_path: Path) -> tuple[list[str], list[str]]:
+    """The named lists in donors-index.json ("lists"); read_index reports bad JSON."""
+    try:
+        data = json.loads(index_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return [], []
+    lists = data.get("lists", []) if isinstance(data, dict) else []
+    if not isinstance(lists, list) or not all(isinstance(x, str) for x in lists):
+        return [], [f"{index_path.name}: 'lists' must be a list of names, like [\"hanuman-mandir\"]"]
+    return lists, []
+
+
+def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
+    """data/donors.json is sound and every donorIds value in every list resolves."""
+    entries = []
+    for path in list_paths:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            continue                         # validate_file reports it
+        for pos, item in enumerate(data.get("donors", []) if isinstance(data, dict) else [], 1):
+            if isinstance(item, dict):
+                entries.append((path.name, pos, item))
+
+    reg_path = data_dir / "donors.json"
+    if not reg_path.exists():
+        if any("donorIds" in item for _, _, item in entries):
+            return ["data/donors.json is missing but list entries carry donorIds - "
+                    "run python3 tools/assign_donor_ids.py"]
+        return []
+    try:
+        reg = json.loads(reg_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return [f"donors.json: invalid JSON at line {exc.lineno}, column {exc.colno}: {exc.msg}"]
+    donors, merged = reg.get("donors"), reg.get("merged", {})
+    if not isinstance(donors, dict) or not isinstance(merged, dict):
+        return ['donors.json: must have "donors" and "merged" objects']
+
+    errors: list[str] = []
+    owner: dict[str, str] = {}
+    for did, donor in donors.items():
+        if not DONOR_ID.match(did):
+            errors.append(f"donors.json: {did!r} is not a Donor ID like D0042")
+        donor = donor if isinstance(donor, dict) else {}
+        name = (donor.get("name") or {}).get("hi")
+        if not isinstance(name, str) or not name.strip():
+            errors.append(f"donors.json: {did} has no name.hi")
+        for alias in donor.get("aliases") or []:
+            if alias in owner:
+                errors.append(f"donors.json: the spelling {alias!r} belongs to both {owner[alias]} and {did}")
+            owner[alias] = did
+    for old, target in merged.items():
+        if old in donors:
+            errors.append(f"donors.json: {old} is merged into {target} but is still listed as a donor")
+        if target not in donors:
+            errors.append(f"donors.json: {old} is merged into {target}, which is not a donor")
+
+    def resolves(did):
+        return did in donors or merged.get(did) in donors
+
+    for pair in reg.get("distinct", []):
+        for did in pair:
+            if not resolves(did):
+                errors.append(f'donors.json: "distinct" names {did}, which is not a donor')
+    used: set[str] = set()
+    for ref, pin in (reg.get("pins") or {}).items():
+        for did in pin.get("donorIds", []):
+            if resolves(did):
+                used.add(did if did in donors else merged.get(did))
+            else:
+                errors.append(f"donors.json: pin {ref} names {did}, which is not a donor")
+    for fname, pos, item in entries:
+        name = item.get("name")
+        who = name.get("hi", f"#{pos}") if isinstance(name, dict) else f"#{pos}"
+        ids = item.get("donorIds")
+        if not isinstance(ids, list):
+            errors.append(f"{fname}: entry #{pos} ({who}) has no donorIds - "
+                          f"run python3 tools/assign_donor_ids.py")
+            continue
+        for did in ids:
+            if resolves(did):
+                used.add(did if did in donors else merged.get(did))
+            else:
+                errors.append(f"{fname}: entry #{pos} ({who}) names {did!r}, which is not in data/donors.json")
+    for did in sorted(set(donors) - used):
+        name = ((donors[did] or {}).get("name") or {}).get("hi", "") if isinstance(donors[did], dict) else ""
+        errors.append(f"donors.json: {did} ({name}) is not used by any list entry")
+    return errors
+
+
 def main(argv: list[str], data_dir: Path | None = None,
          site_root: Path | None = None) -> int:
     if data_dir is None:
@@ -234,6 +325,15 @@ def main(argv: list[str], data_dir: Path | None = None,
         for path in list_files:
             all_errors.extend(validate_file(str(path)))
         paths = paths + list_files
+        all_errors.extend(check_register(data_dir, paths))
+        if index_path.exists():
+            index_lists, list_index_errors = read_index_lists(index_path)
+            all_errors.extend(list_index_errors)
+            on_pages = set(find_list_pages(site_root))
+            for slug in sorted(on_pages - set(index_lists)):
+                all_errors.append(f'data-list="{slug}" pages exist but donors-index.json "lists" does not name it')
+            for slug in sorted(set(index_lists) - on_pages):
+                all_errors.append(f'donors-index.json "lists" names {slug} but no page shows data-list="{slug}"')
 
     for error in all_errors:
         print(error)
