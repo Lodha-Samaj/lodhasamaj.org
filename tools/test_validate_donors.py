@@ -440,6 +440,8 @@ ONE = {"D0001": {"name": {"hi": "x"}, "aliases": []}}
     ({"donors": ONE, "merged": {}, "distinct": None}, with_ids(["D0001"])),
     ({"donors": ONE, "merged": {}, "pins": []}, with_ids(["D0001"])),
     ({"donors": ONE, "merged": {}, "ask": 5}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "ambiguous": "श्री क"}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "ambiguous": [5]}, with_ids(["D0001"])),
     ({"donors": ONE, "merged": {}, "ask": ["D0001"]}, with_ids(["D0001"])),
 ])
 def test_malformed_register_shapes_are_reported_not_raised(tmp_path, reg, data):

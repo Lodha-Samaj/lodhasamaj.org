@@ -165,7 +165,8 @@ def split_people(name: str) -> list[dict]:
 
 
 def new_register() -> dict:
-    return {"donors": {}, "merged": {}, "distinct": [], "sameInList": [], "pins": {}, "ask": []}
+    return {"donors": {}, "merged": {}, "distinct": [], "sameInList": [], "pins": {}, "ask": [],
+            "ambiguous": []}
 
 
 def resolve(register: dict, did: str) -> str | None:
@@ -226,9 +227,21 @@ def _set_ids(entry: dict, ids: list[str]) -> None:
     entry.update({"name": name, "donorIds": ids, **rest})
 
 
+def _ids_for_spelling(register: dict, text: str) -> list[str]:
+    """Every donor a spelling has been given: its alias owner and the pinned entries printing it."""
+    found = {did for did, donor in register["donors"].items() if text in donor["aliases"]}
+    for pin in register["pins"].values():
+        people = split_people(pin["name"])
+        if len(people) == len(pin["donorIds"]):
+            found |= {resolve(register, did) or did
+                      for person, did in zip(people, pin["donorIds"]) if person["text"] == text}
+    return sorted(found)
+
+
 def assign(register: dict, lists: list[tuple[str, dict]]) -> dict[str, str]:
     """Write donorIds into every entry; return {id: last spelling seen}."""
     lookup = _Lookup(register)
+    ambiguous = set(register.get("ambiguous", []))
     last_seen: dict[str, str] = {}
     for key, data in lists:
         for pos, item in enumerate(data["donors"], 1):
@@ -245,6 +258,12 @@ def assign(register: dict, lists: list[tuple[str, dict]]) -> dict[str, str]:
             else:
                 ids = []
                 for person in split_people(printed):
+                    if person["text"] in ambiguous:
+                        raise ValueError(
+                            f"{ref} uses the spelling {person['text']!r}, which the samaj said "
+                            f"belongs to more than one person. Add a pin for {ref} in "
+                            f"data/donors.json naming the right ID "
+                            f"({', '.join(_ids_for_spelling(register, person['text']))}).")
                     did = lookup.find_or_create(person)
                     if did not in ids:
                         ids.append(did)
@@ -401,7 +420,10 @@ def apply_answers(register: dict, items: list, lists: list[tuple[str, dict]]) ->
                     if tag not in register["sameInList"]:
                         register["sameInList"].append(tag)
                     continue
-                for ent in item["entries"][1:]:
+                # Every entry is pinned (the first keeps the old ID), and the
+                # shared spelling is marked so a later list cannot slip back.
+                aliases = register["donors"][old]["aliases"]
+                for k, ent in enumerate(item["entries"]):
                     key, pos = ent["ref"].rsplit("#", 1)
                     target = by_key[key]["donors"][int(pos) - 1]
                     if target["name"]["hi"] != ent["name"]:
@@ -409,13 +431,17 @@ def apply_answers(register: dict, items: list, lists: list[tuple[str, dict]]) ->
                             f"{ent['ref']} now reads {target['name']['hi']!r}, not "
                             f"{ent['name']!r}: the list changed after the review file was "
                             f"written. Set this item back to null and run again.")
-                    new = _next_id(register)
-                    register["donors"][new] = {"name": dict(register["donors"][old]["name"]),
-                                               "aliases": []}
-                    register["pins"][ent["ref"]] = {
-                        "name": ent["name"],
-                        "donorIds": [new if resolve(register, d) == old else d
-                                     for d in target["donorIds"]]}
+                    for person in split_people(ent["name"]):
+                        if (person["text"] in aliases
+                                and person["text"] not in register["ambiguous"]):
+                            register["ambiguous"].append(person["text"])
+                    ids = list(target["donorIds"])
+                    if k:
+                        new = _next_id(register)
+                        register["donors"][new] = {"name": dict(register["donors"][old]["name"]),
+                                                   "aliases": []}
+                        ids = [new if resolve(register, d) == old else d for d in ids]
+                    register["pins"][ent["ref"]] = {"name": ent["name"], "donorIds": ids}
             else:
                 x, y = resolve(register, item["a"]["id"]), resolve(register, item["b"]["id"])
                 if x is None or y is None or x == y:
@@ -430,6 +456,7 @@ def apply_answers(register: dict, items: list, lists: list[tuple[str, dict]]) ->
             raise ValueError(f"docs/donor-review.json item #{n} is missing {exc}") from None
     register["distinct"].sort()
     register["sameInList"].sort()
+    register["ambiguous"].sort()
     return applied
 
 
@@ -455,6 +482,9 @@ def run(data_dir: Path, review_path: Path, write: bool = True) -> dict:
             isinstance(p, list) and len(p) == 2 and all(isinstance(d, str) for d in p) for p in ask)):
         raise ValueError('data/donors.json: "ask" must be a list of ID pairs, like '
                          '[["D0012", "D0034"]]')
+    ambiguous = register["ambiguous"]
+    if not (isinstance(ambiguous, list) and all(isinstance(t, str) for t in ambiguous)):
+        raise ValueError('data/donors.json: "ambiguous" must be a list of spellings')
     loaded = load_lists(data_dir)
     lists = [(key, data) for key, _, data in loaded]
 
@@ -472,7 +502,8 @@ def run(data_dir: Path, review_path: Path, write: bool = True) -> dict:
                    "distinct": register["distinct"],
                    "sameInList": register["sameInList"],
                    "pins": dict(sorted(register["pins"].items())),
-                   "ask": register["ask"]}
+                   "ask": register["ask"],
+                   "ambiguous": register["ambiguous"]}
         register_path.write_text(_dump(ordered), encoding="utf-8")
         for _, path, data in loaded:
             path.write_text(_dump(data), encoding="utf-8")

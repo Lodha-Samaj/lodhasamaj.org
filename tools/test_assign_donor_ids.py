@@ -194,7 +194,9 @@ def test_repeat_true_is_remembered_and_repeat_false_pins_a_new_id():
     a.apply_answers(reg, answer(a.review_items(reg, lists), False), lists)
     a.assign(reg, lists)
     assert ids(lists, "2024") == [["D0001"], ["D0002"]]
-    assert reg["pins"] == {"2024#2": {"name": "श्री अजय जाट", "donorIds": ["D0002"]}}
+    assert reg["pins"] == {"2024#1": {"name": "श्री अजय जाट", "donorIds": ["D0001"]},
+                           "2024#2": {"name": "श्री अजय जाट", "donorIds": ["D0002"]}}
+    assert reg["ambiguous"] == ["श्री अजय जाट"]
 
 
 @pytest.mark.parametrize("bad", ["हाँ", "yes", 1, 0, "true"])
@@ -263,7 +265,8 @@ def test_answers_in_the_review_file_are_applied_and_leave_it(tmp_path):
     assert a.run(data, review)["applied"] == 1
     assert json.loads(review.read_text(encoding="utf-8")) == []
     register = json.loads((data / "donors.json").read_text(encoding="utf-8"))
-    assert list(register) == ["donors", "merged", "distinct", "sameInList", "pins", "ask"]
+    assert list(register) == ["donors", "merged", "distinct", "sameInList", "pins", "ask",
+                              "ambiguous"]
     assert register["merged"] == {"D0002": "D0001"}
 
 
@@ -425,3 +428,21 @@ def test_a_malformed_ask_list_stops_with_a_plain_message(tmp_path, bad):
     (data / "donors.json").write_text(json.dumps(register, ensure_ascii=False), encoding="utf-8")
     with pytest.raises(ValueError, match='"ask" must be a list of ID pairs'):
         a.run(data, review)
+
+
+def test_a_spelling_split_by_the_samaj_stops_the_run_where_it_is_printed_again():
+    reg, lists = assigned(**{"2024": ["श्री अजय जाट", "श्री अजय जाट एवं श्री ख"]})
+    a.apply_answers(reg, answer(a.review_items(reg, lists), False), lists)
+    assert reg["pins"] == {"2024#1": {"name": "श्री अजय जाट", "donorIds": ["D0001"]},
+                           "2024#2": {"name": "श्री अजय जाट एवं श्री ख", "donorIds": ["D0003", "D0002"]}}
+    assert reg["ambiguous"] == ["श्री अजय जाट"]
+    a.assign(reg, lists)
+    later = lists + lists_of(**{"2026": ["श्री ख", "श्री अजय जाट"]})
+    with pytest.raises(ValueError) as exc:
+        a.assign(reg, later)
+    assert str(exc.value) == (
+        "2026#2 uses the spelling 'श्री अजय जाट', which the samaj said belongs to more than "
+        "one person. Add a pin for 2026#2 in data/donors.json naming the right ID (D0001, D0003).")
+    reg["pins"]["2026#2"] = {"name": "श्री अजय जाट", "donorIds": ["D0003"]}
+    a.assign(reg, later)
+    assert ids(later, "2026") == [["D0002"], ["D0003"]]

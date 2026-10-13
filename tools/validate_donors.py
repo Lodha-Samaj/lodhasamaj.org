@@ -285,6 +285,9 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
             for did in pair:
                 if not isinstance(did, str) or not resolves(did):
                     errors.append(f'donors.json: "{key}" names {did}, which is not a donor')
+    ambiguous = reg.get("ambiguous", [])
+    if not isinstance(ambiguous, list) or not all(isinstance(t, str) for t in ambiguous):
+        errors.append('donors.json: "ambiguous" must be a list of spellings (text)')
     used: set[str] = set()
     pins = reg.get("pins", {})
     if pins is None:
