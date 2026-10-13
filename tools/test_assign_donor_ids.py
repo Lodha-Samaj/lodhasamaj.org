@@ -289,3 +289,27 @@ def test_family_wording_is_suggested_for_review_not_linked():
     [item] = a.review_items(reg, lists)
     assert item["reason"] == "family wording: अमित राजपूत एवं परिवार / अमित राजपूत"
     assert ids(lists, "2024") != ids(lists, "2025")
+
+
+# ---- final-review fixes ----
+
+def test_place_and_memorial_status_are_judged_against_every_alias_of_a_donor():
+    reg = a.new_register()
+    reg["donors"]["D0001"] = {"name": {"hi": "श्री सुरेश राजपूत"},
+                              "aliases": ["श्री सुरेश राजपूत (दिल्ली)", "श्री सुरेश राजपूत"]}
+    lists = lists_of(**{"2026": ["श्री सुरेश राजपूत (महू)"]})
+    a.assign(reg, lists)
+    assert ids(lists, "2026") == [["D0002"]]
+    reasons = {(i["a"]["id"], i["b"]["id"]): i["reason"] for i in a.review_items(reg, lists)}
+    assert reasons == {("D0001", "D0002"): "same name, different place"}
+
+
+def test_a_memorial_alias_anywhere_on_a_donor_keeps_a_living_namesake_apart():
+    reg = a.new_register()
+    reg["donors"]["D0001"] = {"name": {"hi": "श्री कैलाश चौधरी"},
+                              "aliases": ["स्व. श्री कैलाश चौधरी", "श्री कैलाश चौधरी (महू)"]}
+    lists = lists_of(**{"2026": ["श्री कैलाश जी चौधरी"]})
+    a.assign(reg, lists)
+    assert ids(lists, "2026") == [["D0002"]]
+    reasons = {(i["a"]["id"], i["b"]["id"]): i["reason"] for i in a.review_items(reg, lists)}
+    assert reasons == {("D0001", "D0002"): "one name is स्वर्गीय"}

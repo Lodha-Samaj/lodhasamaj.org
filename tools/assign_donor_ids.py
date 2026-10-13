@@ -154,9 +154,16 @@ class _Lookup:
         if text in self.by_alias:
             return self.by_alias[text]
         place = place_of(text)
-        compatible = sorted({did for did, alias in self.by_key.get(strict_key(text), [])
-                             if places_compatible(place, place_of(alias))
-                             and is_memorial(alias) == person["memorial"]})
+        # A donor is a match only if EVERY one of its spellings with this key
+        # agrees on place and स्वर्गीय status: one place-less alias must not make
+        # "(दिल्ली)" and "(महू)" the same person.
+        same_key: dict[str, list[str]] = defaultdict(list)
+        for did, alias in self.by_key.get(strict_key(text), []):
+            same_key[did].append(alias)
+        compatible = sorted(did for did, aliases in same_key.items()
+                            if all(places_compatible(place, place_of(alias))
+                                   and is_memorial(alias) == person["memorial"]
+                                   for alias in aliases))
         if len(compatible) == 1:
             did = compatible[0]
         else:
@@ -220,6 +227,9 @@ def _why(kind: str, x: str, y: str) -> str:
     return "same name, kept apart"
 
 
+_RANK = {"one name is स्वर्गीय": 0, "same name, different place": 1}
+
+
 def review_items(register: dict, lists: list[tuple[str, dict]]) -> list[dict]:
     donors = register["donors"]
     distinct = {tuple(p) for p in register["distinct"]}
@@ -241,12 +251,17 @@ def review_items(register: dict, lists: list[tuple[str, dict]]) -> list[dict]:
             by_loose[loose_key(alias)].append((did, alias))
     found: dict[tuple[str, str], str] = {}
     for kind, index in (("strict", by_strict), ("loose", by_loose)):
+        reasons: dict[tuple[str, str], list[str]] = defaultdict(list)
         for members in index.values():
             for (x_id, x), (y_id, y) in combinations(sorted(members), 2):
                 pair = (x_id, y_id)
                 if x_id == y_id or pair in distinct or pair in found:
                     continue
-                found[pair] = _why(kind, x, y)
+                reasons[pair].append(_why(kind, x, y))
+        for pair, whys in reasons.items():
+            # Judge the pair of donors, not one pair of spellings: the strongest
+            # reason any two of their spellings give.
+            found[pair] = min(whys, key=lambda w: (_RANK.get(w, len(_RANK)), whys.index(w)))
     items = [{"kind": "pair", "a": side(x), "b": side(y), "reason": why, "same": None}
              for (x, y), why in sorted(found.items())]
 
