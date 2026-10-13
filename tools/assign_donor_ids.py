@@ -509,8 +509,13 @@ def run(data_dir: Path, review_path: Path, write: bool = True) -> dict:
             path.write_text(_dump(data), encoding="utf-8")
         review_path.parent.mkdir(parents=True, exist_ok=True)
         review_path.write_text(_dump(items), encoding="utf-8")
+    used = {resolve(register, did) for _, data in lists for item in data["donors"]
+            for did in item.get("donorIds", [])}
+    unused = [(did, donor["name"]["hi"]) for did, donor in sorted(register["donors"].items())
+              if did not in used]
     return {"entries": sum(len(d["donors"]) for _, d in lists),
-            "donors": len(register["donors"]), "applied": applied, "review": len(items)}
+            "donors": len(register["donors"]), "applied": applied, "review": len(items),
+            "unused": unused}
 
 
 def main(argv: list[str]) -> int:
@@ -526,6 +531,10 @@ def main(argv: list[str]) -> int:
     print(f"answers applied from the review file: {summary['applied']}")
     print(f"review items awaiting the समाज: {summary['review']} "
           f"(docs/donor-review.json - set \"same\" to true or false, then run again)")
+    if summary["unused"]:
+        names = ", ".join(f"{did} ({name})" for did, name in summary["unused"])
+        print(f"no longer used by any list: {names} — if a spelling was corrected, "
+              f"add [old, new] to \"ask\" in data/donors.json, or merge them")
     if args.check:
         print("--check: nothing written")
     return 0

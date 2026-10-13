@@ -214,8 +214,13 @@ def _hi(donor) -> object:
     return name.get("hi") if isinstance(name, dict) else None
 
 
-def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
-    """data/donors.json is sound and every donorIds value in every list resolves."""
+def check_register(data_dir: Path, list_paths: list[Path],
+                   warnings: list[str] | None = None) -> list[str]:
+    """data/donors.json is sound and every donorIds value in every list resolves.
+
+    A register ID no list uses any more (often a corrected spelling) is not an
+    error: it is appended to `warnings`, when given.
+    """
     entries = []
     for path in list_paths:
         try:
@@ -323,7 +328,8 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
                 errors.append(f"{fname}: entry #{pos} ({who}) names {did!r}, which is not in data/donors.json")
     for did in sorted(set(donors) - used):
         name = _hi(donors[did]) or ""
-        errors.append(f"donors.json: {did} ({name}) is not used by any list entry")
+        if warnings is not None:
+            warnings.append(f"donors.json: {did} ({name}) is not used by any list entry")
     return errors
 
 
@@ -339,6 +345,7 @@ def main(argv: list[str], data_dir: Path | None = None,
 
     index_path = data_dir / "donors-index.json"
     all_errors: list[str] = []
+    warnings: list[str] = []
     # NB: the glob above deliberately matches only donors-YYYY.json, never
     # donors-index.json, which is not a donor file.
     for path in paths:
@@ -366,7 +373,7 @@ def main(argv: list[str], data_dir: Path | None = None,
         for path in list_files:
             all_errors.extend(validate_file(str(path)))
         paths = paths + list_files
-        all_errors.extend(check_register(data_dir, paths))
+        all_errors.extend(check_register(data_dir, paths, warnings))
         if index_path.exists():
             index_lists, list_index_errors = read_index_lists(index_path)
             all_errors.extend(list_index_errors)
@@ -378,7 +385,13 @@ def main(argv: list[str], data_dir: Path | None = None,
 
     for error in all_errors:
         print(error)
-    print(f"\n{len(paths)} file(s) checked, {len(all_errors)} error(s)")
+    for warning in warnings:
+        print(f"warning: {warning}")
+    summary = f"\n{len(paths)} file(s) checked, {len(all_errors)} error(s)"
+    if warnings:
+        summary += (f", {len(warnings)} warning(s) - an unused ID usually means a spelling was "
+                    f"corrected: add [old, new] to \"ask\" in data/donors.json, or merge them")
+    print(summary)
     return 1 if all_errors else 0
 
 

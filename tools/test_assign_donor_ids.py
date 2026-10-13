@@ -446,3 +446,17 @@ def test_a_spelling_split_by_the_samaj_stops_the_run_where_it_is_printed_again()
     reg["pins"]["2026#2"] = {"name": "श्री अजय जाट", "donorIds": ["D0003"]}
     a.assign(reg, later)
     assert ids(later, "2026") == [["D0002"], ["D0003"]]
+
+
+def test_ids_no_list_uses_any_more_are_named_with_what_to_do(tmp_path, monkeypatch, capsys):
+    data, review = site(tmp_path, {"years": [2024]}, {"donors-2024.json": ["श्री प्यारे वर्मा", "श्री क"]})
+    assert a.run(data, review)["unused"] == []
+    (data / "donors-2024.json").write_text(json.dumps(
+        {"donors": [entry("श्री प्यारेलाल वर्मा"), entry("श्री क")]}, ensure_ascii=False),
+        encoding="utf-8")
+    monkeypatch.setattr(a, "DATA", data)
+    monkeypatch.setattr(a, "REVIEW", review)
+    assert a.main(["assign_donor_ids.py"]) == 0
+    assert ("no longer used by any list: D0001 (श्री प्यारे वर्मा) — if a spelling was corrected, "
+            "add [old, new] to \"ask\" in data/donors.json, or merge them") in capsys.readouterr().out
+    assert a.run(data, review)["unused"] == [("D0001", "श्री प्यारे वर्मा")]

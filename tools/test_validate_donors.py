@@ -399,7 +399,22 @@ def test_register_rules(tmp_path):
     assert "D0005 is merged into D0003, which is not a donor" in joined
     assert "\"distinct\" names D0009" in joined
     assert "\"ask\" names D0008" in joined
-    assert "D0004 (y) is not used by any list entry" in joined
+    assert "not used" not in joined
+    warnings = []
+    check_register(tmp_path, [Path(write(tmp_path, with_ids(["D1"], ["D0002"])))], warnings)
+    assert warnings == ["donors.json: D0004 (y) is not used by any list entry"]
+
+
+def test_an_unused_id_is_a_warning_that_does_not_fail_the_run(tmp_path, capsys):
+    write(tmp_path, VALID, "donors-2025.json")
+    write(tmp_path, {"years": [2025]}, "donors-index.json")
+    make_pages(tmp_path, 2025)
+    write(tmp_path, {**REG, "merged": {}}, "donors.json")
+    write(tmp_path, with_ids(["D0001"]), "donors-2025.json")
+    assert main(["v"], data_dir=tmp_path, site_root=tmp_path) == 0
+    out = capsys.readouterr().out
+    assert "warning: donors.json: D0002 (श्री ख) is not used by any list entry" in out
+    assert "1 file(s) checked, 0 error(s), 1 warning(s)" in out
 
 
 def test_ids_without_a_register_are_an_error_but_old_lists_are_fine(tmp_path):
