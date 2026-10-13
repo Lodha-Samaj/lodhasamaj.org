@@ -9,6 +9,13 @@ const lang = document.documentElement.lang.startsWith('en') ? 'en' : 'hi';
 const year = document.body.dataset.year;
 // A named list (data-list) carries its own title; a year page builds one.
 const source = listSource(document.body.dataset);
+// The register names each person on a joint gift's history link. It loads
+// alongside the list; until it arrives (or if it fails) links fall back to IDs.
+let register = null;
+fetch('/data/donors.json', { cache: 'no-cache' })
+  .then((r) => (r.ok ? r.json() : null))
+  .then((data) => { register = data; })
+  .catch(() => {});
 const root = document.getElementById('donor-root');
 let visible = [];
 
@@ -115,7 +122,7 @@ function render(data) {
 
   [q, type, sort].forEach((el) => el.addEventListener('input', paint));
   paint();
-  initModal(grid, () => visible, lang, named ? '' : year);
+  initModal(grid, () => visible, lang, named ? '' : year, () => register);
 }
 
 Promise.resolve(source)

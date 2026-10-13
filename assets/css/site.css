@@ -488,3 +488,6 @@ main:has(.prose) .wrap { max-width: 880px; }
 .gift-name { color: var(--mute); font-size: 0.9rem; }
 .gift-joint { font-size: 0.9rem; }
 .gift-joint a { color: var(--red); }
+
+.dm-history { margin: 10px 0 0; }
+.dm-history a { display: block; padding: 6px 0; color: var(--red); font-weight: 600; }

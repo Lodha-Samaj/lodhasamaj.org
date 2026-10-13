@@ -1,4 +1,5 @@
 import { displayNameParts, formatItems, donorTypes, typeLabel, initialOf } from './donors-core.js';
+import { historyLinks } from './history-core.js';
 
 const AUTOPLAY_MS = 10000;
 
@@ -17,7 +18,7 @@ const LABELS = {
   en: { close: 'Close', prev: 'Previous', next: 'Next', play: 'Play', pause: 'Pause', of: 'of' },
 };
 
-export function initModal(grid, getVisible, lang, year) {
+export function initModal(grid, getVisible, lang, year, getRegister = () => null) {
   const T = LABELS[lang];
   let index = 0;
   let timer = null;
@@ -38,6 +39,7 @@ export function initModal(grid, getVisible, lang, year) {
       <h2 class="dm-name" id="dm-name" tabindex="-1"></h2>
       <p class="dm-type"></p>
       <p class="dm-items"></p>
+      <p class="dm-history"></p>
       <div class="dm-controls">
         <button class="dm-prev" aria-label="${esc(T.prev)}">❮</button>
         <button class="dm-play" aria-label="${esc(T.play)}">►</button>
@@ -76,6 +78,12 @@ export function initModal(grid, getVisible, lang, year) {
     }
     $('.dm-type').textContent = donorTypes(donor).map((c) => typeLabel(c, lang)).join(' · ');
     $('.dm-items').textContent = formatItems(donor, lang);
+    $('.dm-history').replaceChildren(...historyLinks(donor, getRegister(), lang).map(({ href, text }) => {
+      const link = document.createElement('a');
+      link.setAttribute('href', href);
+      link.textContent = text;
+      return link;
+    }));
     // Hindi reads "total में से n"; English reads "n of total".
     const position = lang === 'hi'
       ? `${donors.length} ${T.of} ${index + 1}`
@@ -167,7 +175,8 @@ export function initModal(grid, getVisible, lang, year) {
     }
     if (event.key !== 'Tab') return;
     // Focus trap: keep Tab inside the dialog.
-    const focusable = [...modal.querySelectorAll('button')].filter((el) => !el.disabled);
+    // Links too: the history links must be reachable by keyboard.
+    const focusable = [...modal.querySelectorAll('button, a[href]')].filter((el) => !el.disabled);
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
     // Focus has left the dialog (e.g. a click on non-focusable text): pull it back.
