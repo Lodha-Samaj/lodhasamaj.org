@@ -16,6 +16,9 @@ in OVERRIDES, each guarded by the exact source text it was written against, so
 an edited source fails loudly instead of applying an old ruling to a new row.
 
     python3 tools/convert_2025_md.py [--check]
+
+Then, always: python3 tools/assign_donor_ids.py, which gives the rewritten
+entries their Donor IDs back (the converter writes the list without them).
 """
 import argparse
 import json

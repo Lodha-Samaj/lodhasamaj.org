@@ -16,6 +16,9 @@ OVERRIDES against their exact source text, and nothing infers who has died:
 every स्वर्गीय name is printed for the समाज to rule on.
 
     python3 tools/convert_hanuman_mandir.py [--check]
+
+Then, always: python3 tools/assign_donor_ids.py, which gives the rewritten
+entries their Donor IDs back (the converter writes the list without them).
 """
 import argparse
 import json

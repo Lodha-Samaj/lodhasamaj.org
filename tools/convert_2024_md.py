@@ -20,6 +20,9 @@ The source states no festival ordinals, so "festival" is left out rather than
 counted back from 2025.
 
     python3 tools/convert_2024_md.py [--check]
+
+Then, always: python3 tools/assign_donor_ids.py, which gives the rewritten
+entries their Donor IDs back (the converter writes the list without them).
 """
 import argparse
 import json
