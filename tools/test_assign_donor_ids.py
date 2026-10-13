@@ -313,3 +313,12 @@ def test_a_memorial_alias_anywhere_on_a_donor_keeps_a_living_namesake_apart():
     assert ids(lists, "2026") == [["D0002"]]
     reasons = {(i["a"]["id"], i["b"]["id"]): i["reason"] for i in a.review_items(reg, lists)}
     assert reasons == {("D0001", "D0002"): "one name is स्वर्गीय"}
+
+
+def test_a_family_only_part_rejoins_with_the_separator_printed():
+    assert a.split_people("स्व. श्री भारत जी मंजे के परिवार की और से") == [
+        {"text": "स्व. श्री भारत जी मंजे के परिवार की और से", "memorial": True}]
+    assert texts("अमित जी राजपूत और परिवार") == ["अमित जी राजपूत और परिवार"]
+    assert texts("अमित जी राजपूत, परिवार") == ["अमित जी राजपूत, परिवार"]
+    assert texts("श्री संजू जाट एवं परिवार और श्री कमल जाट") == [
+        "श्री संजू जाट एवं परिवार", "श्री कमल जाट"]

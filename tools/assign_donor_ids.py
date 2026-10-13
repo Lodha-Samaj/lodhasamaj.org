@@ -42,7 +42,7 @@ WORD_FOLDS = {"जामदार": "जमदार", "वेंकट": "ब�
 CHAR_FOLDS = str.maketrans({"ौ": "ो", "ू": "ु", "ी": "ि", "झ": "ज"})
 LOOSE_JOINERS = {"एवं", "और"}
 BRACKET = re.compile(r"\(([^)]*)\)")
-JOINERS = re.compile(r"\s+एवं\s+|\s+और\s+|\s*,\s*")
+JOINERS = re.compile(r"(\s+एवं\s+|\s+और\s+|\s*,\s*)")   # captured: kept as printed
 ANONYMOUS = re.compile(r"^गुप्त\s+दान")
 
 
@@ -96,23 +96,25 @@ def split_people(name: str) -> list[dict]:
     def restore(s):
         return re.sub(r"\x00(\d+)\x00", lambda m: held[int(m.group(1))], s).strip()
 
-    segments = []
-    for part in JOINERS.split(BRACKET.sub(hold, name)):
+    pieces = JOINERS.split(BRACKET.sub(hold, name))
+    segments: list[tuple[str, str]] = []           # (separator printed before it, text)
+    for n in range(0, len(pieces), 2):
+        sep = pieces[n - 1] if n else ""
         current: list[str] = []
-        for tok in part.split():
+        for tok in pieces[n].split():
             if (tok in ("श्री", "श्रीमती") and current
                     and current[-1] not in HONORIFICS and current[-1] not in CONNECTORS):
-                segments.append(" ".join(current))
-                current = []
+                segments.append((sep, " ".join(current)))
+                current, sep = [], " "
             current.append(tok)
         if current:
-            segments.append(" ".join(current))
+            segments.append((sep, " ".join(current)))
 
     people: list[dict] = []
-    for seg in segments:
+    for sep, seg in segments:
         text = restore(seg)
-        if people and not loose_key(text):        # "… एवं परिवार"
-            people[-1]["text"] += " एवं " + text
+        if people and not loose_key(text):        # "… एवं परिवार", "… की और से"
+            people[-1]["text"] += sep + text
             continue
         people.append({"text": text, "memorial": is_memorial(text)})
     living = [p for p in people if not p["memorial"]]
