@@ -77,11 +77,34 @@ def is_memorial(text: str) -> bool:
     return bool(DEATH_MARKER.match(text))
 
 
+def _plain(tok: str) -> bool:
+    """A name word: not an honorific, connector, family word, joiner or held bracket."""
+    return not (tok in HONORIFICS or tok in CONNECTORS or tok in FAMILY_WORDS
+                or tok in LOOSE_JOINERS or tok.startswith("\x00"))
+
+
+def _second_person_starts(current: list[str], toks: list[str], i: int) -> bool:
+    """A second person begins at toks[i] without a श्री of their own.
+
+    "श्री कलवा जी जमदार आशीष जी जमदार": after "<given> जी <surname>" comes a
+    plain word and another जी follows; or the surname just finished is printed
+    again later ("स्वर्गीय आदित्य जी जमदार रंजीत जमदार").
+    """
+    if len(current) < 2 or not _plain(toks[i]) or not _plain(current[-1]):
+        return False
+    if not any(_plain(w) for w in current[:-1]):    # a given name before the surname
+        return False
+    surname = current[-1]
+    return ((current[-2] == "जी" and "जी" in toks[i + 1:])
+            or surname in toks[i + 1:])
+
+
 def split_people(name: str) -> list[dict]:
     """[{"text", "memorial"}] for each person in a printed name who gets an ID.
 
-    Splits on एवं / और / commas (never inside brackets) and before a second
-    श्री/श्रीमती. A memorial in a joint entry is dropped; when every person is a
+    Splits on एवं / और / commas (never inside brackets), before a second
+    श्री/श्रीमती, and where a second person starts without one (see
+    _second_person_starts). A memorial in a joint entry is dropped; when every person is a
     memorial they all stay. "गुप्त दान" is anonymous and names nobody.
     """
     name = unicodedata.normalize("NFC", name).strip()
@@ -101,9 +124,11 @@ def split_people(name: str) -> list[dict]:
     for n in range(0, len(pieces), 2):
         sep = pieces[n - 1] if n else ""
         current: list[str] = []
-        for tok in pieces[n].split():
-            if (tok in ("श्री", "श्रीमती") and current
-                    and current[-1] not in HONORIFICS and current[-1] not in CONNECTORS):
+        toks = pieces[n].split()
+        for i, tok in enumerate(toks):
+            if ((tok in ("श्री", "श्रीमती") and current
+                    and current[-1] not in HONORIFICS and current[-1] not in CONNECTORS)
+                    or _second_person_starts(current, toks, i)):
                 segments.append((sep, " ".join(current)))
                 current, sep = [], " "
             current.append(tok)

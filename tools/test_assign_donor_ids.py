@@ -322,3 +322,20 @@ def test_a_family_only_part_rejoins_with_the_separator_printed():
     assert texts("अमित जी राजपूत, परिवार") == ["अमित जी राजपूत, परिवार"]
     assert texts("श्री संजू जाट एवं परिवार और श्री कमल जाट") == [
         "श्री संजू जाट एवं परिवार", "श्री कमल जाट"]
+
+
+def test_joint_names_without_a_second_shri_are_split():
+    assert texts("श्री कलवा जी जमदार आशीष जी जमदार") == ["श्री कलवा जी जमदार", "आशीष जी जमदार"]
+    assert texts("स्व. श्री श्याम जी जमदार नितिन जी जमदार") == ["नितिन जी जमदार"]
+    assert texts("श्री कालू हजारीलाल जी जमदार") == ["श्री कालू हजारीलाल जी जमदार"]
+
+
+def test_a_repeated_surname_also_marks_a_second_person():
+    assert texts("स्वर्गीय आदित्य जी जमदार रंजीत जमदार") == ["रंजीत जमदार"]
+    assert texts("स्व. श्री शेखर कोतवाल ओम जी कोतवाल") == ["ओम जी कोतवाल"]
+
+
+def test_no_split_inside_one_persons_relations_or_before_a_place():
+    assert texts("श्री मोहन जी जाट (MxR मंडी) के पुत्र राजू जी जाट") == [
+        "श्री मोहन जी जाट (MxR मंडी) के पुत्र राजू जी जाट"]
+    assert texts("श्री लोधा राम लोधा") == ["श्री लोधा राम लोधा"]
