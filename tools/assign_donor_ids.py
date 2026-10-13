@@ -305,6 +305,22 @@ def review_items(register: dict, lists: list[tuple[str, dict]]) -> list[dict]:
             # Judge the pair of donors, not one pair of spellings: the strongest
             # reason any two of their spellings give.
             found[pair] = min(whys, key=lambda w: (_RANK.get(w, len(_RANK)), whys.index(w)))
+    # "श्री कालू जमदार" / "श्री कालू हजारीलाल जी जमदार": the same given name and
+    # surname with a word (often the father's name) added. Asked, never linked.
+    by_ends: dict[tuple[str, str], list] = defaultdict(list)
+    for did, donor in donors.items():
+        for alias in donor["aliases"]:
+            words = [WORD_FOLDS.get(w, w).translate(CHAR_FOLDS) for w in strict_key(alias).split()]
+            if words:
+                by_ends[(words[0], words[-1])].append((did, alias, set(words)))
+    for members in by_ends.values():
+        for (x_id, x, xw), (y_id, y, yw) in combinations(sorted(members, key=lambda m: m[:2]), 2):
+            pair = (x_id, y_id)
+            if x_id == y_id or pair in distinct or pair in found:
+                continue
+            if xw < yw or yw < xw:
+                found[pair] = f"name with an extra word: {strict_key(x)} / {strict_key(y)}"
+
     items = [{"kind": "pair", "a": side(x), "b": side(y), "reason": why, "same": None}
              for (x, y), why in sorted(found.items())]
 

@@ -368,3 +368,18 @@ def test_merge_keeps_the_hand_set_english_name_and_fixed_name():
     a.merge(reg, "D0003", "D0001")
     assert reg["donors"]["D0001"]["name"] == {"hi": "श्री क (महू)", "en": "Ka"}
     assert reg["donors"]["D0001"]["fixedName"] is True
+
+
+def test_a_name_with_an_extra_word_is_suggested_for_review_not_linked():
+    reg, lists = assigned(**{"2025": ["श्री कालू हजारीलाल जी जमदार"],
+                             "hanuman-mandir": ["श्री कालू जमदार"]})
+    assert ids(lists, "2025") == [["D0001"]] and ids(lists, "hanuman-mandir") == [["D0002"]]
+    [item] = a.review_items(reg, lists)
+    assert (item["a"]["id"], item["b"]["id"]) == ("D0001", "D0002")
+    assert item["reason"] == "name with an extra word: कालू हजारीलाल जमदार / कालू जमदार"
+
+
+def test_an_extra_word_needs_the_same_given_name_and_surname():
+    reg, lists = assigned(**{"2025": ["श्री कालू जमदार", "श्री कमल जमदार",
+                                      "श्री कालू हजारीलाल जाट"]})
+    assert a.review_items(reg, lists) == []
