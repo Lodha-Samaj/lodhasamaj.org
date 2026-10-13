@@ -432,6 +432,11 @@ ONE = {"D0001": {"name": {"hi": "x"}, "aliases": []}}
     ({"donors": ONE, "merged": {}, "distinct": [5]}, with_ids(["D0001"])),
     ({"donors": ONE, "merged": {"D0002": ["D0001"]}}, with_ids(["D0001"])),
     ({"donors": ONE, "merged": {}}, with_ids([["D0001"]])),
+    ({"donors": ONE, "merged": {}, "pins": {"a": {"donorIds": 5}}}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "pins": {"a": {"donorIds": None}}}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "distinct": 5}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "distinct": None}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "pins": []}, with_ids(["D0001"])),
 ])
 def test_malformed_register_shapes_are_reported_not_raised(tmp_path, reg, data):
     write(tmp_path, reg, "donors.json")

@@ -273,7 +273,11 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
     def resolves(did):
         return did in donors or merged.get(did) in donors
 
-    for pair in reg.get("distinct", []):
+    distinct = reg.get("distinct", [])
+    if not isinstance(distinct, list):
+        errors.append('donors.json: "distinct" must be a list of pairs')
+        distinct = []
+    for pair in distinct:
         if not isinstance(pair, list):
             errors.append(f'donors.json: a "distinct" entry must be a list of two IDs, got {pair!r}')
             continue
@@ -281,7 +285,9 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
             if not isinstance(did, str) or not resolves(did):
                 errors.append(f'donors.json: "distinct" names {did}, which is not a donor')
     used: set[str] = set()
-    pins = reg.get("pins") or {}
+    pins = reg.get("pins", {})
+    if pins is None:
+        pins = {}
     if not isinstance(pins, dict):
         errors.append('donors.json: "pins" must be an object')
         pins = {}
@@ -289,7 +295,11 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
         if not isinstance(pin, dict):
             errors.append(f"donors.json: pin {ref} must be an object with donorIds")
             continue
-        for did in pin.get("donorIds", []):
+        pin_ids = pin.get("donorIds", [])
+        if not isinstance(pin_ids, list):
+            errors.append(f"donors.json: pin {ref} has donorIds that are not a list")
+            continue
+        for did in pin_ids:
             if isinstance(did, str) and resolves(did):
                 used.add(did if did in donors else merged.get(did))
             else:
