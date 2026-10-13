@@ -13,6 +13,9 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 LANGS = ("hi", "en")
+# A noindex page (the donor history page) listed in a sitemap is a contradictory
+# signal to search engines, so it is left out.
+NOINDEX = re.compile(r'<meta\s+name="robots"\s+content="[^"]*noindex', re.I)
 
 
 def normalize_domain(domain: str) -> str:
@@ -30,6 +33,8 @@ def page_paths(root: Path) -> list[str]:
     paths = []
     for lang in LANGS:
         for f in sorted((root / lang).rglob("index.html")):
+            if NOINDEX.search(f.read_text(encoding="utf-8", errors="replace")):
+                continue
             rel = f.parent.relative_to(root).as_posix()
             paths.append("/" + rel + "/")
     return paths

@@ -135,7 +135,8 @@ def test_sitemap_lists_every_page_on_disk_with_alternates(site):
     root = ET.parse(site / "sitemap.xml").getroot()
     locs = {u.find("s:loc", NS).text for u in root.findall("s:url", NS)}
     assert locs == {"https://test.example/" + p.parent.relative_to(site).as_posix() + "/"
-                    for lang in ("hi", "en") for p in (site / lang).rglob("index.html")}
+                    for lang in ("hi", "en") for p in (site / lang).rglob("index.html")
+                    if "noindex" not in p.read_text(encoding="utf-8")}
     entry = next(u for u in root.findall("s:url", NS)
                  if u.find("s:loc", NS).text == "https://test.example/en/daan/2025/")
     assert {a.get("hreflang"): a.get("href") for a in entry.findall("x:link", NS)} == {
@@ -239,3 +240,14 @@ def test_site_file_guard_matches_check_links(tmp_path):
     assert stray not in set_domain.pages(tmp_path)
     # ...and check_links must not report its broken link either.
     assert check_links.find_broken(str(tmp_path)) == []
+
+
+def test_noindex_pages_stay_out_of_the_sitemap(tmp_path):
+    for lang in ("hi", "en"):
+        for page, head in (("daata", '<meta name="robots" content="noindex">'), ("daan", "")):
+            d = tmp_path / lang / page
+            d.mkdir(parents=True)
+            (d / "index.html").write_text(f"<head>{head}</head>", encoding="utf-8")
+    make_sitemap.write(tmp_path, "test.example")
+    text = (tmp_path / "sitemap.xml").read_text(encoding="utf-8")
+    assert "/hi/daan/" in text and "daata" not in text
