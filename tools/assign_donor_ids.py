@@ -41,6 +41,9 @@ FAMILY_WORDS = {"का", "की", "के", "परिवार", "द्व�
 WORD_FOLDS = {"जामदार": "जमदार", "वेंकट": "बंकट"}
 CHAR_FOLDS = str.maketrans({"ौ": "ो", "ू": "ु", "ी": "ि", "झ": "ज"})
 LOOSE_JOINERS = {"एवं", "और"}
+# Titles that may be printed or left out; set aside to SUGGEST a pair, never to link.
+LOOSE_TITLES = {"आचार्य", "डॉ."}
+PLACE_PUNCT = re.compile(r"[,:;.]")
 BRACKET = re.compile(r"\(([^)]*)\)")
 JOINERS = re.compile(r"(\s+एवं\s+|\s+और\s+|\s*,\s*)")   # captured: kept as printed
 ANONYMOUS = re.compile(r"^गुप्त\s+दान")
@@ -62,15 +65,28 @@ def _bare_words(text: str) -> list[str]:
 
 
 def loose_key(text: str) -> str:
-    return " ".join(WORD_FOLDS.get(w, w).translate(CHAR_FOLDS) for w in _bare_words(text))
+    return " ".join(WORD_FOLDS.get(w, w).translate(CHAR_FOLDS)
+                    for w in _bare_words(text) if w not in LOOSE_TITLES)
 
 
 def place_of(text: str) -> str:
     return " ".join(" ".join(m.split()) for m in BRACKET.findall(text))
 
 
+def _place_words(place: str) -> list[str]:
+    return PLACE_PUNCT.sub(" ", place).split()
+
+
+def _within(short: list[str], long: list[str]) -> bool:
+    """Every word of `short`, in order, among the words of `long`."""
+    rest = iter(long)
+    return all(w in rest for w in short)
+
+
 def places_compatible(a: str, b: str) -> bool:
-    return not a or not b or a in b or b in a
+    """Places agree when either is absent or one's words lie, in order, within the other's."""
+    x, y = _place_words(a), _place_words(b)
+    return not x or not y or _within(x, y) or _within(y, x)
 
 
 def is_memorial(text: str) -> bool:
@@ -314,6 +330,12 @@ def merge(register: dict, a_id: str, b_id: str) -> None:
     for alias in donors[gone]["aliases"]:
         if alias not in donors[keep]["aliases"]:
             donors[keep]["aliases"].append(alias)
+    kept, removed = donors[keep], donors[gone]
+    if removed.get("fixedName") and not kept.get("fixedName"):
+        kept["name"] = {**kept["name"], **removed["name"]}   # the hand-set name wins
+        kept["fixedName"] = True
+    elif "en" in removed["name"] and "en" not in kept["name"]:
+        kept["name"]["en"] = removed["name"]["en"]
     del donors[gone]
     register["merged"][gone] = keep
     for old, target in list(register["merged"].items()):

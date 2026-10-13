@@ -339,3 +339,32 @@ def test_no_split_inside_one_persons_relations_or_before_a_place():
     assert texts("श्री मोहन जी जाट (MxR मंडी) के पुत्र राजू जी जाट") == [
         "श्री मोहन जी जाट (MxR मंडी) के पुत्र राजू जी जाट"]
     assert texts("श्री लोधा राम लोधा") == ["श्री लोधा राम लोधा"]
+
+
+def test_places_ignore_punctuation_and_compare_whole_words():
+    assert a.places_compatible("कोषाध्यक्ष: लोधा समाज, इंदौर", "कोषाध्यक्ष लोधा समाज इंदौर")
+    assert a.places_compatible("उपाध्यक्ष; लोधा समाज.", "उपाध्यक्ष, लोधा  समाज इंदौर")
+    assert not a.places_compatible("महू", "महूगांव")
+    assert not a.places_compatible("समाज लोधा", "लोधा समाज")
+
+
+def test_acharya_and_doctor_are_set_aside_in_the_loose_key_only():
+    assert a.loose_key("आचार्य मनोज उपाध्याय") == a.loose_key("पंडित श्री मनोज जी उपाध्याय")
+    assert a.loose_key("डॉ. सेठिया") == a.loose_key("श्री सेठिया")
+    assert a.strict_key("आचार्य मनोज उपाध्याय") != a.strict_key("पंडित श्री मनोज जी उपाध्याय")
+    assert a.strict_key("डॉ. सेठिया") == "डॉ. सेठिया"
+
+
+def test_merge_keeps_the_hand_set_english_name_and_fixed_name():
+    reg = a.new_register()
+    reg["donors"]["D0001"] = {"name": {"hi": "श्री क"}, "aliases": ["श्री क"]}
+    reg["donors"]["D0002"] = {"name": {"hi": "श्री क जी", "en": "Ka"}, "aliases": ["श्री क जी"]}
+    a.merge(reg, "D0001", "D0002")
+    assert reg["donors"]["D0001"]["name"] == {"hi": "श्री क", "en": "Ka"}
+    assert "fixedName" not in reg["donors"]["D0001"]
+
+    reg["donors"]["D0003"] = {"name": {"hi": "श्री क (महू)"}, "aliases": ["श्री क (महू)"],
+                              "fixedName": True}
+    a.merge(reg, "D0003", "D0001")
+    assert reg["donors"]["D0001"]["name"] == {"hi": "श्री क (महू)", "en": "Ka"}
+    assert reg["donors"]["D0001"]["fixedName"] is True
