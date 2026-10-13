@@ -277,3 +277,15 @@ def test_check_writes_nothing_and_a_bad_answer_fails_without_writing(tmp_path, c
     with pytest.raises(ValueError, match="write true, false or null"):
         a.run(data, review)
     assert not (data / "donors.json").exists()
+
+
+def test_loose_key_ignores_family_and_joiner_words():
+    assert a.loose_key("अमित जी राजपूत एवं परिवार") == a.loose_key("श्री अमित जी राजपूत (महाराष्ट्र)")
+
+
+def test_family_wording_is_suggested_for_review_not_linked():
+    reg, lists = assigned(**{"2024": ["अमित जी राजपूत एवं परिवार"],
+                             "2025": ["श्री अमित जी राजपूत (महाराष्ट्र)"]})
+    [item] = a.review_items(reg, lists)
+    assert item["reason"] == "family wording: अमित राजपूत एवं परिवार / अमित राजपूत"
+    assert ids(lists, "2024") != ids(lists, "2025")

@@ -40,6 +40,7 @@ FAMILY_WORDS = {"का", "की", "के", "परिवार", "द्व�
 # Spelling variants seen across the lists; used only to SUGGEST a review pair.
 WORD_FOLDS = {"जामदार": "जमदार", "वेंकट": "बंकट"}
 CHAR_FOLDS = str.maketrans({"ौ": "ो", "ू": "ु", "ी": "ि", "झ": "ज"})
+LOOSE_JOINERS = {"एवं", "और"}
 BRACKET = re.compile(r"\(([^)]*)\)")
 JOINERS = re.compile(r"\s+एवं\s+|\s+और\s+|\s*,\s*")
 ANONYMOUS = re.compile(r"^गुप्त\s+दान")
@@ -54,9 +55,14 @@ def strict_key(text: str) -> str:
     return " ".join(_words(unicodedata.normalize("NFC", text)))
 
 
+def _bare_words(text: str) -> list[str]:
+    """Words without honorifics, brackets, family wording or joiners (never used to auto-link)."""
+    return [w for w in _words(unicodedata.normalize("NFC", text))
+            if w not in FAMILY_WORDS and w not in LOOSE_JOINERS]
+
+
 def loose_key(text: str) -> str:
-    words = [w for w in _words(unicodedata.normalize("NFC", text)) if w not in FAMILY_WORDS]
-    return " ".join(WORD_FOLDS.get(w, w).translate(CHAR_FOLDS) for w in words)
+    return " ".join(WORD_FOLDS.get(w, w).translate(CHAR_FOLDS) for w in _bare_words(text))
 
 
 def place_of(text: str) -> str:
@@ -204,6 +210,8 @@ def rename(register: dict, last_seen: dict[str, str]) -> None:
 
 def _why(kind: str, x: str, y: str) -> str:
     if kind == "loose":
+        if _bare_words(x) == _bare_words(y):
+            return f"family wording: {strict_key(x)} / {strict_key(y)}"
         return f"spelling: {strict_key(x)} / {strict_key(y)}"
     if is_memorial(x) != is_memorial(y):
         return "one name is स्वर्गीय"
