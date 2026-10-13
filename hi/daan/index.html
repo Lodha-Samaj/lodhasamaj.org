@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>दान — लोधा समाज इंदौर</title>
+  <meta name="description" content="लोधा समाज इंदौर के नवरात्र भंडारे में सहयोग कैसे करें, और पिछले वर्षों के दानदाताओं की सूची।">
+  <!-- These URLs are absolute because link-preview bots and Google ignore
+       relative ones. tools/set_domain.py wrote them; re-run it with --force
+       if the domain ever changes, so no page is left on the old host. -->
+  <link rel="canonical" href="https://lodhasamaj.org/hi/daan/">
+  <link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/">
+  <link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/">
+  <link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/">
+  <link rel="icon" href="/assets/img/logo.png">
+  <meta property="og:title" content="दान — लोधा समाज इंदौर">
+  <meta property="og:description" content="लोधा समाज इंदौर के नवरात्र भंडारे में सहयोग कैसे करें, और पिछले वर्षों के दानदाताओं की सूची।">
+  <meta property="og:image" content="https://lodhasamaj.org/assets/img/logo-social.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lodhasamaj.org/hi/daan/">
+  <link rel="stylesheet" href="/assets/css/site.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <noscript>
+    <nav aria-label="मुख्य मेनू">
+      <a href="/hi/">होम</a> ·
+      <a href="/hi/karyakram/">कार्यक्रम</a> ·
+      <a href="/hi/daan/">दान</a> ·
+      <a href="/hi/shiksha/">शिक्षा</a> ·
+      <a href="/hi/swasthya/">स्वास्थ्य</a> ·
+      <a href="/hi/parichay/">हमारे बारे में</a> ·
+      <a href="/hi/padadhikari/">पदाधिकारी</a> ·
+      <a href="/hi/gallery/">गैलरी</a> ·
+      <a href="/hi/panjiyan/">पंजीयन</a> ·
+      <a href="/hi/sampark/">संपर्क</a></nav>
+    <p>लोधा कॉलोनी धर्मशाला, महाराणा प्रताप चौराहा, महूनाका इंदौर, मध्यप्रदेश ·
+      <a href="tel:+919826324370">+91 98263 24370</a></p>
+  </noscript>
+  <main>
+    <div class="wrap"><nav class="crumbs" aria-label="पथ"><a href="/hi/">होम</a> › दान</nav></div>
+    <div class="wrap section">
+      <div class="section-head"><h1>दान</h1></div>
+      <div class="prose">
+        <p>हर वर्ष नवरात्र में लोधा समाज इंदौर विशाल भंडारा और नगर कन्या पूजन का आयोजन करता है। यह आयोजन समाज के परिवारों के सहयोग से ही संभव होता है।</p>
+        <p>भंडारे के लिए शक्कर, आटा, तेल, नमक, घी, मावा या नगद राशि के रूप में सहयोग किया जा सकता है। सहयोग करने के लिए फ़ोन पर संपर्क करें या धर्मशाला आएँ।</p>
+        <p><strong>फ़ोन:</strong> <a href="tel:+919826324370">+91 98263 24370</a><br>
+           <strong>पता:</strong> लोधा कॉलोनी धर्मशाला, महाराणा प्रताप चौराहा, महूनाका इंदौर, मध्यप्रदेश</p>
+      </div>
+    </div>
+    <div class="wrap section">
+      <div class="section-head"><h2>श्री हनुमान मंदिर निर्माण</h2></div>
+      <p>लोधा कॉलोनी, महू नाका, इंदौर में श्री हनुमान मंदिर का निर्माण समाज के सहयोग से हो रहा है। सहयोग राशि और निर्माण सामग्री देने वालों की
+         <a href="/hi/daan/hanuman-mandir/">पूरी सूची यहाँ देखें</a>।</p>
+    </div>
+    <div class="wrap section">
+      <div class="section-head"><h2>दानदाता सूची — सभी वर्ष</h2></div>
+      <ul class="year-list" id="archive"></ul>
+      <noscript><p>सूची देखने के लिए JavaScript आवश्यक है। <a href="/hi/daan/2025/">2025</a> और <a href="/hi/daan/2024/">2024</a> की सूची यहाँ देखें।</p></noscript>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script type="module" src="/assets/js/chrome.js"></script>
+  <script type="module">
+    const lang = 'hi';
+    const archive = document.getElementById('archive');
+    try {
+      const response = await fetch('/data/donors-index.json', { cache: 'no-cache' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const { years } = await response.json();
+      // Hand-edited file: keep only integer years, so nothing needs escaping.
+      const valid = years.map(Number).filter(Number.isInteger).sort((a, b) => b - a);
+      for (const y of valid) {
+        // A list of years, not a donor row: the link text already carries the
+        // year, so the separate badge only said it twice.
+        const li = document.createElement('li');
+        li.className = 'year-item';
+        const a = document.createElement('a');
+        a.setAttribute('href', `/${lang}/daan/${y}/`);
+        a.textContent = `${y} दानदाता सूची`;
+        li.append(a);
+        archive.append(li);
+      }
+    } catch (error) {
+      console.error(error);
+      archive.outerHTML = '<div class="load-error"><p><strong>सूची लोड नहीं हो सकी</strong></p></div>';
+    }
+  </script>
+</body>
+</html>

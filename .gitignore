@@ -1,0 +1,8 @@
+.superpowers/
+.claude/worktrees/
+__pycache__/
+.playwright-mcp/
+.serena/
+
+# Working notes for the समाज and the maintainer: kept local, never published.
+docs/

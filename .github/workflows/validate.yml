@@ -1,0 +1,21 @@
+name: validate
+on: [push, pull_request]
+
+# This workflow only REPORTS problems. GitHub Pages publishes from the branch
+# directly (no build step), so a red run here never blocks the site going live.
+# A failed run shows as a red cross on the commit; that is the signal to fix
+# the file, but the site is already live either way.
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: pip install pytest
+      - run: python3 -m pytest tools/ -v
+      - run: python3 tools/validate_donors.py
+      - run: python3 tools/check_links.py
+      - run: node --test assets/js/*.test.js

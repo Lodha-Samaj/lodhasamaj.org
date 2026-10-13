@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+# DOMAIN-PLACEHOLDER: tools/set_domain.py fills in the Sitemap line below.
+Sitemap: https://lodhasamaj.org/sitemap.xml

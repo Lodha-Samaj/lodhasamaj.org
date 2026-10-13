@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Donate — Lodha Samaj Indore</title>
+  <meta name="description" content="How to contribute to the Navratri bhandara of Lodha Samaj Indore, and the list of donors from past years.">
+  <!-- These URLs are absolute because link-preview bots and Google ignore
+       relative ones. tools/set_domain.py wrote them; re-run it with --force
+       if the domain ever changes, so no page is left on the old host. -->
+  <link rel="canonical" href="https://lodhasamaj.org/en/daan/">
+  <link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/">
+  <link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/">
+  <link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/">
+  <link rel="icon" href="/assets/img/logo.png">
+  <meta property="og:title" content="Donate — Lodha Samaj Indore">
+  <meta property="og:description" content="How to contribute to the Navratri bhandara of Lodha Samaj Indore, and the list of donors from past years.">
+  <meta property="og:image" content="https://lodhasamaj.org/assets/img/logo-social.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lodhasamaj.org/en/daan/">
+  <link rel="stylesheet" href="/assets/css/site.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <noscript>
+    <nav aria-label="Main menu">
+      <a href="/en/">Home</a> ·
+      <a href="/en/karyakram/">Events</a> ·
+      <a href="/en/daan/">Donate</a> ·
+      <a href="/en/shiksha/">Education</a> ·
+      <a href="/en/swasthya/">Health</a> ·
+      <a href="/en/parichay/">About Us</a> ·
+      <a href="/en/padadhikari/">Office Bearers</a> ·
+      <a href="/en/gallery/">Gallery</a> ·
+      <a href="/en/panjiyan/">Register</a> ·
+      <a href="/en/sampark/">Contact</a></nav>
+    <p>Lodha Colony Dharmshala, Maharana Pratap Chauraha, Mhow Naka, Indore, Madhya Pradesh ·
+      <a href="tel:+919826324370">+91 98263 24370</a></p>
+  </noscript>
+
+  <main>
+    <div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><a href="/en/">Home</a> › Donate</nav></div>
+    <div class="wrap section">
+      <div class="section-head"><h1>Donate</h1></div>
+      <div class="prose">
+        <p>Every year during Navratri, Lodha Samaj Indore holds the Vishal Bhandara (a large community meal) and the Nagar Kanya Pujan. The event is possible only with the support of the community's families.</p>
+        <p>Support for the bhandara can be given as sugar, flour, oil, salt, ghee, mawa or cash. To contribute, call us or visit the dharmshala.</p>
+        <p><strong>Phone:</strong> <a href="tel:+919826324370">+91 98263 24370</a><br>
+           <strong>Address:</strong> Lodha Colony Dharmshala, Maharana Pratap Chauraha, Mhow Naka, Indore, Madhya Pradesh</p>
+      </div>
+    </div>
+    <div class="wrap section">
+      <div class="section-head"><h2>Shri Hanuman Temple Construction</h2></div>
+      <p>The community is building a Shri Hanuman temple at Lodha Colony, Mhow Naka, Indore.
+         <a href="/en/daan/hanuman-mandir/">See the full list</a> of those who have given money and building materials.</p>
+    </div>
+    <div class="wrap section">
+      <div class="section-head"><h2>Donor List — All Years</h2></div>
+      <ul class="year-list" id="archive"></ul>
+      <noscript><p>JavaScript is required to see the list. See the <a href="/en/daan/2025/">2025</a> and <a href="/en/daan/2024/">2024</a> lists here.</p></noscript>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script type="module" src="/assets/js/chrome.js"></script>
+  <script type="module">
+    const lang = 'en';
+    const archive = document.getElementById('archive');
+    try {
+      const response = await fetch('/data/donors-index.json', { cache: 'no-cache' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const { years } = await response.json();
+      // Hand-edited file: keep only integer years, so nothing needs escaping.
+      const valid = years.map(Number).filter(Number.isInteger).sort((a, b) => b - a);
+      for (const y of valid) {
+        // A list of years, not a donor row: the link text already carries the
+        // year, so the separate badge only said it twice.
+        const li = document.createElement('li');
+        li.className = 'year-item';
+        const a = document.createElement('a');
+        a.setAttribute('href', `/${lang}/daan/${y}/`);
+        a.textContent = `${y} Donor List`;
+        li.append(a);
+        archive.append(li);
+      }
+    } catch (error) {
+      console.error(error);
+      archive.outerHTML = '<div class="load-error"><p><strong>The list could not be loaded</strong></p></div>';
+    }
+  </script>
+</body>
+</html>
