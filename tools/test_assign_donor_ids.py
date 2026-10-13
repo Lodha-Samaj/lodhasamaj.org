@@ -263,7 +263,7 @@ def test_answers_in_the_review_file_are_applied_and_leave_it(tmp_path):
     assert a.run(data, review)["applied"] == 1
     assert json.loads(review.read_text(encoding="utf-8")) == []
     register = json.loads((data / "donors.json").read_text(encoding="utf-8"))
-    assert list(register) == ["donors", "merged", "distinct", "sameInList", "pins"]
+    assert list(register) == ["donors", "merged", "distinct", "sameInList", "pins", "ask"]
     assert register["merged"] == {"D0002": "D0001"}
 
 
@@ -383,3 +383,45 @@ def test_an_extra_word_needs_the_same_given_name_and_surname():
     reg, lists = assigned(**{"2025": ["श्री कालू जमदार", "श्री कमल जमदार",
                                       "श्री कालू हजारीलाल जाट"]})
     assert a.review_items(reg, lists) == []
+
+
+def test_ask_pairs_are_posed_until_answered():
+    reg, lists = assigned(**{"2024": ["श्री प्रदीप वर्मा"], "2025": ["श्री राम जाट", "श्री श्याम जाट"]})
+    assert reg["ask"] == []
+    reg["ask"] = [["D0001", "D0003"], ["D0002", "D0003"]]
+    reg["distinct"] = [["D0002", "D0003"]]
+    [item] = a.review_items(reg, lists)
+    assert item == {"kind": "pair", "a": {"id": "D0001", "name": "श्री प्रदीप वर्मा", "lists": ["2024"]},
+                    "b": {"id": "D0003", "name": "श्री श्याम जाट", "lists": ["2025"]},
+                    "reason": "asked by the samaj", "same": None}
+    a.apply_answers(reg, answer([item], False), lists)
+    assert reg["ask"] == [["D0002", "D0003"]] and ["D0001", "D0003"] in reg["distinct"]
+    assert a.review_items(reg, lists) == []
+
+
+def test_an_ask_answered_true_merges_and_leaves_the_list():
+    reg, lists = assigned(**{"2024": ["श्री प्रदीप वर्मा"], "2025": ["श्री राम जाट"]})
+    reg["ask"] = [["D0001", "D0002"]]
+    a.apply_answers(reg, answer(a.review_items(reg, lists), True), lists)
+    assert reg["ask"] == [] and reg["merged"] == {"D0002": "D0001"}
+    assert a.review_items(reg, lists) == []
+
+
+def test_merge_repoints_ask_pairs_and_drops_self_pairs():
+    reg = a.new_register()
+    for did in ("D0001", "D0002", "D0003"):
+        reg["donors"][did] = {"name": {"hi": did}, "aliases": [did]}
+    reg["ask"] = [["D0001", "D0003"], ["D0002", "D0003"]]
+    a.merge(reg, "D0003", "D0001")
+    assert reg["ask"] == [["D0001", "D0002"]]
+
+
+@pytest.mark.parametrize("bad", ["D0001 D0002", [["D0001"]], [["D0001", 2]]])
+def test_a_malformed_ask_list_stops_with_a_plain_message(tmp_path, bad):
+    data, review = site(tmp_path, {"years": [2024]}, {"donors-2024.json": ["श्री क", "श्री ख"]})
+    a.run(data, review)
+    register = json.loads((data / "donors.json").read_text(encoding="utf-8"))
+    register["ask"] = bad
+    (data / "donors.json").write_text(json.dumps(register, ensure_ascii=False), encoding="utf-8")
+    with pytest.raises(ValueError, match='"ask" must be a list of ID pairs'):
+        a.run(data, review)

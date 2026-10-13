@@ -15,8 +15,10 @@ docs/donor-review.json.
 Only near-certain matches are linked: the same name once honorifics and
 bracketed places are set aside, with places that agree and the same स्वर्गीय
 status. Everything doubtful becomes a review item for the समाज to answer with
-"same": true / false. This script never guesses, never deletes an ID, and gives
-the same output for the same input.
+"same": true / false. A question the rules cannot find is posed by adding the
+pair to "ask" in data/donors.json, e.g. "ask": [["D0012", "D0034"]]; it stays
+in the review file until answered. This script never guesses, never deletes an
+ID, and gives the same output for the same input.
 """
 import argparse
 import json
@@ -163,7 +165,7 @@ def split_people(name: str) -> list[dict]:
 
 
 def new_register() -> dict:
-    return {"donors": {}, "merged": {}, "distinct": [], "sameInList": [], "pins": {}}
+    return {"donors": {}, "merged": {}, "distinct": [], "sameInList": [], "pins": {}, "ask": []}
 
 
 def resolve(register: dict, did: str) -> str | None:
@@ -321,6 +323,12 @@ def review_items(register: dict, lists: list[tuple[str, dict]]) -> list[dict]:
             if xw < yw or yw < xw:
                 found[pair] = f"name with an extra word: {strict_key(x)} / {strict_key(y)}"
 
+    # Questions the rules cannot find, written into "ask" by hand.
+    for pair in register.get("ask", []):
+        x, y = sorted(resolve(register, d) or "" for d in pair)
+        if x and y and x != y and (x, y) not in distinct:
+            found[(x, y)] = "asked by the samaj"
+
     items = [{"kind": "pair", "a": side(x), "b": side(y), "reason": why, "same": None}
              for (x, y), why in sorted(found.items())]
 
@@ -357,8 +365,9 @@ def merge(register: dict, a_id: str, b_id: str) -> None:
     for old, target in list(register["merged"].items()):
         if target == gone:
             register["merged"][old] = keep
-    pairs = {tuple(sorted(keep if d == gone else d for d in p)) for p in register["distinct"]}
-    register["distinct"] = [list(p) for p in sorted(pairs) if p[0] != p[1]]
+    for name in ("distinct", "ask"):
+        pairs = {tuple(sorted(keep if d == gone else d for d in p)) for p in register[name]}
+        register[name] = [list(p) for p in sorted(pairs) if p[0] != p[1]]
     for pin in register["pins"].values():
         pin["donorIds"] = list(dict.fromkeys(keep if d == gone else d for d in pin["donorIds"]))
     register["sameInList"] = sorted({s[: -len(gone)] + keep if s.endswith(":" + gone) else s
@@ -411,6 +420,8 @@ def apply_answers(register: dict, items: list, lists: list[tuple[str, dict]]) ->
                 x, y = resolve(register, item["a"]["id"]), resolve(register, item["b"]["id"])
                 if x is None or y is None or x == y:
                     continue
+                register["ask"] = [p for p in register["ask"]
+                                   if sorted(resolve(register, d) or d for d in p) != sorted([x, y])]
                 if same:
                     merge(register, x, y)
                 elif sorted([x, y]) not in register["distinct"]:
@@ -439,6 +450,11 @@ def run(data_dir: Path, review_path: Path, write: bool = True) -> dict:
     register = new_register()
     if register_path.exists():
         register.update(json.loads(register_path.read_text(encoding="utf-8")))
+    ask = register["ask"]
+    if not (isinstance(ask, list) and all(
+            isinstance(p, list) and len(p) == 2 and all(isinstance(d, str) for d in p) for p in ask)):
+        raise ValueError('data/donors.json: "ask" must be a list of ID pairs, like '
+                         '[["D0012", "D0034"]]')
     loaded = load_lists(data_dir)
     lists = [(key, data) for key, _, data in loaded]
 
@@ -455,7 +471,8 @@ def run(data_dir: Path, review_path: Path, write: bool = True) -> dict:
                    "merged": dict(sorted(register["merged"].items())),
                    "distinct": register["distinct"],
                    "sameInList": register["sameInList"],
-                   "pins": dict(sorted(register["pins"].items()))}
+                   "pins": dict(sorted(register["pins"].items())),
+                   "ask": register["ask"]}
         register_path.write_text(_dump(ordered), encoding="utf-8")
         for _, path, data in loaded:
             path.write_text(_dump(data), encoding="utf-8")

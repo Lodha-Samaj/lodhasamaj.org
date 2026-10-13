@@ -273,17 +273,18 @@ def check_register(data_dir: Path, list_paths: list[Path]) -> list[str]:
     def resolves(did):
         return did in donors or merged.get(did) in donors
 
-    distinct = reg.get("distinct", [])
-    if not isinstance(distinct, list):
-        errors.append('donors.json: "distinct" must be a list of pairs')
-        distinct = []
-    for pair in distinct:
-        if not isinstance(pair, list):
-            errors.append(f'donors.json: a "distinct" entry must be a list of two IDs, got {pair!r}')
-            continue
-        for did in pair:
-            if not isinstance(did, str) or not resolves(did):
-                errors.append(f'donors.json: "distinct" names {did}, which is not a donor')
+    for key in ("distinct", "ask"):
+        pairs = reg.get(key, [])
+        if not isinstance(pairs, list):
+            errors.append(f'donors.json: "{key}" must be a list of pairs')
+            pairs = []
+        for pair in pairs:
+            if not isinstance(pair, list) or len(pair) != 2:
+                errors.append(f'donors.json: a "{key}" entry must be a list of two IDs, got {pair!r}')
+                continue
+            for did in pair:
+                if not isinstance(did, str) or not resolves(did):
+                    errors.append(f'donors.json: "{key}" names {did}, which is not a donor')
     used: set[str] = set()
     pins = reg.get("pins", {})
     if pins is None:

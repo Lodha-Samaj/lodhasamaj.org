@@ -387,7 +387,8 @@ def test_register_rules(tmp_path):
                       "D0002": {"name": {}, "aliases": ["श्री क"]},
                       "D0004": {"name": {"hi": "y"}, "aliases": []}},
            "merged": {"D0002": "D0004", "D0005": "D0003"},
-           "distinct": [["D0004", "D0009"]], "sameInList": [], "pins": {}}
+           "distinct": [["D0004", "D0009"]], "sameInList": [], "pins": {},
+           "ask": [["D0004", "D0008"]]}
     write(tmp_path, bad, "donors.json")
     errors = check_register(tmp_path, [Path(write(tmp_path, with_ids(["D1"], ["D0002"])))])
     joined = "\n".join(errors)
@@ -397,6 +398,7 @@ def test_register_rules(tmp_path):
     assert "D0002 is merged into D0004 but is still listed as a donor" in joined
     assert "D0005 is merged into D0003, which is not a donor" in joined
     assert "\"distinct\" names D0009" in joined
+    assert "\"ask\" names D0008" in joined
     assert "D0004 (y) is not used by any list entry" in joined
 
 
@@ -437,6 +439,8 @@ ONE = {"D0001": {"name": {"hi": "x"}, "aliases": []}}
     ({"donors": ONE, "merged": {}, "distinct": 5}, with_ids(["D0001"])),
     ({"donors": ONE, "merged": {}, "distinct": None}, with_ids(["D0001"])),
     ({"donors": ONE, "merged": {}, "pins": []}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "ask": 5}, with_ids(["D0001"])),
+    ({"donors": ONE, "merged": {}, "ask": ["D0001"]}, with_ids(["D0001"])),
 ])
 def test_malformed_register_shapes_are_reported_not_raised(tmp_path, reg, data):
     write(tmp_path, reg, "donors.json")
