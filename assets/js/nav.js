@@ -17,10 +17,9 @@ export const CONTACT = {
     en: 'Lodha Colony Dharmshala, Maharana Pratap Chauraha, Mhow Naka, Indore, MP',
   },
   phone: '+91 98263 24370',
-  // No email: the समाज decided the phone number is the only contact route, rather
-  // than publish an address nobody reads. To add one later, set `email` here - the
-  // footer and the संपर्क pages pick it up on their own.
-  email: null,
+  // The समाज's own address, given by them. The footer renders it from here; the
+  // संपर्क pages carry their own row, because that list is static HTML.
+  email: 'lodhasamajindore@gmail.com',
   socials: [
     { label: 'Facebook',  href: 'https://www.facebook.com/profile.php?id=61552495104262' },
     { label: 'Instagram', href: 'https://www.instagram.com/lodha.samaj/' },
