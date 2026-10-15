@@ -16,7 +16,7 @@ export const CONTACT = {
     hi: 'लोधा कॉलोनी धर्मशाला, महाराणा प्रताप चौराहा, महूनाका इंदौर, मध्यप्रदेश',
     en: 'Lodha Colony Dharmshala, Maharana Pratap Chauraha, Mhow Naka, Indore, MP',
   },
-  phone: '+91 98263 24370',
+  phone: '+91 90987 81740',
   // The समाज's own address, given by them. The footer renders it from here; the
   // संपर्क pages carry their own row, because that list is static HTML.
   email: 'lodhasamajindore@gmail.com',
@@ -24,6 +24,5 @@ export const CONTACT = {
     { label: 'Facebook',  href: 'https://www.facebook.com/profile.php?id=61552495104262' },
     { label: 'Instagram', href: 'https://www.instagram.com/lodha.samaj/' },
     { label: 'YouTube',   href: 'https://www.youtube.com/@lodhasamajindore2762' },
-    { label: 'WhatsApp',  href: 'https://wa.me/919826324370' },
   ],
 };

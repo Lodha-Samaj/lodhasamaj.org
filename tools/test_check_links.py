@@ -31,7 +31,7 @@ def test_missing_asset_is_reported_with_its_source_page(tmp_path):
 def test_external_mail_tel_and_anchor_links_are_skipped(tmp_path):
     root = site(tmp_path, {"hi/index.html":
         '<a href="https://x.org/a">a</a><a href="mailto:a@b.org">m</a>'
-        '<a href="tel:+919826324370">t</a><a href="#top">top</a>'})
+        '<a href="tel:+911234567890">t</a><a href="#top">top</a>'})
     assert find_broken(str(root)) == []
 
 

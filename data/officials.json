@@ -1,8 +1,8 @@
 {
   "current": [
-    {"nameHi": "सुनील कोतुल जी", "roleHi": "अध्यक्ष", "roleEn": "President", "phone": "+91 98263 24370", "photo": "/assets/img/officials/sunil-kotul.png"},
-    {"nameHi": "विक्रम जाट जी", "roleHi": "उपाध्यक्ष", "roleEn": "Vice President", "phone": "+91 99939 98200", "photo": "/assets/img/officials/vikram-jat.png"},
-    {"nameHi": "कैलाश जामदार जी", "roleHi": "सचिव", "roleEn": "Secretary", "phone": "+91 97550 19719", "photo": "/assets/img/officials/kailash-jamdar.png"},
+    {"nameHi": "सुनील कोतुल जी", "roleHi": "अध्यक्ष", "roleEn": "President", "photo": "/assets/img/officials/sunil-kotul.png"},
+    {"nameHi": "विक्रम जाट जी", "roleHi": "उपाध्यक्ष", "roleEn": "Vice President", "photo": "/assets/img/officials/vikram-jat.png"},
+    {"nameHi": "कैलाश जामदार जी", "roleHi": "सचिव", "roleEn": "Secretary", "photo": "/assets/img/officials/kailash-jamdar.png"},
     {"nameHi": "श्री प्रताप कोतुल", "roleHi": "कोषाध्यक्ष", "roleEn": "Treasurer"}
   ],
   "former": [
