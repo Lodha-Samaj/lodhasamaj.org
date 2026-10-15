@@ -38,6 +38,9 @@ REVIEW = ROOT / "docs" / "donor-review.json"
 HONORIFICS = {"श्री", "श्रीमती", "जी", "स्व.", "स्वर्गीय", "स्वर्ग", "पंडित"}
 # A श्री after one of these belongs to the same donor ("… बाई के पुत्र श्री गोलू").
 CONNECTORS = {"के", "की", "का", "पुत्र", "पुत्री", "पत्नी"}
+# The mirror image of those: "… जी, पिता श्री X" names a parent to say WHICH
+# donor this is. The parent did not give, so no one gets an ID for them.
+PARENT_WORDS = {"पिता", "पिताजी", "माता", "माताजी"}
 FAMILY_WORDS = {"का", "की", "के", "परिवार", "द्वारा", "ओर", "से"}
 # Spelling variants seen across the lists; used only to SUGGEST a review pair.
 WORD_FOLDS = {"जामदार": "जमदार", "वेंकट": "बंकट"}
@@ -117,6 +120,22 @@ def _second_person_starts(current: list[str], toks: list[str], i: int) -> bool:
             or surname in toks[i + 1:])
 
 
+def drop_parent_clause(name: str) -> str:
+    """"श्री रतन जमदार जी, पिता श्री मोहन जमदार जी" -> "श्री रतन जमदार जी".
+
+    Whoever is named after पिता/माता is there to identify the donor, not to
+    share the gift. Cutting the clause before the name is split keeps the
+    father out of the donor list and keeps the word "पिता" from becoming one.
+    The printed name on the site is untouched - only the IDs come from this.
+    """
+    toks = name.split()
+    for i, tok in enumerate(toks):
+        if tok.strip(",") in PARENT_WORDS:
+            kept = " ".join(toks[:i]).rstrip(" ,")
+            return kept or name          # a name that is only "पिता ..." stays whole
+    return name
+
+
 def split_people(name: str) -> list[dict]:
     """[{"text", "memorial"}] for each person in a printed name who gets an ID.
 
@@ -128,6 +147,7 @@ def split_people(name: str) -> list[dict]:
     name = unicodedata.normalize("NFC", name).strip()
     if ANONYMOUS.match(name):
         return []
+    name = drop_parent_clause(name)
     held: list[str] = []
 
     def hold(m):

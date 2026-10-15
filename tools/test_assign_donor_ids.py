@@ -476,3 +476,21 @@ def test_ids_no_list_uses_any_more_are_named_with_what_to_do(tmp_path, monkeypat
     assert ("no longer used by any list: D0001 (श्री प्यारे वर्मा) — if a spelling was corrected, "
             "add [old, new] to \"ask\" in data/donors.json, or merge them") in capsys.readouterr().out
     assert a.run(data, review)["unused"] == [("D0001", "श्री प्यारे वर्मा")]
+
+
+def test_a_father_named_to_identify_the_donor_is_not_a_donor():
+    """"श्री रतन जमदार जी, पिता श्री मोहन जमदार जी" is one giver: Ratan, son of
+    Mohan. The father is named to say which Ratan, and must not be credited
+    with the gift - nor leave a donor called "पिता" behind."""
+    assert texts("श्री रतन जमदार जी, पिता श्री मोहन जमदार जी") == ["श्री रतन जमदार जी"]
+    assert texts("श्री नितिन जमदार जी, पिता स्वर्गीय श्री श्याम जमदार जी") == ["श्री नितिन जमदार जी"]
+    # Both sons still count when two of them give together.
+    assert texts("श्री मोहन जाट जी एवं श्री नरेंद्र जाट जी, पिता श्री राजू जाट जी") == [
+        "श्री मोहन जाट जी", "श्री नरेंद्र जाट जी"]
+    # माता reads the same way.
+    assert texts("श्री क ख जी, माता श्रीमती ग घ जी") == ["श्री क ख जी"]
+
+
+def test_पुत्र_still_attaches_the_son_to_the_parent_who_gave():
+    """The opposite wording is unchanged: there the parent is the giver."""
+    assert texts("स्व. श्री भारत जी मंजे के पुत्र श्री गोलू") == ["स्व. श्री भारत जी मंजे के पुत्र श्री गोलू"]
