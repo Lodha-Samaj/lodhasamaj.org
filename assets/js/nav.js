@@ -24,5 +24,6 @@ export const CONTACT = {
     { label: 'Facebook',  href: 'https://www.facebook.com/profile.php?id=61552495104262' },
     { label: 'Instagram', href: 'https://www.instagram.com/lodha.samaj/' },
     { label: 'YouTube',   href: 'https://www.youtube.com/@lodhasamajindore2762' },
+    { label: 'WhatsApp',  href: 'https://wa.me/919098781740' },
   ],
 };
