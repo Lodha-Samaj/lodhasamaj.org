@@ -479,8 +479,8 @@ main:has(.prose) .wrap { max-width: 880px; }
 .donor-aliases { margin: 6px 0 0; color: var(--mute); font-size: 0.9rem; }
 .totals-note { margin: -8px 0 20px; color: var(--mute); font-size: 0.8rem; }
 .history-group { margin-top: 28px; }
-.history-group h2 { margin: 0 0 8px; font-size: 1.25rem; }
-.history-group h2 a { color: var(--ind); text-decoration-color: var(--mar); }
+.history-group h2, .history-group h3 { margin: 0 0 8px; font-size: 1.25rem; }
+.history-group :is(h2, h3) a { color: var(--ind); text-decoration-color: var(--mar); }
 .gift-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .gift { padding: 12px 0; border-bottom: 1px solid var(--line); }
 .gift p { margin: 0; }
@@ -491,3 +491,37 @@ main:has(.prose) .wrap { max-width: 880px; }
 
 .dm-history { margin: 10px 0 0; }
 .dm-history a { display: block; padding: 6px 0; color: var(--red); font-weight: 600; }
+
+/* The whole history, shown inside the pop-up rather than on its own page. It
+   reuses the /daata/ page's blocks (.totals, .history-group, .gift); only the
+   frame around them differs - it scrolls, and it reads left-aligned. */
+.dm-history-view {
+  margin-top: 28px;
+  max-height: min(68vh, 540px);
+  overflow-y: auto; overscroll-behavior: contain;
+  text-align: start;
+}
+.dm-history-view .section-head { margin-bottom: 10px; }
+.dm-history-view .section-head h2 { font-size: 1.45rem; }
+.dm-history-view .section-head h2:focus-visible { outline: 3px solid var(--mar); outline-offset: 4px; }
+.dm-history-view .subtitle { margin: 8px 0 0; }
+.dm-history-view .totals { margin: 14px 0 16px; }
+.dm-history-view .totals-note { margin: -10px 0 0; }
+.dm-history-view .history-group { margin-top: 22px; }
+.dm-history-view .history-group h3 { font-size: 1.1rem; }
+.dm-history-view .gift:last-child { border-bottom: 0; }
+.dm-history-view .load-error { text-align: center; }
+/* Pinned to the foot of the scroll box while there is more to read. */
+.dm-history-view.is-scrollable::after {
+  content: ""; display: block; position: sticky; bottom: 0;
+  height: 36px; margin-top: -36px;
+  background: linear-gradient(to top, var(--warm) 30%, transparent);
+  pointer-events: none;
+}
+.dm-loading { padding: 40px 0; color: var(--mute); text-align: center; }
+.dm-back {
+  position: absolute; top: 8px; left: 8px;
+  min-height: 44px; padding: 0 12px;
+  border: 1px solid var(--line); border-radius: var(--r);
+  background: #fff; color: var(--ink); font-size: 0.85rem; cursor: pointer;
+}

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { nextIndex } from './donor-modal.js';
+import { nextIndex, isPlainClick } from './donor-modal.js';
 
 test('nextIndex advances and wraps forward', () => {
   assert.equal(nextIndex(0, 1, 44), 1);
@@ -32,4 +32,16 @@ test('nextIndex with delta 0 (the refresh path) keeps a valid index and clamps a
 test('nextIndex treats current === length as stale', () => {
   assert.equal(nextIndex(3, 1, 3), 0);
   assert.equal(nextIndex(3, -1, 3), 2);
+});
+
+test('a plain left click is the pop-up\'s to handle', () => {
+  assert.equal(isPlainClick({ button: 0 }), true);
+});
+
+test('a modified or middle click belongs to the browser: it must still open the history page', () => {
+  assert.equal(isPlainClick({ button: 1 }), false);                 // middle click, new tab
+  assert.equal(isPlainClick({ button: 0, ctrlKey: true }), false);
+  assert.equal(isPlainClick({ button: 0, metaKey: true }), false);  // ⌘-click on a Mac
+  assert.equal(isPlainClick({ button: 0, shiftKey: true }), false); // new window
+  assert.equal(isPlainClick({ button: 0, altKey: true }), false);   // download
 });

@@ -30,6 +30,14 @@ export const listDataUrl = (list) =>
 export const listPageUrl = (list, lang) => `/${lang}/daan/${list.key}/`;
 export const historyUrl = (id, lang) => `/${lang}/daata/?id=${id}`;
 
+/** "/hi/daata/?id=D0042" -> "D0042". null for anything that is not a Donor ID. */
+export function idFromHistoryHref(href) {
+  const raw = String(href ?? '').match(/[?&]id=([^&#]*)/)?.[1];
+  if (raw === undefined) return null;
+  const id = normalizeIdParam(decodeURIComponent(raw));
+  return DONOR_ID.test(id) ? id : null;
+}
+
 /** Everything one donor gave. `lists`: [{key, kind, year?, data}] in display order. */
 export function gatherHistory(register, lists, id) {
   const canonical = resolveId(register, id);
@@ -71,9 +79,10 @@ export function historyLinks(entry, register, lang) {
   const raw = (entry.donorIds || []).filter((x) => DONOR_ID.test(x));
   const ids = [...new Set(raw.map((x) => resolveId(register, x) || (register ? null : x)).filter(Boolean))];
   if (ids.length === 1) {
-    return [{ href: historyUrl(ids[0], lang), text: lang === 'hi' ? 'पूरा दान इतिहास →' : 'Full donation history →' }];
+    return [{ id: ids[0], href: historyUrl(ids[0], lang), text: lang === 'hi' ? 'पूरा दान इतिहास →' : 'Full donation history →' }];
   }
   return ids.map((id) => ({
+    id,
     href: historyUrl(id, lang),
     text: lang === 'hi' ? `${nameIn(register, id, lang)} का इतिहास →` : `History of ${nameIn(register, id, lang)} →`,
   }));

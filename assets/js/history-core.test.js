@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   normalizeIdParam, resolveId, listOrder, listDataUrl, listPageUrl, gatherHistory,
-  partnerNote, historyLinks, historyUrl,
+  partnerNote, historyLinks, historyUrl, idFromHistoryHref,
 } from './history-core.js';
 
 const register = {
@@ -63,7 +63,8 @@ test('partnerNote reads naturally in both languages', () => {
 
 test('historyLinks: one generic link, one per person when joint, none when anonymous', () => {
   const [single, joint] = [lists[1].data.donors[0], lists[0].data.donors[0]];
-  assert.deepEqual(historyLinks(single, register, 'hi'), [{ href: '/hi/daata/?id=D0001', text: 'पूरा दान इतिहास →' }]);
+  assert.deepEqual(historyLinks(single, register, 'hi'),
+    [{ id: 'D0001', href: '/hi/daata/?id=D0001', text: 'पूरा दान इतिहास →' }]);
   assert.deepEqual(historyLinks(joint, register, 'en').map((l) => l.text),
     ['History of श्री संजू जाट →', 'History of श्री कमल जाट →']);
   assert.deepEqual(historyLinks(joint, register, 'hi').map((l) => l.text),
@@ -73,4 +74,19 @@ test('historyLinks: one generic link, one per person when joint, none when anony
   assert.deepEqual(historyLinks(joint, null, 'hi').map((l) => l.href),
     ['/hi/daata/?id=D0001', '/hi/daata/?id=D0002']);
   assert.equal(historyUrl('D0002', 'en'), '/en/daata/?id=D0002');
+});
+
+test('idFromHistoryHref reads the ID back out of a history link, and refuses anything else', () => {
+  assert.equal(idFromHistoryHref('/hi/daata/?id=D0042'), 'D0042');
+  assert.equal(idFromHistoryHref('https://lodhasamaj.org/en/daata/?id=d0042'), 'D0042');
+  assert.equal(idFromHistoryHref('/hi/daan/2025/'), null);
+  assert.equal(idFromHistoryHref('/hi/daata/?id=nonsense'), null);
+  assert.equal(idFromHistoryHref(undefined), null);
+});
+
+test('historyLinks carries the canonical ID with each link, so the pop-up need not parse the href', () => {
+  const joint = { donorIds: ['D0001', 'D0002'] };
+  assert.deepEqual(historyLinks(joint, register, 'hi').map((l) => l.id), ['D0001', 'D0002']);
+  // A merged ID resolves to the kept one.
+  assert.deepEqual(historyLinks({ donorIds: ['D0009'] }, register, 'hi').map((l) => l.id), ['D0001']);
 });
