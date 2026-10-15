@@ -292,3 +292,23 @@ test('listSource: a year file, a named list, and nothing else', () => {
   assert.equal(listSource({ year: '20x4' }), null);
   assert.equal(listSource({}), null);
 });
+
+// The कावड़ यात्रा list records arrangements, not only goods: someone paid for
+// a dharmshala or the meals at one stop of the यात्रा.
+test('the यात्रा arrangements have labels in both languages', () => {
+  assert.equal(typeLabel('lodging', 'hi'), 'धर्मशाला व्यवस्था');
+  assert.equal(typeLabel('lodging', 'en'), 'Lodging arranged');
+  assert.equal(typeLabel('meals', 'hi'), 'भोजन व्यवस्था');
+  assert.equal(typeLabel('vehicle', 'hi'), 'वाहन व्यवस्था');
+  assert.equal(typeLabel('vegetables', 'hi'), 'हरी सब्जियाँ');
+  assert.equal(typeLabel('falahar', 'hi'), 'फलाहार');
+  assert.equal(typeLabel('dal', 'hi'), 'दाल');
+  for (const code of ['meals', 'vehicle', 'vegetables', 'falahar', 'dal']) {
+    assert.ok(typeLabel(code, 'en') !== code, `${code} has no English label`);
+  }
+});
+
+test('an arrangement with no quantity reads as the label, with its place in brackets', () => {
+  const donor = { items: [{ type: 'lodging', note: 'ओंकारेश्वर में' }] };
+  assert.equal(formatItems(donor, 'hi'), 'धर्मशाला व्यवस्था (ओंकारेश्वर में)');
+});

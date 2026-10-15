@@ -15,6 +15,14 @@ export const TYPE_LABELS = {
   besan:   { hi: 'बेसन',            en: 'Besan' },
   rava:    { hi: 'रवा',             en: 'Rava (semolina)' },
   rice:    { hi: 'चावल',            en: 'Rice' },
+  dal:     { hi: 'दाल',             en: 'Dal' },
+  vegetables: { hi: 'हरी सब्जियाँ', en: 'Vegetables' },
+  falahar: { hi: 'फलाहार',          en: 'Falahar (fruit fare)' },
+  // कावड़ यात्रा: someone paid for a whole arrangement at one stop rather than
+  // handing over goods. No quantity - the `note` says where.
+  lodging: { hi: 'धर्मशाला व्यवस्था', en: 'Lodging arranged' },
+  meals:   { hi: 'भोजन व्यवस्था',   en: 'Meals arranged' },
+  vehicle: { hi: 'वाहन व्यवस्था',   en: 'Vehicle arranged' },
   // श्री हनुमान मंदिर निर्माण: building materials, not भंडारा supplies.
   cement:  { hi: 'सीमेंट',          en: 'Cement' },
   brick:   { hi: 'ईंट',             en: 'Bricks' },

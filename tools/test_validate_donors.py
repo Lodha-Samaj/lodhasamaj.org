@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 import pytest
 from validate_donors import validate_file, main, TYPES, UNITS
@@ -77,9 +78,24 @@ def test_item_without_qty_is_allowed(tmp_path):
 def test_vocabularies_match_the_spec():
     assert TYPES == {"sugar", "flour", "oil", "salt", "ghee", "mawa", "cash",
                      "water", "gas", "coconut", "pattal", "besan", "rava",
-                     "rice", "cement", "brick", "rebar", "tiles", "fan",
+                     "rice", "dal", "vegetables", "falahar",
+                     "lodging", "meals", "vehicle",
+                     "cement", "brick", "rebar", "tiles", "fan",
                      "other"}
     assert UNITS == {"kg", "tin", "inr", "jar", "cylinder", "piece", "bag", "count"}
+
+
+def test_the_two_vocabularies_agree():
+    """The site renders from TYPE_LABELS in donors-core.js; this file validates
+    against TYPES. A type added to one and not the other either fails to
+    validate or renders as a bare code, so they must stay in step."""
+    root = Path(__file__).resolve().parent.parent
+    js = (root / "assets" / "js" / "donors-core.js").read_text(encoding="utf-8")
+    block = js.split("export const TYPE_LABELS = {", 1)[1].split("\n};", 1)[0]
+    labelled = set(re.findall(r"^\s*(\w+)\s*:\s*\{", block, re.MULTILINE))
+    assert labelled == TYPES, (
+        f"only in donors-core.js: {sorted(labelled - TYPES)}; "
+        f"only in validate_donors.py: {sorted(TYPES - labelled)}")
 
 
 def test_non_object_donor_is_reported_not_raised(tmp_path):

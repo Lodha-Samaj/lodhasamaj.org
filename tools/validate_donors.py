@@ -14,6 +14,9 @@ from pathlib import Path
 
 TYPES = {"sugar", "flour", "oil", "salt", "ghee", "mawa", "cash",
          "water", "gas", "coconut", "pattal", "besan", "rava", "rice",
+         "dal", "vegetables", "falahar",
+         # कावड़ यात्रा: an arrangement paid for at one stop, not goods.
+         "lodging", "meals", "vehicle",
          "cement", "brick", "rebar", "tiles", "fan", "other"}
 UNITS = {"kg", "tin", "inr", "jar", "cylinder", "piece", "bag", "count"}
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
