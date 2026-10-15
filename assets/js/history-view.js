@@ -6,10 +6,14 @@ import { formatItems, formatTotal, typeLabel, displayName } from './donors-core.
 import { listPageUrl, partnerNote, historyUrl } from './history-core.js';
 
 const LABELS = {
-  hi: { idLabel: 'दानदाता क्रमांक', other: 'सूचियों में अन्य नाम', gifts: 'दान', lists: 'सूचियाँ',
-        jointTotals: 'संयुक्त दान सहित', yearTitle: (y) => `${y} दानदाता सूची`, title: 'दान इतिहास' },
-  en: { idLabel: 'Donor ID', other: 'Also listed as', gifts: 'gifts', lists: 'lists',
-        jointTotals: 'including joint gifts', yearTitle: (y) => `${y} Donor List`, title: 'Donation history' },
+  hi: { idLabel: 'दानदाता क्रमांक', other: 'सूचियों में अन्य नाम', asListed: 'इस सूची में',
+        jointTotals: 'संयुक्त दान सहित', yearTitle: (y) => `${y} दानदाता सूची`, title: 'दान इतिहास',
+        // दान counts alike either way; सूची does not.
+        count: (gifts, lists) => `${gifts} दान · ${lists} ${lists === 1 ? 'सूची' : 'सूचियाँ'}` },
+  en: { idLabel: 'Donor ID', other: 'Also listed as', asListed: 'As listed',
+        jointTotals: 'including joint gifts', yearTitle: (y) => `${y} Donor List`, title: 'Donation history',
+        count: (gifts, lists) =>
+          `${gifts} ${gifts === 1 ? 'gift' : 'gifts'} · ${lists} ${lists === 1 ? 'list' : 'lists'}` },
 };
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
@@ -23,7 +27,10 @@ function groupTitle(list, lang) {
   return list.kind === 'year' ? LABELS[lang].yearTitle(list.year) : pick(list.data?.title, lang) || list.key;
 }
 
-function giftHtml({ entry, partners }, lang) {
+// `heading` is the name already shown at the top. A gift printed under exactly
+// that name says nothing new, so it goes unnamed; any other spelling is named,
+// because it is how that list printed this donor.
+function giftHtml({ entry, partners }, lang, heading) {
   const printed = displayName(entry, lang);
   const links = partners.map((p) =>
     `<a href="${historyUrl(p.id, lang)}">${nameSpan(pick(p.name, lang), p.name.en, lang)}</a>`);
@@ -32,9 +39,12 @@ function giftHtml({ entry, partners }, lang) {
     ? `<p class="gift-joint">${esc(partnerNote(links.map((_, i) => `@@${i}@@`), lang))
         .replace(/@@(\d+)@@/g, (_, i) => links[i])}</p>`
     : '';
+  const named = printed && printed !== heading
+    ? `<p class="gift-name">${esc(LABELS[lang].asListed)}: ${nameSpan(printed, entry.name?.en, lang)}</p>`
+    : '';
   return `<li class="gift">
       <p class="gift-items">${esc(formatItems(entry, lang))}</p>
-      <p class="gift-name">${nameSpan(printed, entry.name?.en, lang)}</p>
+      ${named}
       ${note}
     </li>`;
 }
@@ -55,12 +65,12 @@ export function historyHtml(h, lang, { heading = 'h1', headingId = '' } = {}) {
     <div class="section-head"><${heading}${attrs}>${nameSpan(pick(h.name, lang), h.name.en, lang)}</${heading}></div>
     <p class="donor-id">${esc(T.idLabel)} <b>${esc(h.id)}</b></p>
     ${others.length ? `<p class="donor-aliases">${esc(T.other)}: ${others.map((a) => nameSpan(a, false, lang)).join(' · ')}</p>` : ''}
-    <p class="subtitle">${h.count} ${esc(T.gifts)} · ${h.listCount} ${esc(T.lists)}</p>
+    <p class="subtitle">${esc(T.count(h.count, h.listCount))}</p>
     ${totalsRow}
     ${h.groups.map((g) => `
       <section class="history-group">
         <${sub}><a href="${listPageUrl(g.list, lang)}">${esc(groupTitle(g.list, lang))}</a></${sub}>
-        <ul class="gift-list">${g.entries.map((e) => giftHtml(e, lang)).join('')}</ul>
+        <ul class="gift-list">${g.entries.map((e) => giftHtml(e, lang, pick(h.name, lang))).join('')}</ul>
       </section>`).join('')}`;
 }
 

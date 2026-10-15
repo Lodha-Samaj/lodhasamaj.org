@@ -84,6 +84,9 @@ export function historyLinks(entry, register, lang) {
   return ids.map((id) => ({
     id,
     href: historyUrl(id, lang),
-    text: lang === 'hi' ? `${nameIn(register, id, lang)} का इतिहास →` : `History of ${nameIn(register, id, lang)} →`,
+    // "दान इतिहास", never "का इतिहास": what is listed is the giving, not the person.
+    text: lang === 'hi'
+      ? `${nameIn(register, id, lang)} का दान इतिहास →`
+      : `Donation history of ${nameIn(register, id, lang)} →`,
   }));
 }

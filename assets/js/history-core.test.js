@@ -65,10 +65,11 @@ test('historyLinks: one generic link, one per person when joint, none when anony
   const [single, joint] = [lists[1].data.donors[0], lists[0].data.donors[0]];
   assert.deepEqual(historyLinks(single, register, 'hi'),
     [{ id: 'D0001', href: '/hi/daata/?id=D0001', text: 'पूरा दान इतिहास →' }]);
+  // The history belongs to the donation, not to the person: "दान इतिहास".
   assert.deepEqual(historyLinks(joint, register, 'en').map((l) => l.text),
-    ['History of श्री संजू जाट →', 'History of श्री कमल जाट →']);
+    ['Donation history of श्री संजू जाट →', 'Donation history of श्री कमल जाट →']);
   assert.deepEqual(historyLinks(joint, register, 'hi').map((l) => l.text),
-    ['श्री संजू जाट का इतिहास →', 'श्री कमल जाट का इतिहास →']);
+    ['श्री संजू जाट का दान इतिहास →', 'श्री कमल जाट का दान इतिहास →']);
   assert.deepEqual(historyLinks({ donorIds: [] }, register, 'hi'), []);
   // Register not loaded yet: still link, by ID.
   assert.deepEqual(historyLinks(joint, null, 'hi').map((l) => l.href),
