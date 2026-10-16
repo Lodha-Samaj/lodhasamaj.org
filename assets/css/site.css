@@ -349,7 +349,7 @@ main:focus { outline: none; }
 .stat b { font-family: var(--head); font-weight: 400; font-size: clamp(1.9rem, 1.3rem + 1.8vw, 2.6rem);
           line-height: 1; color: var(--red-d); font-variant-numeric: tabular-nums; }
 .stat span { color: var(--mute); font-size: 0.9rem; }
-.stats-note { grid-column: 1 / -1; margin: 10px 0 0; max-width: 62ch;
+.stats-note { grid-column: 1 / -1; margin: 10px 0 0;
               color: var(--mute); font-size: 0.92rem; }
 @media (max-width: 760px) {
   .stats .wrap { grid-template-columns: repeat(2, auto); gap: 18px 32px; }
@@ -373,7 +373,6 @@ main:focus { outline: none; }
             background: var(--ind); color: #efe6d2; }
 .heritage img { width: 100%; height: 100%; object-fit: cover; }
 .heritage .tx { padding: 40px 32px; align-self: center; }
-.heritage p { max-width: 62ch; }
 .heritage h2 { margin: 0 0 14px; color: #f3e9cd; font-size: 1.85rem; line-height: 1.2; }
 .heritage p { color: #cfc6e0; }
 .heritage a { display: inline-block; padding: 7px 15px; border: 1.5px solid var(--gold);
@@ -464,10 +463,9 @@ main:focus { outline: none; }
    this per section instead would make the headings step in and out down the page.
    Browsers without :has() keep the old full-width behaviour, which is merely looser. */
 /* Every page keeps the site's own width, so a heading starts on the same
-   left edge as the mark and the menu above it. Narrowing was only ever about
-   the reading measure, and that belongs on the text: .prose holds its 68ch
-   whatever the frame around it is. */
-.prose { max-width: 68ch; }
+   left edge as the mark and the menu above it, and the words beneath it run
+   the whole way to that same right edge: a paragraph ends where its section
+   ends, not short of it. */
 .prose p { margin: 0 0 1em; }
 /* Now that the page keeps the site's full width, the portrait beside the
    text can be seen rather than glanced at - and it stays in view while the
@@ -753,7 +751,6 @@ body.lb-open { overflow: hidden; }
 .give-part { padding: 22px 24px 8px; border: 1px solid var(--rule); border-radius: var(--r);
              border-top: 4px solid var(--accent, var(--rule)); background: #fff; }
 .give-part + .give-part { margin-top: 26px; }
-.give-part > p { max-width: 62ch; }
 .give-part .section-head h2 { color: var(--accent, var(--ind)); }
 .give-part .year-list { max-width: none; }
 .give-temple { --accent: var(--ind); }
@@ -803,13 +800,12 @@ body.lb-open { overflow: hidden; }
 .service-card p { margin: 0; color: var(--mute); font-size: 0.95rem; align-self: center; }
 .service-card:hover h3, .service-card:focus-visible h3 { color: var(--red-d); }
 
-/* A loose paragraph under a section heading still needs a measure. */
-.wrap.section > p { max-width: 68ch; }
 /* The first paragraph of a page says what the page is for; it is read before
-   anything else, so it is set a size up and to a shorter measure. */
+   anything else, so it is set a size up. It keeps the width of the page like
+   every other paragraph. */
 .wrap.section > .section-head:first-child + p,
 .wrap.section > .section-head:first-child + .prose > p:first-child {
-  max-width: 56ch; font-size: 1.14rem; line-height: 1.66; color: var(--ink);
+  font-size: 1.14rem; line-height: 1.66; color: var(--ink);
 }
 
 /* Mobile stays last in the file, as the rest of this stylesheet does. */
