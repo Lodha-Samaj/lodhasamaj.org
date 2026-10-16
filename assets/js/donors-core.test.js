@@ -350,23 +350,24 @@ test('groupByType: a gift with no type recorded falls under अन्य, not it
   assert.deepEqual(groups.map((g) => [g.type, g.label, g.donors.length]), [['other', 'अन्य', 2]]);
 });
 
-// Inside a type block the heading already says what was given, so the row
-// repeating it ("धर्मशाला व्यवस्था (ओंकारेश्वर में)" under धर्मशाला व्यवस्था) is noise.
-test('formatItems can leave out the type the block heading already names', () => {
-  assert.equal(formatItems(d('x', [{ type: 'lodging', note: 'ओंकारेश्वर में' }]), 'hi', 'lodging'),
-    'ओंकारेश्वर में');
-  assert.equal(formatItems(d('x', [{ type: 'cash', qty: 2100, unit: 'inr' }]), 'hi', 'cash'), '₹2,100');
-  assert.equal(formatItems(d('x', [{ type: 'flour', qty: 51, unit: 'kg' }]), 'hi', 'flour'), '51 किलो');
-  assert.equal(formatItems(d('x', [{ type: 'lodging', note: 'Omkareshwar' }]), 'en', 'lodging'), 'Omkareshwar');
-  // A row with two gifts keeps both names: "101 किलो + ₹1,100 नगद" would leave
-  // the first quantity counting nothing.
-  assert.equal(formatItems(d('x', [{ type: 'flour', qty: 101, unit: 'kg' },
-                                   { type: 'cash', qty: 1100, unit: 'inr' }]), 'hi', 'flour'),
-    '101 किलो आटा + ₹1,100 नगद');
-  // Without the argument nothing changes.
+// Every row names what was given, even under a type block that says the same:
+// a column of bare quantities ("200 किलो", "51 किलो") makes the reader look up
+// to the heading to learn what they are counting.
+test('formatItems always names the type, block heading or not', () => {
+  assert.equal(formatItems(d('x', [{ type: 'lodging', note: 'ओंकारेश्वर में' }]), 'hi'),
+    'धर्मशाला व्यवस्था (ओंकारेश्वर में)');
   assert.equal(formatItems(d('x', [{ type: 'cash', qty: 2100, unit: 'inr' }]), 'hi'), '₹2,100 नगद');
+  assert.equal(formatItems(d('x', [{ type: 'flour', qty: 51, unit: 'kg' }]), 'hi'), '51 किलो आटा');
+  assert.equal(formatItems(d('x', [{ type: 'lodging', note: 'Omkareshwar' }]), 'en'),
+    'Lodging arranged (Omkareshwar)');
+  assert.equal(formatItems(d('x', [{ type: 'flour', qty: 101, unit: 'kg' },
+                                   { type: 'cash', qty: 1100, unit: 'inr' }]), 'hi'),
+    '101 किलो आटा + ₹1,100 नगद');
+  // A third argument is no longer read, so no row can be stripped by accident.
+  assert.equal(formatItems(d('x', [{ type: 'flour', qty: 51, unit: 'kg' }]), 'hi', 'flour'),
+    '51 किलो आटा');
 });
 
-test('formatItems never empties a row: a type with no quantity or note keeps its name', () => {
-  assert.equal(formatItems(d('x', [{ type: 'lodging' }]), 'hi', 'lodging'), 'धर्मशाला व्यवस्था');
+test('a type with no quantity and no note still shows its name', () => {
+  assert.equal(formatItems(d('x', [{ type: 'lodging' }]), 'hi'), 'धर्मशाला व्यवस्था');
 });

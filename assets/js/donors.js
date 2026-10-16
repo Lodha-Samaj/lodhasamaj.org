@@ -49,18 +49,18 @@ function totalsHtml(donors) {
   ).join('')}</div>`;
 }
 
-function cardHtml(donor, index, blockType) {
+function cardHtml(donor, index) {
   // No type tag on the row: formatItems already names every type it would list
-  // ("501 किलो शक्कर", "101 किलो आटा + ₹1,100 नगद"). Verified against all 82
-  // donors in both languages. The type filter reads the donor data, not the DOM.
-  // Inside a type block the heading says it instead, so the row drops that one.
+  // ("501 किलो शक्कर", "101 किलो आटा + ₹1,100 नगद"), under a type heading too -
+  // the heading groups the rows, the row still says what it gave. The type
+  // filter reads the donor data, not the DOM.
   const photo = donor.photo
     ? `<img class="avatar" src="${esc(donor.photo)}" alt="" width="44" height="44">`
     : `<span class="avatar avatar-initial" aria-hidden="true">${esc(initialOf(donor))}</span>`;
   return `<article class="donor-card${donor.memoriam ? ' memoriam' : ''}">
     ${photo}
     <h3>${nameHtml(donor)}</h3>
-    <p>${esc(formatItems(donor, lang, blockType))}</p>
+    <p>${esc(formatItems(donor, lang))}</p>
     <button class="donor-open" data-index="${index}"
             aria-label="${esc(displayName(donor, lang))}"></button>
   </article>`;
@@ -126,7 +126,7 @@ function render(data) {
       let i = 0;
       grid.innerHTML = blocks.map((block) => `
         <h2 class="roll-head">${esc(block.label)}<span>${block.donors.length}</span></h2>
-        <div class="donor-roll">${block.donors.map((donor) => cardHtml(donor, i++, block.type)).join('')}</div>`
+        <div class="donor-roll">${block.donors.map((donor) => cardHtml(donor, i++)).join('')}</div>`
       ).join('');
     } else {
       visible = shown;

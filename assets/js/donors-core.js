@@ -233,10 +233,8 @@ export function sortDonors(donors, by, lang) {
   return copy;
 }
 
-function formatOne(item, lang, omitType) {
-  // Under a type block the heading names the type; repeating it in every row
-  // only crowds the line. Any other type in the same row still names itself.
-  const label = item.type === omitType ? '' : typeLabel(item.type, lang);
+function formatOne(item, lang) {
+  const label = typeLabel(item.type, lang);
   const unit = unitLabel(item.unit, lang, item.qty);
   let text;
   if (item.qty === undefined || item.qty === null) {
@@ -251,19 +249,13 @@ function formatOne(item, lang, omitType) {
   }
   const body = text.trim();
   if (!item.note) return body;
-  // With the type left out there is nothing for the note to bracket.
   return body ? `${body} (${item.note})` : item.note;
 }
 
-export function formatItems(donor, lang, omitType) {
-  const items = donor.items || [];
-  // Only a row with one gift can drop its name: in "51 किलो + 51 किलो आटा" the
-  // first quantity would be left hanging with no idea what it counted.
-  const omit = items.length === 1 ? omitType : undefined;
-  const text = items.map((item) => formatOne(item, lang, omit)).join(' + ');
-  // A type with neither quantity nor note has nothing left once its name goes:
-  // keep the name rather than leave the row blank.
-  return text.replace(/\s*\+\s*/g, '').length ? text : formatItems(donor, lang);
+export function formatItems(donor, lang) {
+  // Every gift names what it was, in the row as in the pop-up: a column of bare
+  // quantities under a type heading leaves the reader counting nothing.
+  return (donor.items || []).map((item) => formatOne(item, lang)).join(' + ');
 }
 
 /** First letter, for a typographic avatar. The 2025 page used one stock
