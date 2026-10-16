@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Donate — Lodha Samaj Indore</title>
-  <meta name="description" content="How to contribute to the Navratri bhandara of Lodha Samaj Indore, and the list of donors from past years.">
+  <meta name="description" content="How to support Lodha Samaj Indore — donor lists for the Shri Hanuman temple construction, the Kavad Yatra and the Navdurga Mahotsav.">
   <!-- These URLs are absolute because link-preview bots and Google ignore
        relative ones. tools/set_domain.py wrote them; re-run it with --force
        if the domain ever changes, so no page is left on the old host. -->
@@ -14,7 +14,7 @@
   <link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/">
   <link rel="icon" href="/assets/img/logo.png">
   <meta property="og:title" content="Donate — Lodha Samaj Indore">
-  <meta property="og:description" content="How to contribute to the Navratri bhandara of Lodha Samaj Indore, and the list of donors from past years.">
+  <meta property="og:description" content="How to support Lodha Samaj Indore — donor lists for the Shri Hanuman temple construction, the Kavad Yatra and the Navdurga Mahotsav.">
   <meta property="og:image" content="https://lodhasamaj.org/assets/img/logo-social.png">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://lodhasamaj.org/en/daan/">
@@ -43,17 +43,10 @@
     <div class="wrap section">
       <div class="section-head"><h1>Donate</h1></div>
       <div class="prose">
-        <p>Every year during Navratri, Lodha Samaj Indore holds the Vishal Bhandara (a large community meal) and the Nagar Kanya Pujan. The event is possible only with the support of the community's families.</p>
-        <p>Support for the bhandara can be given as sugar, flour, oil, salt, ghee, mawa or cash. To contribute, call us or visit the dharmshala.</p>
+        <p>Everything Lodha Samaj Indore does — the temple construction, the Kavad Yatra and the Navdurga Mahotsav — is possible only with the support of the community's families. To contribute, call us or visit the dharmshala.</p>
         <p><strong>Phone:</strong> <a href="tel:+919098781740">+91 90987 81740</a><br>
            <strong>Address:</strong> Lodha Colony Dharmshala, Maharana Pratap Chauraha, Mhow Naka, Indore, Madhya Pradesh</p>
       </div>
-    </div>
-    <div class="wrap section">
-      <div class="section-head"><h2>Shri Narmadeshwar Mahadev Kavad Yatra 2026</h2></div>
-      <p>The Kavad Yatra of the month of Sawan was held from 12 to 17 August 2026.
-         <a href="/en/daan/kavad-yatra-2026/">See the full list</a> of everyone who arranged
-         lodging, meals, transport and the rest.</p>
     </div>
     <div class="wrap section">
       <div class="section-head"><h2>Shri Hanuman Temple Construction</h2></div>
@@ -61,7 +54,17 @@
          <a href="/en/daan/hanuman-mandir/">See the full list</a> of those who have given money and building materials.</p>
     </div>
     <div class="wrap section">
-      <div class="section-head"><h2>Donor List — All Years</h2></div>
+      <div class="section-head"><h2>Shri Narmadeshwar Mahadev Kavad Yatra</h2></div>
+      <p>The Kavad Yatra is taken out every year in the month of Sawan. Year by year, the devotees who
+         arranged lodging, meals, transport and the rest:</p>
+      <ul class="year-list" id="kavad-years"></ul>
+      <noscript><p>JavaScript is required to see the list. See the <a href="/en/daan/kavad-yatra-2026/">2026 list</a> here.</p></noscript>
+    </div>
+    <div class="wrap section">
+      <div class="section-head"><h2>Navdurga Mahotsav, Nagar Kanya Bhoj and Vishal Bhandara</h2></div>
+      <p>Every year during Navratri, Lodha Samaj Indore holds the Vishal Bhandara (a large community meal)
+         and the Nagar Kanya Pujan. Support can be given as sugar, flour, oil, salt, ghee, mawa or cash.
+         The donors, year by year:</p>
       <ul class="year-list" id="archive"></ul>
       <noscript><p>JavaScript is required to see the list. See the <a href="/en/daan/2025/">2025</a> and <a href="/en/daan/2024/">2024</a> lists here.</p></noscript>
     </div>
@@ -71,26 +74,42 @@
   <script type="module">
     const lang = 'en';
     const archive = document.getElementById('archive');
+    const kavad = document.getElementById('kavad-years');
+    /** One linked <li> — the only shape either year list needs. */
+    const item = (href, text) => {
+      const li = document.createElement('li');
+      li.className = 'year-item';
+      const a = document.createElement('a');
+      a.setAttribute('href', href);
+      a.textContent = text;
+      li.append(a);
+      return li;
+    };
     try {
       const response = await fetch('/data/donors-index.json', { cache: 'no-cache' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const { years } = await response.json();
+      const { years, lists = [] } = await response.json();
       // Hand-edited file: keep only integer years, so nothing needs escaping.
       const valid = years.map(Number).filter(Number.isInteger).sort((a, b) => b - a);
       for (const y of valid) {
         // A list of years, not a donor row: the link text already carries the
         // year, so the separate badge only said it twice.
-        const li = document.createElement('li');
-        li.className = 'year-item';
-        const a = document.createElement('a');
-        a.setAttribute('href', `/${lang}/daan/${y}/`);
-        a.textContent = `${y} Donor List`;
-        li.append(a);
-        archive.append(li);
+        archive.append(item(`/${lang}/daan/${y}/`, `${y} Donor List`));
+      }
+      // The yatra comes round every year and each year is its own named list
+      // (kavad-yatra-2027, …), so this section builds itself from the index.
+      const yatras = lists
+        .map((slug) => /^kavad-yatra-(\d{4})$/.exec(String(slug)))
+        .filter(Boolean)
+        .sort((a, b) => Number(b[1]) - Number(a[1]));
+      for (const [slug, year] of yatras) {
+        kavad.append(item(`/${lang}/daan/${slug}/`, `${year} Contributors`));
       }
     } catch (error) {
       console.error(error);
-      archive.outerHTML = '<div class="load-error"><p><strong>The list could not be loaded</strong></p></div>';
+      const failed = '<div class="load-error"><p><strong>The list could not be loaded</strong></p></div>';
+      archive.outerHTML = failed;
+      kavad.outerHTML = failed;
     }
   </script>
 </body>
