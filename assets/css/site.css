@@ -693,8 +693,24 @@ body.lb-open { overflow: hidden; }
 /* ---- the दान page: lists on the left, the way to give on the right ---- */
 .give-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 40px;
              padding-block: 8px 52px; align-items: start; }
-.give-part + .give-part { margin-top: 40px; }
+/* Three different things were being read as one long ladder. Each is its own
+   card now, under a band of its own colour: the temple in indigo (it is being
+   built, year after year), the यात्रा in red (सावन, बोल बम), the महोत्सव in
+   marigold (the नवरात्र मंडप). The colour is only the signal - the type and
+   the rows inside stay the same, so the three still belong to one page. */
+.give-part { padding: 22px 24px 8px; border: 1px solid var(--rule); border-radius: var(--r);
+             border-top: 4px solid var(--accent, var(--rule)); background: #fff; }
+.give-part + .give-part { margin-top: 26px; }
 .give-part > p { max-width: 62ch; }
+.give-part .section-head h2 { color: var(--accent, var(--ind)); }
+.give-part .year-list { max-width: none; }
+.give-temple { --accent: var(--ind); }
+.give-yatra { --accent: var(--red); }
+.give-festival { --accent: var(--gold); }
+/* The festival's gold is a border colour, never text: it fails contrast on
+   white. Its heading borrows the deeper red-brown of the सिंदूर instead. */
+.give-festival .section-head h2 { color: var(--red-d); }
+@media (max-width: 560px) { .give-part { padding: 18px 16px 6px; } }
 /* The card keeps its place while the lists scroll past it. */
 .give-card { position: sticky; top: 72px; padding: 22px 22px 18px;
              background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r); }
