@@ -79,8 +79,10 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   outline: 3px solid var(--ind);
   outline-offset: 2px;
 }
-/* Marigold focus ring only where the surface is indigo. */
-.heritage :focus-visible, .site-footer :focus-visible { outline-color: var(--mar); }
+/* Marigold focus ring only where the surface is indigo - the hero and the
+   कार्यक्रम invitation among them, or the indigo ring lands on indigo and a
+   reader moving by keyboard cannot see where they are. */
+:is(.hero, .invite, .heritage, .site-footer) :focus-visible { outline-color: var(--mar); }
 
 /* Donor filters stay reachable with 44+ cards on a phone. */
 .filters {
@@ -166,6 +168,19 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   content: ""; position: absolute; left: -10px; top: 14px;
   width: 3px; height: calc(100% - 28px); background: var(--ind);
 }
+/* On a phone, a link that stands on its own - a crumb, a "see all", the line
+   under a list - is something a thumb has to hit. 44px of height, with the
+   text sitting where it always did. A link inside a sentence is left alone:
+   padding there would break the line. */
+@media (max-width: 560px) {
+  :is(.crumbs, .section-head, .list-more, .f-links li, .dm-history, .link-row) > a,
+  .section-head .all {
+    display: inline-flex; align-items: center; min-height: 44px;
+  }
+  .crumbs { padding-block: 4px; }
+  .f-links li { margin-bottom: 0; }
+}
+
 @media (max-width: 560px) {
   .donor-card { grid-template-columns: 44px minmax(0, 1fr);
                 grid-template-areas: "av name" "av meta" "figure figure" "year year"; }
@@ -445,6 +460,40 @@ main:has(.prose) .wrap { max-width: 880px; }
 .gallery-item img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3;
                     object-fit: cover; object-position: center 30%;
                     border-radius: var(--r); background: var(--warm); }
+
+/* ---- the गैलरी's viewer ---- */
+/* A thumbnail is a button, so it answers the keyboard as well as the thumb.
+   The frame is black because a photograph should be judged against nothing. */
+.shot { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+.shot img { transition: filter 0.15s ease; }
+@media (hover: hover) { .shot:hover img { filter: brightness(1.06); } }
+.shot:focus-visible { outline: 3px solid var(--ind); outline-offset: 3px; }
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 60;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px;
+  padding: 16px; background: rgba(18, 14, 30, 0.97);
+}
+.lightbox[hidden] { display: none; }
+body.lb-open { overflow: hidden; }
+.lb-frame { grid-column: 2; margin: 0; display: grid; justify-items: center; gap: 12px; }
+.lb-frame img { max-width: min(100%, 1200px); max-height: 78vh; width: auto; height: auto;
+                border-radius: 2px; background: #000; }
+.lb-count { color: #cfc6e0; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.lightbox button {
+  min-width: 48px; min-height: 48px; border: 1px solid rgba(243, 233, 205, 0.3);
+  border-radius: 50%; background: rgba(0, 0, 0, 0.35); color: #f3e9cd;
+  font-size: 1.3rem; line-height: 1; cursor: pointer;
+}
+.lightbox button:hover { background: rgba(243, 233, 205, 0.18); border-color: var(--mar); }
+.lightbox :focus-visible { outline: 3px solid var(--mar); outline-offset: 2px; }
+.lb-close { position: absolute; top: 14px; right: 14px; }
+@media (max-width: 560px) {
+  .lightbox { grid-template-columns: 1fr; padding: 12px; }
+  .lb-frame { grid-column: 1; }
+  .lb-prev { position: absolute; left: 10px; top: 50%; }
+  .lb-next { position: absolute; right: 10px; top: 50%; }
+}
 
 /* All mobile overrides live here, after every base rule they override. */
 @media (max-width: 760px) {
