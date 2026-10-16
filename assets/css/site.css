@@ -785,6 +785,13 @@ body.lb-open { overflow: hidden; }
    so the तीन आयोजन can be read before their lists are opened. The year sits
    first, in the heading face, and the line rules separate the years. */
 .sheet { margin: 0 0 16px; }
+/* On the home page the same sheet carries every year, under the आयोजन's name:
+   the name is said once and the years are read against each other below it. */
+.sheet-group + .sheet-group { margin-top: 26px; }
+.sheet-group > h3 { margin: 0; padding-bottom: 6px; font-size: 1.26rem; color: var(--ind);
+                    border-bottom: 2px solid var(--accent, var(--rule)); }
+.sheet-group .sheet { margin-bottom: 0; }
+.sheet-group .sheet-row h3 { color: var(--red-d); }
 .sheet-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 30px;
              padding: 11px 0; border-top: 1px solid var(--line); }
 .sheet-row h3 { margin: 0; min-width: 4.4rem; font-size: 1.22rem; color: var(--accent, var(--ind)); }

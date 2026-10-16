@@ -1,7 +1,7 @@
-"""The दान page's sheets are generated; these tests keep them honest.
+"""The दान and home sheets are generated; these tests keep them honest.
 
-A list that changes without tools/update_daan_stats.py being re-run leaves the
-दान page claiming yesterday's figures, so --check runs here.
+A list that changes without tools/update_stats.py being re-run leaves both
+pages claiming yesterday's figures, so --check runs here.
 """
 import json
 import re
@@ -9,15 +9,38 @@ from pathlib import Path
 
 import pytest
 
-from update_daan_stats import (CARDS, ROOT, _labels, amount, goods_columns,
-                               indian_grouping, main, read_list, sheet, totals)
+from update_stats import (CARDS, ROOT, _labels, amount, goods_columns, group_name,
+                          home_block, home_groups, indian_grouping, main, read_list,
+                          sheet, totals)
 
 TYPES, UNITS = _labels("TYPE_LABELS"), _labels("UNIT_LABELS")
 
 
-def test_the_daan_pages_carry_the_current_figures():
+def test_the_daan_and_home_pages_carry_the_current_figures():
     assert main(["--check"]) == 0, (
-        "the दान page sheets are stale - run python3 tools/update_daan_stats.py")
+        "the sheets are stale - run python3 tools/update_stats.py")
+
+
+def test_the_home_sheet_shows_every_year_of_every_aayojan():
+    index = json.loads((ROOT / "data" / "donors-index.json").read_text(encoding="utf-8"))
+    keys = [key for g in home_groups() for key in g["lists"]]
+    assert sorted(keys) == sorted([str(y) for y in index["years"]] + index["lists"])
+    for lang in ("hi", "en"):
+        block = home_block(lang, TYPES, UNITS)
+        assert block.count('class="sheet-row"') == len(keys)
+        for year in index["years"]:
+            assert f"<h3>{year}</h3>" in block, (lang, year)
+    # The आयोजन is named once, with no year on it.
+    for group in home_groups():
+        for lang in ("hi", "en"):
+            assert not re.search(r"(?:19|20)\d{2}", group_name(group, lang)), group["slug"]
+
+
+def test_the_home_page_no_longer_carries_the_three_hand_picked_donors():
+    for lang in ("hi", "en"):
+        src = (ROOT / lang / "index.html").read_text(encoding="utf-8")
+        assert "donor-roll" not in src and "donor-card" not in src, lang
+        assert '<!-- sheet:home -->' in src, lang
 
 
 def test_every_card_shows_the_lists_it_names():

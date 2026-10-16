@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write each आयोजन's figures into the दान page, the way the home band reads.
+"""Write the समाज's figures into the दान page and the home page.
 
 The दान page named three आयोजन and then listed their years, but never said
 what any of them received. Under each heading there is now a short sheet: one
@@ -12,10 +12,13 @@ with them and keeps them with JavaScript off. Labels come from
 assets/js/donors-core.js, never copied, so a sheet cannot say "किलो" where the
 list says something else.
 
-    python3 tools/update_daan_stats.py [--check]
+On the home page the same sheet carries every year of every आयोजन, where three
+hand-picked donors used to stand.
 
-tools/test_update_daan_stats.py runs --check: edit a list without re-running
-this and the suite says so.
+    python3 tools/update_stats.py [--check]
+
+tools/test_update_stats.py runs --check: edit a list without re-running this
+and the suite says so.
 """
 import argparse
 import json
@@ -27,6 +30,9 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 CORE = ROOT / "assets" / "js" / "donors-core.js"
 PAGES = {"hi": ROOT / "hi" / "daan" / "index.html", "en": ROOT / "en" / "daan" / "index.html"}
+HOME = {"hi": ROOT / "hi" / "index.html", "en": ROOT / "en" / "index.html"}
+HOME_LEAD = {"hi": ("हर वर्ष का हिसाब", "सभी सूचियाँ"),
+             "en": ("The account, year by year", "All lists")}
 
 # Each आयोजन's card on the दान page, the lists it shows, and how many years of
 # them. A year list is named by its year; a campaign by its slug.
@@ -150,6 +156,53 @@ def sheet(card: dict, lang: str, types: dict, units: dict) -> str:
             f'          <!-- /sheet:{card["slug"]} -->')
 
 
+def home_groups() -> list[dict]:
+    """The same तीन आयोजन as the दान page, but every year of each one."""
+    index = json.loads((DATA / "donors-index.json").read_text(encoding="utf-8"))
+    years = [str(y) for y in sorted(index["years"], reverse=True)]
+    yatra = sorted((s for s in index["lists"] if s.startswith("kavad-yatra-")), reverse=True)
+    rest = [s for s in index["lists"] if not s.startswith("kavad-yatra-")]
+    groups = [{"slug": "festival", "accent": "give-festival", "lists": years},
+              {"slug": "yatra", "accent": "give-yatra", "lists": yatra}]
+    groups += [{"slug": s, "accent": "give-temple", "lists": [s]} for s in rest]
+    return [g for g in groups if g["lists"]]
+
+
+FESTIVAL_NAME = {"hi": "नवदुर्गा महोत्सव एवं विशाल भंडारा",
+                 "en": "Navdurga Mahotsav and Vishal Bhandara"}
+
+
+def group_name(group: dict, lang: str) -> str:
+    """The आयोजन's name with no year on it: the lines below carry the years."""
+    if group["slug"] == "festival":
+        return FESTIVAL_NAME[lang]
+    title = read_list(group["lists"][0])["title"]
+    name = title.get(lang) or title["hi"]
+    return re.sub(r"\s*(?:19|20)\d{2}$", "", name)
+
+
+def home_block(lang: str, types: dict, units: dict) -> str:
+    heading, all_text = HOME_LEAD[lang]
+    out = []
+    for group in home_groups():
+        card = {**group, "goods": goods_columns(group)}
+        rows = "".join(row(key, card, lang, types, units) for key in group["lists"])
+        hi_only = ' lang="hi"' if lang == "en" else ""
+        out.append(f'        <section class="sheet-group {group["accent"]}">\n'
+                   f'          <h3{hi_only}>{group_name(group, lang)}</h3>\n'
+                   f'          <div class="sheet">\n{rows}          </div>\n'
+                   f'        </section>\n')
+    return ('<!-- sheet:home -->\n'
+            '    <div class="wrap section">\n'
+            '      <div class="section-head">\n'
+            f'        <h2>{heading}</h2>\n'
+            f'        <a class="all" href="/{lang}/daan/">{all_text}</a>\n'
+            '      </div>\n'
+            f'{"".join(out)}'
+            '    </div>\n'
+            '    <!-- /sheet:home -->')
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true",
@@ -168,17 +221,30 @@ def main(argv: list[str]) -> int:
                 return 1
             current = fresh_src[fresh_src.index(start):fresh_src.index(end) + len(end)]
             fresh_src = fresh_src.replace(current, sheet(card, lang, types, units))
-        if fresh_src == src:
+        if fresh_src != src:
+            stale.append(page)
+            if not args.check:
+                page.write_text(fresh_src, encoding="utf-8")
+
+    for lang, page in HOME.items():
+        src = page.read_text(encoding="utf-8")
+        start, end = "<!-- sheet:home -->", "<!-- /sheet:home -->"
+        if start not in src or end not in src:
+            print(f"{page.relative_to(ROOT)}: no {start} … {end} to write into")
+            return 1
+        current = src[src.index(start):src.index(end) + len(end)]
+        fresh = home_block(lang, types, units)
+        if current == fresh:
             continue
         stale.append(page)
         if not args.check:
-            page.write_text(fresh_src, encoding="utf-8")
+            page.write_text(src.replace(current, fresh), encoding="utf-8")
     if not stale:
-        print("दान page: every आयोजन's figures are current")
+        print("दान and home pages: every आयोजन's figures are current")
         return 0
     names = ", ".join(str(p.relative_to(ROOT)) for p in stale)
     if args.check:
-        print(f"stale: {names} - run python3 tools/update_daan_stats.py")
+        print(f"stale: {names} - run python3 tools/update_stats.py")
         return 1
     print(f"written: {names}")
     return 0
