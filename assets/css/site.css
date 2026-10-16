@@ -272,12 +272,41 @@ main:focus { outline: none; }
 /* ---- services (आधुनिक zone) ---- */
 
 /* ---- footer (विरासत zone) ---- */
-.site-footer { margin-top: 40px; background: var(--ind-d); color: #bdb4cf; }
-.site-footer-inner { display: flex; gap: 20px; flex-wrap: wrap; padding: 24px 16px;
-                     font-size: 0.85rem; }
-.site-footer b { color: #f3e9cd; font-family: var(--head); font-weight: 400; font-size: 1rem; }
+/* Three columns that each say one thing - who we are, how to reach us, where
+   to follow - instead of one flex row where the address, the phone and four
+   link words ran together. The last line is a rule apart, like a colophon. */
+.site-footer { margin-top: 48px; background: var(--ind-d); color: #bdb4cf; }
+.site-footer-inner { display: grid; grid-template-columns: 1.3fr 1.1fr auto;
+                     gap: 26px 44px; padding: 32px 16px 26px; font-size: 0.85rem; }
+.site-footer p { margin: 0 0 6px; line-height: 1.65; }
+.site-footer b { color: #f3e9cd; font-family: var(--head); font-weight: 400; font-size: 1.15rem; }
+.f-tag { margin-top: 4px; color: #a79cbb; font-size: 0.8rem; }
+.f-head { margin: 0 0 10px; font-family: var(--head); font-weight: 400; font-size: 0.95rem;
+          color: #f3e9cd; }
+.f-addr { max-width: 34ch; }
 .site-footer a { color: var(--gold); }     /* gold on indigo: contrast is fine here */
-.socials { margin-left: auto; display: flex; gap: 10px; }
+
+/* The four marks: gold discs at rest, each one lighting up in its own
+   platform's colour (--brand, set on the link) under the pointer. 44px is the
+   tap target; the glyph inside stays 20px. */
+.socials { display: flex; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.socials a { display: grid; place-items: center; width: 44px; height: 44px;
+             border-radius: 50%; border: 1px solid rgba(243, 233, 205, 0.22);
+             color: var(--gold);
+             transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease; }
+.socials svg { width: 20px; height: 20px; display: block; }
+.socials a:hover, .socials a:focus-visible {
+  color: var(--brand, var(--mar)); border-color: currentColor;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* The colophon line: the समाज's name and the year, under a hairline. */
+.f-base { border-top: 1px solid rgba(243, 233, 205, 0.14); }
+.f-base .wrap { padding: 12px 16px; font-size: 0.78rem; color: #a79cbb; }
+
+@media (max-width: 760px) {
+  .site-footer-inner { grid-template-columns: 1fr; gap: 22px; padding: 26px 16px 20px; }
+}
 
 /* ---- inner pages (Task 9): prose, people, events, contact, gallery ---- */
 /* A page that is mostly prose narrows as a whole, so every section keeps the same

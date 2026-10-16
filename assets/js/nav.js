@@ -20,10 +20,12 @@ export const CONTACT = {
   // The समाज's own address, given by them. The footer renders it from here; the
   // संपर्क pages carry their own row, because that list is static HTML.
   email: 'lodhasamajindore@gmail.com',
+  // `brand` is the colour the icon takes under the pointer - each platform's
+  // own, so the footer's four gold discs are told apart at a glance.
   socials: [
-    { label: 'Facebook',  href: 'https://www.facebook.com/profile.php?id=61552495104262' },
-    { label: 'Instagram', href: 'https://www.instagram.com/lodha.samaj/' },
-    { label: 'YouTube',   href: 'https://www.youtube.com/@lodhasamajindore2762' },
-    { label: 'WhatsApp',  href: 'https://wa.me/919098781740' },
+    { label: 'Facebook',  brand: '#1877f2', href: 'https://www.facebook.com/profile.php?id=61552495104262' },
+    { label: 'Instagram', brand: '#e1306c', href: 'https://www.instagram.com/lodha.samaj/' },
+    { label: 'YouTube',   brand: '#ff0033', href: 'https://www.youtube.com/@lodhasamajindore2762' },
+    { label: 'WhatsApp',  brand: '#25d366', href: 'https://wa.me/919098781740' },
   ],
 };
