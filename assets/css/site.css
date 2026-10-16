@@ -690,12 +690,36 @@ body.lb-open { overflow: hidden; }
                    object-fit: cover; object-position: center 30%;
                    border-radius: var(--r); background: var(--warm); }
 
+/* ---- the दान page: lists on the left, the way to give on the right ---- */
+.give-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 40px;
+             padding-block: 8px 52px; align-items: start; }
+.give-part + .give-part { margin-top: 40px; }
+.give-part > p { max-width: 62ch; }
+/* The card keeps its place while the lists scroll past it. */
+.give-card { position: sticky; top: 72px; padding: 22px 22px 18px;
+             background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r); }
+.give-card h2 { margin: 0 0 10px; font-size: 1.3rem; color: var(--ind); }
+.give-card p { margin: 0 0 12px; font-size: 0.95rem; }
+.give-line { display: grid; grid-template-columns: 4.2rem 1fr; gap: 4px 10px; }
+.give-line strong { color: var(--mute); font-weight: 600; }
+.give-card .btn { margin-top: 2px; }
+@media (max-width: 900px) {
+  .give-grid { grid-template-columns: 1fr; gap: 28px; }
+  /* Stacked, the card belongs above the registers: it is what the page is for. */
+  .give-card { position: static; order: -1; }
+}
+
 /* ---- /daan/ archive: the years on offer ---- */
 .year-list { list-style: none; margin: 0; padding: 0; max-width: 520px;
              border-top: 1px solid var(--rule); }
 .year-item { border-bottom: 1px solid var(--rule); }
-.year-item a { display: block; padding: 14px 2px; font-family: var(--head);
-               font-size: 1.22rem; color: var(--ind); text-decoration: none; }
+.year-item a { display: flex; align-items: baseline; gap: 12px; padding: 14px 2px;
+               font-family: var(--head); font-size: 1.22rem; color: var(--ind);
+               text-decoration: none; }
+/* How many gave to that list - the reason to pick one row over another. */
+.year-item .n { margin-left: auto; font-family: var(--body); font-size: 0.9rem;
+                color: var(--mute); font-variant-numeric: tabular-nums; }
+.year-item a:hover .n, .year-item a:focus-visible .n { color: var(--red); }
 /* Indigo at rest, so this one turns the other way: red marks the year the
    reader is about to open. */
 .year-item a:hover, .year-item a:focus-visible { color: var(--red); }

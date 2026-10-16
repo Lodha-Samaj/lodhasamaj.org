@@ -43,35 +43,51 @@
     <div class="wrap section">
       <div class="section-head"><h1>Donate</h1></div>
       <div class="prose">
-        <p>Everything Lodha Samaj Indore does — the temple construction, the Kavad Yatra and the Navdurga Mahotsav — is possible only with the support of the community's families. To contribute, call us or visit the dharmshala.</p>
-        <p><strong>Phone:</strong> <a href="tel:+919098781740">+91 90987 81740</a><br>
-           <strong>Address:</strong> Lodha Colony Dharmshala, Maharana Pratap Chauraha, Mhow Naka, Indore, Madhya Pradesh</p>
+        <p>Everything Lodha Samaj Indore does — the temple construction, the Kavad Yatra and the Navdurga Mahotsav — is possible only with the support of the community's families.</p>
       </div>
     </div>
-    <div class="wrap section">
-      <div class="section-head"><h2>Shri Hanuman Temple Construction</h2></div>
-      <p>The community is building a Shri Hanuman temple at Lodha Colony, Mhow Naka, Indore.
-         Those who have given money and building materials:</p>
-      <!-- The construction is a one-off, so no year here - but it reads like
-           the other lists, and it works without JavaScript. -->
-      <ul class="year-list">
-        <li class="year-item"><a href="/en/daan/hanuman-mandir/">Donor List</a></li>
-      </ul>
-    </div>
-    <div class="wrap section">
-      <div class="section-head"><h2>Shri Narmadeshwar Mahadev Kavad Yatra</h2></div>
-      <p>The Kavad Yatra is taken out every year in the month of Sawan. Year by year, the devotees who
-         arranged lodging, meals, transport and the rest:</p>
-      <ul class="year-list" id="kavad-years"></ul>
-      <noscript><p>JavaScript is required to see the list. See the <a href="/en/daan/kavad-yatra-2026/">2026 list</a> here.</p></noscript>
-    </div>
-    <div class="wrap section">
-      <div class="section-head"><h2>Navdurga Mahotsav, Nagar Kanya Bhoj and Vishal Bhandara</h2></div>
-      <p>Every year during Navratri, Lodha Samaj Indore holds the Vishal Bhandara (a large community meal)
-         and the Nagar Kanya Pujan. Support can be given as sugar, flour, oil, salt, ghee, mawa or cash.
-         The donors, year by year:</p>
-      <ul class="year-list" id="archive"></ul>
-      <noscript><p>JavaScript is required to see the list. See the <a href="/en/daan/navdurga-mahotsav-2025/">2025</a> and <a href="/en/daan/navdurga-mahotsav-2024/">2024</a> lists here.</p></noscript>
+    <!-- The lists on the left, the way to give on the right: a reader who came
+         to give should not have to scroll past three registers to find the
+         phone number. The card stays in view while the lists scroll. -->
+    <div class="wrap give-grid">
+      <div class="give-main">
+        <section class="give-part">
+          <div class="section-head"><h2>Shri Hanuman Temple Construction</h2></div>
+          <p>The community is building a Shri Hanuman temple at Lodha Colony, Mhow Naka, Indore.
+           Those who have given money and building materials:</p>
+          <ul class="year-list" id="temple-list">
+            <li class="year-item"><a href="/en/daan/hanuman-mandir/">Donor List</a></li>
+          </ul>
+        </section>
+        <section class="give-part">
+          <div class="section-head"><h2>Shri Narmadeshwar Mahadev Kavad Yatra</h2></div>
+          <p>The Kavad Yatra is taken out every year in the month of Sawan. Year by year, the devotees
+           who arranged lodging, meals, transport and the rest:</p>
+          <ul class="year-list" id="kavad-years"></ul>
+          <noscript><p>JavaScript is required to see the list. See the <a href="/en/daan/kavad-yatra-2026/">2026</a>,
+             <a href="/en/daan/kavad-yatra-2025/">2025</a> and
+             <a href="/en/daan/kavad-yatra-2024/">2024</a> lists here.</p></noscript>
+        </section>
+        <section class="give-part">
+          <div class="section-head"><h2>Navdurga Mahotsav, Nagar Kanya Bhoj and Vishal Bhandara</h2></div>
+          <p>Every year during Navratri, Lodha Samaj Indore holds the Vishal Bhandara and the
+           Nagar Kanya Pujan. The donors, year by year:</p>
+          <ul class="year-list" id="archive"></ul>
+          <noscript><p>JavaScript is required to see the list. See the <a href="/en/daan/navdurga-mahotsav-2025/">2025</a>
+             and <a href="/en/daan/navdurga-mahotsav-2024/">2024</a>
+             lists here.</p></noscript>
+        </section>
+      </div>
+      <aside class="give-card" aria-labelledby="how-to-give">
+        <h2 id="how-to-give">How to give</h2>
+        <p>For the bhandara: sugar, flour, oil, salt, ghee, mawa or cash. For the temple: building material. For the yatra: lodging, meals or transport — whatever suits you.</p>
+        <p>Call us or visit the dharmshala. Every gift is recorded in that year's donor list.</p>
+        <p class="give-line"><strong>Phone</strong>
+           <a href="tel:+919098781740">+91 90987 81740</a></p>
+        <p class="give-line"><strong>Address</strong>
+           <span>Lodha Colony Dharmshala, Maharana Pratap Chauraha, Mhow Naka, Indore, Madhya Pradesh</span></p>
+        <p><a class="btn" href="/en/sampark/">Contact page</a></p>
+      </aside>
     </div>
   </main>
   <footer id="site-footer"></footer>
@@ -80,26 +96,31 @@
     const lang = 'en';
     const archive = document.getElementById('archive');
     const kavad = document.getElementById('kavad-years');
-    /** One linked <li> — the only shape either year list needs. */
-    const item = (href, text) => {
+    const temple = document.getElementById('temple-list');
+    /** One linked row: the list's name, and how many gave to it. */
+    const item = (href, text, n) => {
       const li = document.createElement('li');
       li.className = 'year-item';
       const a = document.createElement('a');
       a.setAttribute('href', href);
-      a.textContent = text;
+      a.append(text);
+      if (n) {
+        const count = document.createElement('span');
+        count.className = 'n';
+        count.textContent = `${n} donors`;
+        a.append(count);
+      }
       li.append(a);
       return li;
     };
     try {
       const response = await fetch('/data/donors-index.json', { cache: 'no-cache' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const { years, lists = [] } = await response.json();
+      const { years, lists = [], counts = {} } = await response.json();
       // Hand-edited file: keep only integer years, so nothing needs escaping.
       const valid = years.map(Number).filter(Number.isInteger).sort((a, b) => b - a);
       for (const y of valid) {
-        // A list of years, not a donor row: the link text already carries the
-        // year, so the separate badge only said it twice.
-        archive.append(item(`/${lang}/daan/navdurga-mahotsav-${y}/`, `${y} Donor List`));
+        archive.append(item(`/${lang}/daan/navdurga-mahotsav-${y}/`, `${y} Donor List`, counts[y]));
       }
       // The yatra comes round every year and each year is its own named list
       // (kavad-yatra-2027, …), so this section builds itself from the index.
@@ -108,7 +129,16 @@
         .filter(Boolean)
         .sort((a, b) => Number(b[1]) - Number(a[1]));
       for (const [slug, year] of yatras) {
-        kavad.append(item(`/${lang}/daan/${slug}/`, `${year} Donor List`));
+        kavad.append(item(`/${lang}/daan/${slug}/`, `${year} Donor List`, counts[slug]));
+      }
+      // The temple list is in the markup, so that it is there without
+      // JavaScript; only its count comes from here.
+      if (counts['hanuman-mandir']) {
+        const link = temple.querySelector('a');
+        const count = document.createElement('span');
+        count.className = 'n';
+        count.textContent = `${counts['hanuman-mandir']} donors`;
+        link.append(count);
       }
     } catch (error) {
       console.error(error);

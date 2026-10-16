@@ -42,34 +42,51 @@
     <div class="wrap section">
       <div class="section-head"><h1>दान</h1></div>
       <div class="prose">
-        <p>लोधा समाज इंदौर के आयोजन — मंदिर निर्माण, कावड़ यात्रा और नवदुर्गा महोत्सव — समाज के परिवारों के सहयोग से ही संभव होते हैं। सहयोग करने के लिए फ़ोन पर संपर्क करें या धर्मशाला आएँ।</p>
-        <p><strong>फ़ोन:</strong> <a href="tel:+919098781740">+91 90987 81740</a><br>
-           <strong>पता:</strong> लोधा कॉलोनी धर्मशाला, महाराणा प्रताप चौराहा, महूनाका इंदौर, मध्यप्रदेश</p>
+        <p>लोधा समाज इंदौर के आयोजन — मंदिर निर्माण, कावड़ यात्रा और नवदुर्गा महोत्सव — समाज के परिवारों के सहयोग से ही संभव होते हैं।</p>
       </div>
     </div>
-    <div class="wrap section">
-      <div class="section-head"><h2>श्री हनुमान मंदिर निर्माण</h2></div>
-      <p>लोधा कॉलोनी, महू नाका, इंदौर में श्री हनुमान मंदिर का निर्माण समाज के सहयोग से हो रहा है।
-         सहयोग राशि और निर्माण सामग्री देने वालों की सूची:</p>
-      <!-- निर्माण एक ही बार का है, इसलिए यहाँ साल नहीं - पर दिखता बाक़ी
-           सूचियों जैसा ही है, और बिना JavaScript भी चलता है। -->
-      <ul class="year-list">
-        <li class="year-item"><a href="/hi/daan/hanuman-mandir/">दानदाता सूची</a></li>
-      </ul>
-    </div>
-    <div class="wrap section">
-      <div class="section-head"><h2>श्री नर्मदेश्वर महादेव भव्य कावड़ यात्रा</h2></div>
-      <p>सावन माह में हर वर्ष कावड़ यात्रा निकलती है। धर्मशाला, भोजन, वाहन एवं अन्य व्यवस्थाओं से
-         सहयोग करने वाले भक्तों की वर्षवार सूची:</p>
-      <ul class="year-list" id="kavad-years"></ul>
-      <noscript><p>सूची देखने के लिए JavaScript आवश्यक है। <a href="/hi/daan/kavad-yatra-2026/">2026 की सूची</a> यहाँ देखें।</p></noscript>
-    </div>
-    <div class="wrap section">
-      <div class="section-head"><h2>नवदुर्गा महोत्सव, नगर कन्या भोज एवं विशाल भंडारा</h2></div>
-      <p>हर वर्ष नवरात्र में लोधा समाज इंदौर विशाल भंडारा और नगर कन्या पूजन का आयोजन करता है। भंडारे के लिए
-         शक्कर, आटा, तेल, नमक, घी, मावा या नगद राशि के रूप में सहयोग किया जा सकता है। दानदाताओं की वर्षवार सूची:</p>
-      <ul class="year-list" id="archive"></ul>
-      <noscript><p>सूची देखने के लिए JavaScript आवश्यक है। <a href="/hi/daan/navdurga-mahotsav-2025/">2025</a> और <a href="/hi/daan/navdurga-mahotsav-2024/">2024</a> की सूची यहाँ देखें।</p></noscript>
+    <!-- The lists on the left, the way to give on the right: a reader who came
+         to give should not have to scroll past three registers to find the
+         phone number. The card stays in view while the lists scroll. -->
+    <div class="wrap give-grid">
+      <div class="give-main">
+        <section class="give-part">
+          <div class="section-head"><h2>श्री हनुमान मंदिर निर्माण</h2></div>
+          <p>लोधा कॉलोनी, महू नाका, इंदौर में श्री हनुमान मंदिर का निर्माण समाज के सहयोग से हो रहा है।
+           सहयोग राशि और निर्माण सामग्री देने वालों की सूची:</p>
+          <ul class="year-list" id="temple-list">
+            <li class="year-item"><a href="/hi/daan/hanuman-mandir/">दानदाता सूची</a></li>
+          </ul>
+        </section>
+        <section class="give-part">
+          <div class="section-head"><h2>श्री नर्मदेश्वर महादेव भव्य कावड़ यात्रा</h2></div>
+          <p>सावन माह में हर वर्ष कावड़ यात्रा निकलती है। धर्मशाला, भोजन, वाहन एवं अन्य व्यवस्थाओं से
+           सहयोग करने वाले भक्तों की वर्षवार सूची:</p>
+          <ul class="year-list" id="kavad-years"></ul>
+          <noscript><p>सूची देखने के लिए JavaScript आवश्यक है। <a href="/hi/daan/kavad-yatra-2026/">2026</a>,
+             <a href="/hi/daan/kavad-yatra-2025/">2025</a> और
+             <a href="/hi/daan/kavad-yatra-2024/">2024</a> की सूची यहाँ देखें।</p></noscript>
+        </section>
+        <section class="give-part">
+          <div class="section-head"><h2>नवदुर्गा महोत्सव, नगर कन्या भोज एवं विशाल भंडारा</h2></div>
+          <p>हर वर्ष नवरात्र में लोधा समाज इंदौर विशाल भंडारा और नगर कन्या पूजन का आयोजन करता है।
+           दानदाताओं की वर्षवार सूची:</p>
+          <ul class="year-list" id="archive"></ul>
+          <noscript><p>सूची देखने के लिए JavaScript आवश्यक है। <a href="/hi/daan/navdurga-mahotsav-2025/">2025</a>
+             और <a href="/hi/daan/navdurga-mahotsav-2024/">2024</a>
+             की सूची यहाँ देखें।</p></noscript>
+        </section>
+      </div>
+      <aside class="give-card" aria-labelledby="how-to-give">
+        <h2 id="how-to-give">सहयोग कैसे करें</h2>
+        <p>भंडारे के लिए शक्कर, आटा, तेल, नमक, घी, मावा या नगद राशि; मंदिर के लिए निर्माण सामग्री; यात्रा के लिए धर्मशाला, भोजन या वाहन की व्यवस्था — जो सहज हो।</p>
+        <p>फ़ोन पर संपर्क करें या धर्मशाला आएँ। हर सहयोग उसी वर्ष की दानदाता सूची में दर्ज होता है।</p>
+        <p class="give-line"><strong>फ़ोन</strong>
+           <a href="tel:+919098781740">+91 90987 81740</a></p>
+        <p class="give-line"><strong>पता</strong>
+           <span>लोधा कॉलोनी धर्मशाला, महाराणा प्रताप चौराहा, महूनाका इंदौर, मध्यप्रदेश</span></p>
+        <p><a class="btn" href="/hi/sampark/">संपर्क पृष्ठ</a></p>
+      </aside>
     </div>
   </main>
   <footer id="site-footer"></footer>
@@ -78,26 +95,31 @@
     const lang = 'hi';
     const archive = document.getElementById('archive');
     const kavad = document.getElementById('kavad-years');
-    /** One linked <li> — the only shape either year list needs. */
-    const item = (href, text) => {
+    const temple = document.getElementById('temple-list');
+    /** One linked row: the list's name, and how many gave to it. */
+    const item = (href, text, n) => {
       const li = document.createElement('li');
       li.className = 'year-item';
       const a = document.createElement('a');
       a.setAttribute('href', href);
-      a.textContent = text;
+      a.append(text);
+      if (n) {
+        const count = document.createElement('span');
+        count.className = 'n';
+        count.textContent = `${n} दानदाता`;
+        a.append(count);
+      }
       li.append(a);
       return li;
     };
     try {
       const response = await fetch('/data/donors-index.json', { cache: 'no-cache' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const { years, lists = [] } = await response.json();
+      const { years, lists = [], counts = {} } = await response.json();
       // Hand-edited file: keep only integer years, so nothing needs escaping.
       const valid = years.map(Number).filter(Number.isInteger).sort((a, b) => b - a);
       for (const y of valid) {
-        // A list of years, not a donor row: the link text already carries the
-        // year, so the separate badge only said it twice.
-        archive.append(item(`/${lang}/daan/navdurga-mahotsav-${y}/`, `${y} दानदाता सूची`));
+        archive.append(item(`/${lang}/daan/navdurga-mahotsav-${y}/`, `${y} दानदाता सूची`, counts[y]));
       }
       // The yatra comes round every year and each year is its own named list
       // (kavad-yatra-2027, …), so this section builds itself from the index.
@@ -106,7 +128,16 @@
         .filter(Boolean)
         .sort((a, b) => Number(b[1]) - Number(a[1]));
       for (const [slug, year] of yatras) {
-        kavad.append(item(`/${lang}/daan/${slug}/`, `${year} दानदाता सूची`));
+        kavad.append(item(`/${lang}/daan/${slug}/`, `${year} दानदाता सूची`, counts[slug]));
+      }
+      // The temple list is in the markup, so that it is there without
+      // JavaScript; only its count comes from here.
+      if (counts['hanuman-mandir']) {
+        const link = temple.querySelector('a');
+        const count = document.createElement('span');
+        count.className = 'n';
+        count.textContent = `${counts['hanuman-mandir']} दानदाता`;
+        link.append(count);
       }
     } catch (error) {
       console.error(error);

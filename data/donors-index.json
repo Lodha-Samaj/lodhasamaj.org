@@ -8,5 +8,13 @@
     "kavad-yatra-2025",
     "kavad-yatra-2024",
     "hanuman-mandir"
-  ]
+  ],
+  "counts": {
+    "2024": 154,
+    "2025": 166,
+    "kavad-yatra-2026": 50,
+    "kavad-yatra-2025": 67,
+    "kavad-yatra-2024": 51,
+    "hanuman-mandir": 48
+  }
 }
