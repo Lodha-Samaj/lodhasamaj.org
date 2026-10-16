@@ -38,8 +38,10 @@ body {
   background: var(--warm);
   color: var(--ink);
   font-family: var(--body);
-  font-size: 16px;
-  line-height: 1.65;
+  /* 17px, not 16: Devanagari carries its matras above and below the line, and
+     this site is read by people who are not young. The line-height follows. */
+  font-size: 17px;
+  line-height: 1.72;
 }
 
 h1, h2, h3 { font-family: var(--head); font-weight: 400; line-height: 1.3; }
@@ -219,17 +221,35 @@ main:focus { outline: none; }
               border-radius: var(--r); background: #fff; font-size: 1.1rem; cursor: pointer; }
 
 /* ---- festival hero (उत्सव zone) ---- */
+/* नवरात्र is nine nights, so the page opens on one: the deep indigo of the
+   पंडाल after dark, lit from the corner the way the lamps light it. The dates
+   sit beside the greeting as an invitation, and the समाज's own photograph
+   follows immediately below - faces in daylight, never under a scrim. */
 .hero {
-  padding: 52px 16px 44px;
-  background: radial-gradient(circle at 8% 0%, rgba(232, 163, 61, 0.26), transparent 42%),
-              radial-gradient(circle at 96% 96%, rgba(179, 38, 30, 0.10), transparent 46%),
-              var(--warm);
+  padding: 60px 16px 56px;
+  background: radial-gradient(circle at 10% -10%, rgba(232, 163, 61, 0.30), transparent 48%),
+              radial-gradient(circle at 94% 112%, rgba(179, 38, 30, 0.34), transparent 54%),
+              var(--ind-d);
+  color: #ddd5ea;
 }
 .hero-inner { max-width: var(--wrap); margin: 0 auto;
-              display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
-.hero h1 { margin: 0 0 14px; font-size: clamp(2rem, 4.6vw, 3rem); line-height: 1.14;
-           color: var(--red-d); }
-.hero-lede { margin: 0; max-width: 32ch; color: var(--ink); font-size: 1.05rem; }
+              display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
+.hero h1 { margin: 0 0 16px; font-size: clamp(2.1rem, 1.4rem + 2.8vw, 3.2rem); line-height: 1.12;
+           color: #f6ecd2; }
+.hero-lede { margin: 0 0 24px; max-width: 30ch; color: #cfc6e0; font-size: 1.1rem; }
+.hero-do { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 0; }
+/* Marigold on the night: the one warm button on the page, and the colour the
+   मंडप is dressed in. */
+.hero .btn { background: var(--mar); color: var(--ind-d); }
+.hero .btn:hover, .hero .btn:focus-visible { background: var(--gold); color: var(--ind-d); }
+.hero-more { font-weight: 700; color: var(--mar); }
+.hero-more:hover, .hero-more:focus-visible { color: #f6ecd2; }
+.hero .festivals { border-top-color: rgba(243, 233, 205, 0.3); }
+.hero .fest { border-bottom-color: rgba(243, 233, 205, 0.3); }
+.hero .fest-when { color: var(--mar); }
+.hero .fest-name { color: #f6ecd2; font-size: 1.3rem; }
+.hero .fest-where { color: #bdb4cf; }
+.hero .fest-where b { color: #f3e9cd; font-weight: 600; }
 
 /* The festival calendar: date column, then the occasion. Ruled like an invitation. */
 .festivals { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
@@ -241,15 +261,25 @@ main:focus { outline: none; }
 .fest-where b { font-weight: 600; color: var(--ink); }
 
 /* ---- stats (आधुनिक zone) ---- */
+/* What the समाज fed last नवरात्र, in three figures. It was one sentence, and
+   the numbers - the whole point of it - read like any other words. */
 .stats { background: var(--paper); border-block: 1px solid var(--rule); }
-.stats .wrap { padding-block: 20px; }
-.stats p { margin: 0; max-width: 62ch; font-size: 1.05rem; line-height: 1.75; }
-.stats b { font-weight: 800; color: var(--red-d); font-variant-numeric: tabular-nums; }
+.stats .wrap { padding-block: 26px; display: grid; gap: 6px 48px;
+               grid-template-columns: repeat(3, auto) 1fr; align-items: end; }
+.stat { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--head); font-weight: 400; font-size: clamp(1.9rem, 1.3rem + 1.8vw, 2.6rem);
+          line-height: 1; color: var(--red-d); font-variant-numeric: tabular-nums; }
+.stat span { color: var(--mute); font-size: 0.9rem; }
+.stats-note { grid-column: 1 / -1; margin: 10px 0 0; max-width: 62ch;
+              color: var(--mute); font-size: 0.92rem; }
+@media (max-width: 760px) {
+  .stats .wrap { grid-template-columns: repeat(2, auto); gap: 18px 32px; }
+}
 
 /* ---- sections, with the marigold rule the user asked to extend ---- */
 /* Block only: almost every .section is also a .wrap, and a "0" here took away
    the wrap's 16px side gutter, so content touched the screen edge below 1140px. */
-.section { padding-block: 40px; }
+.section { padding-block: 52px; }
 .section + .section { padding-top: 8px; }
 .section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
 .section-head h1 { margin: 0; font-size: 2rem; color: var(--ind); }
