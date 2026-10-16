@@ -43,6 +43,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2025/"/>
   </url>
   <url>
+    <loc>https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2026/</loc>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2026/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/navdurga-mahotsav-2026/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2026/"/>
+  </url>
+  <url>
     <loc>https://lodhasamaj.org/hi/gallery/</loc>
     <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/gallery/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/gallery/"/>
@@ -137,6 +143,12 @@
     <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2025/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/navdurga-mahotsav-2025/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2025/"/>
+  </url>
+  <url>
+    <loc>https://lodhasamaj.org/en/daan/navdurga-mahotsav-2026/</loc>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2026/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/navdurga-mahotsav-2026/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2026/"/>
   </url>
   <url>
     <loc>https://lodhasamaj.org/en/gallery/</loc>
