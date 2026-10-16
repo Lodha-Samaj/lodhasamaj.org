@@ -48,7 +48,27 @@ h1, h2, h3, .fest-name, .brand b { letter-spacing: normal; }
 
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 16px; }
 
-a { color: var(--red); }
+/* A link carries no rule until the pointer or the keyboard reaches it: the
+   page reads quieter, and the line appears exactly where a reader is about to
+   click. Anything shaped like a button or a tab opts out just below - a rule
+   inside a filled button only looks like a mistake - and answers the pointer
+   with colour or a filled surface instead. */
+a { color: var(--red); text-decoration: none; }
+a:hover, a:focus-visible {
+  color: var(--red-d); text-decoration: underline; text-underline-offset: 3px;
+}
+:is(.brand, .cta, .btn, .lang-toggle, .skip-link, .heritage a,
+    .site-nav a):is(:hover, :focus-visible, :focus) {
+  text-decoration: none;
+}
+.site-nav a:hover, .site-nav a:focus-visible { color: var(--red); }
+.cta:hover, .cta:focus-visible, .btn:hover, .btn:focus-visible {
+  background: var(--red-d); color: #fff;
+}
+.lang-toggle:hover, .lang-toggle:focus-visible { border-color: var(--red); color: var(--red-d); }
+.heritage a:hover, .heritage a:focus-visible { background: var(--gold); color: var(--ind-d); }
+.site-footer a:hover, .site-footer a:focus-visible { color: var(--mar); }
+
 /* Indigo focus ring on light surfaces (11.67:1 on --warm). */
 a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible {
   outline: 3px solid var(--ind);
