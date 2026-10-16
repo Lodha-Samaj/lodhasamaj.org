@@ -53,8 +53,10 @@ if (header) {
       </a>
       <button class="nav-toggle" aria-expanded="false"
               aria-controls="site-nav" aria-label="${lang === 'hi' ? 'मेनू' : 'Menu'}">☰</button>
-      ${langToggleHtml()}
-      <a class="cta" href="${base}daan/">${lang === 'hi' ? 'दान कीजिए' : 'Donate'}</a>
+      <div class="head-do">
+        ${langToggleHtml()}
+        <a class="cta" href="${base}daan/">${lang === 'hi' ? 'दान कीजिए' : 'Donate'}</a>
+      </div>
     </div>
     <div class="nav-bar">
       <nav id="site-nav" class="site-nav wrap" aria-label="${lang === 'hi' ? 'मुख्य मेनू' : 'Main'}">${navHtml()}</nav>

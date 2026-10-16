@@ -216,7 +216,18 @@ main:focus { outline: none; }
    40px tall none of it could be read. Source art is 512x443, so this is still
    served at 2x. */
 .brand img { width: 60px; height: 52px; }
-.site-header-inner { display: flex; align-items: center; gap: 15px; padding: 12px 16px; }
+/* Three columns, so the समाज's name sits in the middle of the page and not
+   in a corner: the ☰ on the left (on wide screens that cell is simply empty),
+   the name in the centre, EN and दान कीजिए on the right. */
+.site-header-inner { display: grid; grid-template-columns: 1fr auto 1fr;
+                     align-items: center; gap: 12px; padding: 12px 16px; }
+/* The row is named on every cell: the name comes first in the markup (it is
+   the first thing a screen reader should meet), and without it the ☰ behind
+   it would be auto-placed onto a second row. */
+.nav-toggle { grid-column: 1; grid-row: 1; justify-self: start; }
+.brand { grid-column: 2; grid-row: 1; justify-self: center; text-align: center; }
+.head-do { grid-column: 3; grid-row: 1; justify-self: end;
+           display: flex; align-items: center; gap: 10px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
 .brand b { display: block; font-family: var(--head); font-weight: 400; font-size: 1.05rem; color: var(--red-d); }
 .brand i { font-style: normal; font-size: 0.68rem; color: var(--mute); }
@@ -244,7 +255,7 @@ main:focus { outline: none; }
   color: var(--red-d); border-bottom-color: var(--red-d);
 }
 .site-nav a:hover { background: #fffdfa; }
-.lang-toggle { margin-left: auto; padding: 4px 9px; border: 1px solid var(--line);
+.lang-toggle { padding: 4px 9px; border: 1px solid var(--line);
                border-radius: 4px; font-weight: 700; font-size: 0.75rem; text-decoration: none; }
 .cta { padding: 8px 15px; background: var(--red); color: #fff; border-radius: 5px;
        font-weight: 700; font-size: 0.8rem; text-decoration: none; }
@@ -533,10 +544,8 @@ body.lb-open { overflow: hidden; }
   /* No band to pin below 960px - the ☰ sits in the top row, so the whole
      header stays instead, and the menu is one tap away down a long list. */
   .site-header { top: 0; }
-  .site-header-inner { flex-wrap: wrap; gap: 8px; }
-  /* Basis 0: the name wraps inside its own box before the buttons beside it
-     are pushed onto a second row. */
-  .brand { flex: 1 1 0; min-width: 0; }
+  .site-header-inner { gap: 8px; }
+  .brand { min-width: 0; }
   .brand img { flex-shrink: 0; }
   .nav-toggle { display: block; }
   .nav-bar { position: static; border-top: 0; }
@@ -545,14 +554,23 @@ body.lb-open { overflow: hidden; }
   .site-nav.open { display: flex; flex-direction: column; padding-block: 4px; }
   .site-nav a { width: 100%; padding: 0 6px; border-bottom: 0; border-left: 3px solid transparent; }
   .site-nav a[aria-current="page"] { border-left-color: var(--red); }
-  .lang-toggle { margin-left: auto; min-height: 44px; display: inline-flex; align-items: center; }
+  .lang-toggle { min-height: 44px; display: inline-flex; align-items: center; }
   .cta { min-height: 44px; display: inline-flex; align-items: center; }
 }
-/* After the block above, which sets the tablet gap. On a 320px phone the
-   name, ☰, EN and दान कीजिए only fit on one row with these trimmed. */
+/* After the block above, which sets the tablet gap. On a phone the three
+   columns cannot hold name, ☰, EN and दान कीजिए side by side, so the name
+   takes the first row on its own - still centred - and the controls line up
+   under it. The button's words must not break in two. */
 @media (max-width: 760px) {
-  .site-header-inner { gap: 6px; }
-  .cta { padding: 8px 12px; }
+  .site-header-inner { gap: 6px 8px; }
+  .cta { padding: 8px 12px; white-space: nowrap; }
+  .lang-toggle { white-space: nowrap; }
+}
+@media (max-width: 640px) {
+  .site-header-inner { grid-template-columns: auto 1fr auto; row-gap: 10px; }
+  .brand { grid-column: 1 / -1; grid-row: 1; }
+  .nav-toggle { grid-row: 2; }
+  .head-do { grid-row: 2; }
 }
 
 .donor-modal {
