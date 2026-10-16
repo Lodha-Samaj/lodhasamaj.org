@@ -7,15 +7,16 @@ import { listPageUrl, partnerNote, historyUrl } from './history-core.js';
 
 // A year's list belongs to the नवदुर्गा महोत्सव, and in a history it is read
 // beside the कावड़ यात्रा's own lists: "2025 दानदाता सूची" named no आयोजन, so two
-// years in a row read as one repeated line. The festival's name is the same one
-// the breadcrumb and FESTIVAL_SLUG use.
+// years in a row read as one repeated line. The name is the आयोजन's own, short
+// of the page's full "नवदुर्गा महोत्सव, नगर कन्या भोज एवं विशाल भंडारा": a heading
+// in a list of headings says what it is, not everything it is.
 const LABELS = {
   hi: { idLabel: 'दानदाता क्रमांक', other: 'सूचियों में अन्य नाम', asListed: 'इस सूची में',
-        jointTotals: 'संयुक्त दान सहित', yearTitle: (y) => `नवदुर्गा महोत्सव ${y}`, title: 'दान इतिहास',
+        jointTotals: 'संयुक्त दान सहित', yearTitle: (y) => `नवदुर्गा महोत्सव एवं विशाल भंडारा ${y}`, title: 'दान इतिहास',
         // दान counts alike either way; सूची does not.
         count: (gifts, lists) => `${gifts} दान · ${lists} ${lists === 1 ? 'सूची' : 'सूचियाँ'}` },
   en: { idLabel: 'Donor ID', other: 'Also listed as', asListed: 'As listed',
-        jointTotals: 'including joint gifts', yearTitle: (y) => `Navdurga Mahotsav ${y}`, title: 'Donation history',
+        jointTotals: 'including joint gifts', yearTitle: (y) => `Navdurga Mahotsav and Vishal Bhandara ${y}`, title: 'Donation history',
         count: (gifts, lists) =>
           `${gifts} ${gifts === 1 ? 'gift' : 'gifts'} · ${lists} ${lists === 1 ? 'list' : 'lists'}` },
 };

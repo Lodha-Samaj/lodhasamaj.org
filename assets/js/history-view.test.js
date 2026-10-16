@@ -33,7 +33,7 @@ test('every list the donor appears in becomes a section linking to that list', (
   assert.match(html, /<a href="\/hi\/daan\/hanuman-mandir\/">मंदिर<\/a>/);
   // A year's list is the नवदुर्गा महोत्सव's, and says so: beside the कावड़ यात्रा
   // above it, "2025 दानदाता सूची" named no आयोजन at all.
-  assert.match(html, /<a href="\/hi\/daan\/navdurga-mahotsav-2025\/">नवदुर्गा महोत्सव 2025<\/a>/);
+  assert.match(html, /<a href="\/hi\/daan\/navdurga-mahotsav-2025\/">नवदुर्गा महोत्सव एवं विशाल भंडारा 2025<\/a>/);
   assert.match(html, /21 बोरी सीमेंट/);
   // Newest first: the named list comes before the year, as listOrder decided.
   assert.ok(html.indexOf('hanuman-mandir') < html.indexOf('/hi/daan/navdurga-mahotsav-2025/'));
@@ -55,7 +55,7 @@ test('on the English page a Hindi-only name is marked lang="hi", an English one 
   assert.match(html, /<h1[^>]*><span lang="hi">श्री संजू जाट<\/span><\/h1>/);
   assert.match(html, /Joint with <a href="\/en\/daata\/\?id=D0002">Shri Kamal Jat<\/a>/);
   assert.match(html, /2 gifts · 2 lists/);
-  assert.match(html, /<a href="\/en\/daan\/navdurga-mahotsav-2025\/">Navdurga Mahotsav 2025<\/a>/);
+  assert.match(html, /<a href="\/en\/daan\/navdurga-mahotsav-2025\/">Navdurga Mahotsav and Vishal Bhandara 2025<\/a>/);
 });
 
 test('a name carrying markup is escaped, not rendered', () => {
