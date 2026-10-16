@@ -77,41 +77,91 @@
            width="1400" height="400" loading="lazy" decoding="async">
     </section>
 
-    <!-- 2. stats — 82, 1,923 and ₹1,50,900 are recomputed from data/donors-2025.json.
-         45th is 2025's own ordinal - this band reports that year. The coming
-         bhandara is the 46th, which lives in data/events.json and in the hero. -->
-    <section class="stats">
-      <div class="wrap">
-        <p class="stat"><b>166</b><span>contributors</span></p>
-        <p class="stat"><b>2,978</b><span>kg of sugar</span></p>
-        <p class="stat"><b>₹2,33,206</b><span>in cash</span></p>
-        <p class="stats-note">The account of the 45th Vishal Bhandara, 2025. Every year's
-           full list is on the <a href="/en/daan/">donate page</a>.</p>
-      </div>
-    </section>
-
-    <!-- 3. donor preview (names stay in Devanagari) -->
+    <!-- 2. the account of every list - written by tools/update_home_stats.py from the
+         donor files; run it after editing a list (a test fails if it was not run). -->
+<!-- tally:start -->
     <div class="wrap section">
       <div class="section-head">
-        <h2>Donor List</h2>
-        <a class="all" href="/en/daan/">See all years</a>
+        <h2>What each event received</h2>
+        <a class="all" href="/en/daan/">All lists</a>
       </div>
-      <div class="donor-roll">
-        <article class="donor-card"><span class="year-badge">2025</span>
-          <span class="type-tag">Sugar</span>
-          <h3><span lang="hi">श्री संजय जी जमदार</span> (<span lang="hi">बाबा</span>)</h3><p>501 kg Sugar</p></article>
-        <article class="donor-card"><span class="year-badge">2025</span>
-          <span class="type-tag">Flour · Cash · Oil</span>
-          <h3><span lang="hi">श्री राकेश जी चौधरी</span> (<span lang="hi">बाल्दा</span>)</h3>
-          <p>101 kg Flour + ₹1,100 Cash + 4 tins Oil</p></article>
-        <article class="donor-card memoriam"><span class="year-badge">2025</span>
-          <span class="type-tag">Salt</span>
-          <h3><span lang="hi">स्व. श्रीमती आशा जी जाट</span></h3><p>111 kg Salt</p></article>
-      </div>
-      <p class="list-more"><a href="/en/daan/hanuman-mandir/">Donors to the Shri Hanuman temple construction →</a></p>
+      <ul class="tally-grid">
+      <li class="tally give-festival">
+        <h3><a href="/en/daan/navdurga-mahotsav-2026/" lang="hi">Navdurga Mahotsav and Vishal Bhandara 2026</a></h3>
+        <p class="tally-who">44 donors · 46th Vishal Bhandara · 23rd Nagar Kanya Pujan</p>
+        <ul class="tally-rows">
+          <li><b>₹47,305</b> <span>Cash</span></li>
+          <li><b>1,174 kg</b> <span>Flour</span></li>
+          <li><b>567 kg</b> <span>Mawa</span></li>
+          <li><b>403 kg</b> <span>Sugar</span></li>
+        </ul>
+      </li>
+      <li class="tally give-yatra">
+        <h3><a href="/en/daan/kavad-yatra-2026/" lang="hi">Shri Narmadeshwar Mahadev Kavad Yatra 2026</a></h3>
+        <p class="tally-who">50 donors</p>
+        <ul class="tally-rows">
+          <li><b>₹46,300</b> <span>Cash</span></li>
+          <li><b>264 kg</b> <span>Flour</span></li>
+          <li><b>30 kg</b> <span>Sugar</span></li>
+          <li><b>20 jars</b> <span>Water</span></li>
+        </ul>
+      </li>
+      <li class="tally give-festival">
+        <h3><a href="/en/daan/navdurga-mahotsav-2025/" lang="hi">Navdurga Mahotsav and Vishal Bhandara 2025</a></h3>
+        <p class="tally-who">166 donors · 45th Vishal Bhandara · 22nd Nagar Kanya Pujan</p>
+        <ul class="tally-rows">
+          <li><b>₹2,33,206</b> <span>Cash</span></li>
+          <li><b>2,978 kg</b> <span>Sugar</span></li>
+          <li><b>2,650 kg</b> <span>Flour</span></li>
+          <li><b>369 kg</b> <span>Mawa</span></li>
+        </ul>
+      </li>
+      <li class="tally give-yatra">
+        <h3><a href="/en/daan/kavad-yatra-2025/" lang="hi">Shri Narmadeshwar Mahadev Kavad and Jalabhishek Yatra 2025</a></h3>
+        <p class="tally-who">67 donors</p>
+        <ul class="tally-rows">
+          <li><b>₹59,712</b> <span>Cash</span></li>
+          <li><b>254 kg</b> <span>Flour</span></li>
+          <li><b>4 tins</b> <span>Oil</span></li>
+          <li><b>2</b> <span>Gas cylinder</span></li>
+        </ul>
+      </li>
+      <li class="tally give-festival">
+        <h3><a href="/en/daan/navdurga-mahotsav-2024/" lang="hi">Navdurga Mahotsav and Vishal Bhandara 2024</a></h3>
+        <p class="tally-who">154 donors</p>
+        <ul class="tally-rows">
+          <li><b>₹1,22,500</b> <span>Cash</span></li>
+          <li><b>3,902 kg</b> <span>Sugar</span></li>
+          <li><b>3,075 kg</b> <span>Flour</span></li>
+          <li><b>455 kg</b> <span>Mawa</span></li>
+        </ul>
+      </li>
+      <li class="tally give-yatra">
+        <h3><a href="/en/daan/kavad-yatra-2024/" lang="hi">Shri Narmadeshwar Mahadev Kavad Yatra 2024</a></h3>
+        <p class="tally-who">51 donors</p>
+        <ul class="tally-rows">
+          <li><b>₹37,604</b> <span>Cash</span></li>
+          <li><b>180 kg</b> <span>Flour</span></li>
+          <li><b>21 kg</b> <span>Sugar</span></li>
+          <li><b>10 tins</b> <span>Oil</span></li>
+        </ul>
+      </li>
+      <li class="tally give-temple">
+        <h3><a href="/en/daan/hanuman-mandir/" lang="hi">Shri Hanuman Temple Construction</a></h3>
+        <p class="tally-who">48 donors</p>
+        <ul class="tally-rows">
+          <li><b>₹36,343</b> <span>Cash</span></li>
+          <li><b>551</b> <span>Bricks</span></li>
+          <li><b>122 bags</b> <span>Cement</span></li>
+          <li><b>51 kg</b> <span>Steel rods (sariya)</span></li>
+        </ul>
+      </li>
+      </ul>
+      <p class="stats-note">Each card is one list. The full lists, with search, are on the <a href="/en/daan/">donations page</a>.</p>
     </div>
+    <!-- tally:end -->
 
-    <!-- 4. heritage band -->
+    <!-- 3. heritage band -->
     <!-- The first paragraph is the समाज's own text. The two after it are a translation of the
          Hindi addition made from public sources, not the समाज's words.
          REVIEW: the समाज must approve or replace them - see the note on /hi/index.html and the
@@ -132,7 +182,7 @@
       </div>
     </section>
 
-    <!-- 5. purpose — translated from the Hindi text, which was lightly copy-edited from the old site (see /hi/).
+    <!-- 4. purpose — translated from the Hindi text, which was lightly copy-edited from the old site (see /hi/).
          The future tense ("will be undertaken") is deliberate and matches the Hindi. -->
     <div class="wrap section">
       <div class="section-head"><h2>Our Purpose</h2></div>
@@ -145,7 +195,7 @@
          work are warmly invited.</p>
     </div>
 
-    <!-- 6. services -->
+    <!-- 5. services -->
     <div class="wrap section">
       <div class="section-head"><h2>Our Services</h2></div>
       <div class="service-list">

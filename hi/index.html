@@ -80,41 +80,94 @@
            width="1400" height="400" loading="lazy" decoding="async">
     </section>
 
-    <!-- 2. stats (आधुनिक) — 82, 1,923 and ₹1,50,900 are recomputed from data/donors-2025.json.
-         45वां is 2025's own ordinal - this band reports that year. The coming
-         भंडारा is the 46वां, which lives in data/events.json and in the hero. -->
-    <section class="stats">
-      <div class="wrap">
-        <p class="stat"><b>166</b><span>सहयोगकर्ता</span></p>
-        <p class="stat"><b>2,978</b><span>किलो शक्कर</span></p>
-        <p class="stat"><b>₹2,33,206</b><span>नगद</span></p>
-        <p class="stats-note">सन् 2025 के 45वां विशाल भंडारा का हिसाब। हर वर्ष की पूरी
-           सूची <a href="/hi/daan/">दान पृष्ठ</a> पर है।</p>
-      </div>
-    </section>
-
-    <!-- 3. donor preview -->
+    <!-- 2. हर आयोजन का हिसाब - written by tools/update_home_stats.py from the donor
+         files themselves, so the home page cannot quietly fall behind a list. Edit the
+         data and run the script; tools/test_update_home_stats.py fails if it was not run.
+         The hand-typed 2025 band and the three hand-picked donors that stood here are
+         gone: the cards are the same account, for every आयोजन rather than one year. -->
+<!-- tally:start -->
     <div class="wrap section">
       <div class="section-head">
-        <h2>दानदाता सूची</h2>
-        <a class="all" href="/hi/daan/">सभी वर्ष देखें</a>
+        <h2>हर आयोजन का हिसाब</h2>
+        <a class="all" href="/hi/daan/">सभी सूचियाँ</a>
       </div>
-      <div class="donor-roll">
-        <article class="donor-card"><span class="year-badge">2025</span>
-          <span class="type-tag">शक्कर</span>
-          <h3>श्री संजय जी जमदार (बाबा)</h3><p>501 किलो शक्कर</p></article>
-        <article class="donor-card"><span class="year-badge">2025</span>
-          <span class="type-tag">आटा · नगद · तेल</span>
-          <h3>श्री राकेश जी चौधरी (बाल्दा)</h3>
-          <p>101 किलो आटा + ₹1,100 नगद + 4 डब्बा तेल</p></article>
-        <article class="donor-card memoriam"><span class="year-badge">2025</span>
-          <span class="type-tag">नमक</span>
-          <h3>स्व. श्रीमती आशा जी जाट</h3><p>111 किलो नमक</p></article>
-      </div>
-      <p class="list-more"><a href="/hi/daan/hanuman-mandir/">श्री हनुमान मंदिर निर्माण के दानदाताओं की सूची →</a></p>
+      <ul class="tally-grid">
+      <li class="tally give-festival">
+        <h3><a href="/hi/daan/navdurga-mahotsav-2026/">नवदुर्गा महोत्सव एवं विशाल भंडारा 2026</a></h3>
+        <p class="tally-who">44 दानदाता · 46वां विशाल भंडारा · 23वां नगर कन्या पूजन</p>
+        <ul class="tally-rows">
+          <li><b>₹47,305</b> <span>नगद</span></li>
+          <li><b>1,174 किलो</b> <span>आटा</span></li>
+          <li><b>567 किलो</b> <span>मावा</span></li>
+          <li><b>403 किलो</b> <span>शक्कर</span></li>
+        </ul>
+      </li>
+      <li class="tally give-yatra">
+        <h3><a href="/hi/daan/kavad-yatra-2026/">श्री नर्मदेश्वर महादेव भव्य कावड़ यात्रा 2026</a></h3>
+        <p class="tally-who">50 दानदाता</p>
+        <ul class="tally-rows">
+          <li><b>₹46,300</b> <span>नगद</span></li>
+          <li><b>264 किलो</b> <span>आटा</span></li>
+          <li><b>30 किलो</b> <span>शक्कर</span></li>
+          <li><b>20 जार</b> <span>पानी</span></li>
+        </ul>
+      </li>
+      <li class="tally give-festival">
+        <h3><a href="/hi/daan/navdurga-mahotsav-2025/">नवदुर्गा महोत्सव एवं विशाल भंडारा 2025</a></h3>
+        <p class="tally-who">166 दानदाता · 45वां विशाल भंडारा · 22वां नगर कन्या पूजन</p>
+        <ul class="tally-rows">
+          <li><b>₹2,33,206</b> <span>नगद</span></li>
+          <li><b>2,978 किलो</b> <span>शक्कर</span></li>
+          <li><b>2,650 किलो</b> <span>आटा</span></li>
+          <li><b>369 किलो</b> <span>मावा</span></li>
+        </ul>
+      </li>
+      <li class="tally give-yatra">
+        <h3><a href="/hi/daan/kavad-yatra-2025/">श्री नर्मदेश्वर महादेव भव्य कावड़ एवं जलाभिषेक यात्रा 2025</a></h3>
+        <p class="tally-who">67 दानदाता</p>
+        <ul class="tally-rows">
+          <li><b>₹59,712</b> <span>नगद</span></li>
+          <li><b>254 किलो</b> <span>आटा</span></li>
+          <li><b>4 डब्बा</b> <span>तेल</span></li>
+          <li><b>2 छोटी</b> <span>गैस टंकी</span></li>
+        </ul>
+      </li>
+      <li class="tally give-festival">
+        <h3><a href="/hi/daan/navdurga-mahotsav-2024/">नवदुर्गा महोत्सव एवं विशाल भंडारा 2024</a></h3>
+        <p class="tally-who">154 दानदाता</p>
+        <ul class="tally-rows">
+          <li><b>₹1,22,500</b> <span>नगद</span></li>
+          <li><b>3,902 किलो</b> <span>शक्कर</span></li>
+          <li><b>3,075 किलो</b> <span>आटा</span></li>
+          <li><b>455 किलो</b> <span>मावा</span></li>
+        </ul>
+      </li>
+      <li class="tally give-yatra">
+        <h3><a href="/hi/daan/kavad-yatra-2024/">श्री नर्मदेश्वर महादेव भव्य कावड़ यात्रा 2024</a></h3>
+        <p class="tally-who">51 दानदाता</p>
+        <ul class="tally-rows">
+          <li><b>₹37,604</b> <span>नगद</span></li>
+          <li><b>180 किलो</b> <span>आटा</span></li>
+          <li><b>21 किलो</b> <span>शक्कर</span></li>
+          <li><b>10 डब्बा</b> <span>तेल</span></li>
+        </ul>
+      </li>
+      <li class="tally give-temple">
+        <h3><a href="/hi/daan/hanuman-mandir/">श्री हनुमान मंदिर निर्माण</a></h3>
+        <p class="tally-who">48 दानदाता</p>
+        <ul class="tally-rows">
+          <li><b>₹36,343</b> <span>नगद</span></li>
+          <li><b>551</b> <span>ईंट</span></li>
+          <li><b>122 बोरी</b> <span>सीमेंट</span></li>
+          <li><b>51 किलो</b> <span>सरिया</span></li>
+        </ul>
+      </li>
+      </ul>
+      <p class="stats-note">हर सूची उसी आयोजन की है। पूरी सूची और खोज <a href="/hi/daan/">दान पृष्ठ</a> पर है।</p>
     </div>
+    <!-- tally:end -->
 
-    <!-- 4. heritage band (विरासत) -->
+    <!-- 3. heritage band (विरासत) -->
     <!-- The first paragraph is the समाज's own text. The two after it were added from public
          sources (English Wikipedia "Avantibai"; the India Post stamp record at istampgallery.com)
          and condense the fuller account on /hi/parichay/ - they are NOT the समाज's words.
@@ -138,7 +191,7 @@
       </div>
     </section>
 
-    <!-- 5. purpose — the old home page's (shorter) wording, LIGHTLY COPY-EDITED: सदैव, पढ़ाई-लिखाई,
+    <!-- 4. purpose — the old home page's (shorter) wording, LIGHTLY COPY-EDITED: सदैव, पढ़ाई-लिखाई,
          करियर, सुविधाएँ, बंधु, कार्यों. The same spellings are used on /hi/parichay/.
          The समाज must approve the edit. -->
     <div class="wrap section">
@@ -152,7 +205,7 @@
          लोधी बंधु जो इन सेवा कार्यों में सहयोग देना चाहते हैं, सहर्ष आमंत्रित हैं।</p>
     </div>
 
-    <!-- 6. services (आधुनिक) -->
+    <!-- 5. services (आधुनिक) -->
     <div class="wrap section">
       <div class="section-head"><h2>हमारी सेवाएँ</h2></div>
       <div class="service-list">

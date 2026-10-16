@@ -780,6 +780,26 @@ body.lb-open { overflow: hidden; }
   .give-card { position: static; order: -1; }
 }
 
+/* ---- home: what each list received, one card apiece ----
+   The home page used to print one year's three figures and three hand-picked
+   donors. Every आयोजन now has a card of its own, in the दान page's colours:
+   indigo for the मंदिर, red for the यात्रा, gold for the महोत्सव. Gold is a
+   border colour only - as text on paper it fails contrast - so the heading
+   stays indigo and the border carries the signal. */
+.tally-grid { list-style: none; margin: 0; padding: 0; display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: 16px; }
+.tally { padding: 15px 18px 14px; background: #fff; border: 1px solid var(--rule);
+         border-top: 4px solid var(--accent, var(--rule)); border-radius: var(--r); }
+.tally h3 { margin: 0 0 3px; font-size: 1.15rem; line-height: 1.28; }
+.tally h3 a { color: var(--ind); }
+.tally h3 a:hover, .tally h3 a:focus-visible { color: var(--red); }
+.tally-who { margin: 0 0 10px; color: var(--mute); font-size: 0.85rem; }
+.tally-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.tally-rows li { display: flex; align-items: baseline; gap: 8px; }
+.tally-rows b { font-family: var(--head); font-weight: 400; font-size: 1.12rem;
+                color: var(--red-d); font-variant-numeric: tabular-nums; }
+.tally-rows span { color: var(--mute); font-size: 0.9rem; }
+
 /* ---- /daan/ archive: the years on offer ---- */
 .year-list { list-style: none; margin: 0; padding: 0; max-width: 520px;
              border-top: 1px solid var(--rule); }
