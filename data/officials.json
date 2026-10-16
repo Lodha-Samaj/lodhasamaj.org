@@ -1,19 +1,88 @@
 {
   "current": [
-    {"nameHi": "सुनील कोतुल जी", "roleHi": "अध्यक्ष", "roleEn": "President", "photo": "/assets/img/officials/sunil-kotul.png"},
-    {"nameHi": "विक्रम जाट जी", "roleHi": "उपाध्यक्ष", "roleEn": "Vice President", "photo": "/assets/img/officials/vikram-jat.png"},
-    {"nameHi": "कैलाश जामदार जी", "roleHi": "सचिव", "roleEn": "Secretary", "photo": "/assets/img/officials/kailash-jamdar.png"},
-    {"nameHi": "श्री प्रताप कोतुल", "roleHi": "कोषाध्यक्ष", "roleEn": "Treasurer"}
+    {
+      "nameHi": "शिव कोतुल जी",
+      "roleHi": "अध्यक्ष",
+      "roleEn": "President",
+      "photo": "/assets/img/officials/shiv-kotul.jpeg"
+    },
+    {
+      "nameHi": "बहादुर मंजे जी",
+      "roleHi": "उपाध्यक्ष",
+      "roleEn": "Vice President"
+    },
+    {
+      "nameHi": "राजू वर्मा जी",
+      "roleHi": "सचिव",
+      "roleEn": "Secretary"
+    },
+    {
+      "nameHi": "कमल जाट जी",
+      "roleHi": "कोषाध्यक्ष",
+      "roleEn": "Treasurer"
+    }
   ],
   "former": [
-    {"nameHi": "बहादुर कोतुल जी", "roleHi": "पूर्व अध्यक्ष", "roleEn": "Former President", "photo": "/assets/img/officials/bahadur-kotul.jpeg"},
-    {"nameHi": "धन्नालाल जाट जी", "roleHi": "पूर्व उपाध्यक्ष", "roleEn": "Former Vice President", "photo": "/assets/img/officials/dhannalal-jat.jpeg"},
-    {"nameHi": "गोपाल वर्मा जी", "roleHi": "पूर्व सचिव", "roleEn": "Former Secretary", "photo": "/assets/img/officials/gopal-verma.jpg"},
-    {"nameHi": "श्रवण वर्मा जी", "roleHi": "सह सचिव", "roleEn": "Joint Secretary", "photo": "/assets/img/officials/shravan-verma.jpg"},
-    {"nameHi": "शिव कोतुल जी", "roleHi": "पूर्व कोषाध्यक्ष", "roleEn": "Former Treasurer", "photo": "/assets/img/officials/shiv-kotul.jpeg"}
+    {
+      "nameHi": "सुनील कोतुल जी",
+      "roleHi": "पूर्व अध्यक्ष",
+      "roleEn": "Former President",
+      "photo": "/assets/img/officials/sunil-kotul.png"
+    },
+    {
+      "nameHi": "बहादुर कोतुल जी",
+      "roleHi": "पूर्व अध्यक्ष",
+      "roleEn": "Former President",
+      "photo": "/assets/img/officials/bahadur-kotul.jpeg"
+    },
+    {
+      "nameHi": "विक्रम जाट जी",
+      "roleHi": "पूर्व उपाध्यक्ष",
+      "roleEn": "Former Vice President",
+      "photo": "/assets/img/officials/vikram-jat.png"
+    },
+    {
+      "nameHi": "धन्नालाल जाट जी",
+      "roleHi": "पूर्व उपाध्यक्ष",
+      "roleEn": "Former Vice President",
+      "photo": "/assets/img/officials/dhannalal-jat.jpeg"
+    },
+    {
+      "nameHi": "कैलाश जामदार जी",
+      "roleHi": "पूर्व सचिव",
+      "roleEn": "Former Secretary",
+      "photo": "/assets/img/officials/kailash-jamdar.png"
+    },
+    {
+      "nameHi": "गोपाल वर्मा जी",
+      "roleHi": "पूर्व सचिव",
+      "roleEn": "Former Secretary",
+      "photo": "/assets/img/officials/gopal-verma.jpg"
+    },
+    {
+      "nameHi": "श्रवण वर्मा जी",
+      "roleHi": "सह सचिव",
+      "roleEn": "Joint Secretary",
+      "photo": "/assets/img/officials/shravan-verma.jpg"
+    },
+    {
+      "nameHi": "श्री प्रताप कोतुल",
+      "roleHi": "पूर्व कोषाध्यक्ष",
+      "roleEn": "Former Treasurer"
+    }
   ],
   "brahmlin": [
-    {"nameHi": "प्रदीप वर्मा जी", "roleHi": "भूतपूर्व अध्यक्ष", "roleEn": "Former President (late)", "photo": "/assets/img/officials/pradeep-verma.jpeg"},
-    {"nameHi": "सतपाल वर्मा जी", "roleHi": "भूतपूर्व अध्यक्ष", "roleEn": "Former President (late)", "photo": "/assets/img/officials/satpal-verma.jpg"}
+    {
+      "nameHi": "प्रदीप वर्मा जी",
+      "roleHi": "भूतपूर्व अध्यक्ष",
+      "roleEn": "Former President (late)",
+      "photo": "/assets/img/officials/pradeep-verma.jpeg"
+    },
+    {
+      "nameHi": "सतपाल वर्मा जी",
+      "roleHi": "भूतपूर्व अध्यक्ष",
+      "roleEn": "Former President (late)",
+      "photo": "/assets/img/officials/satpal-verma.jpg"
+    }
   ]
 }
