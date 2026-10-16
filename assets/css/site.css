@@ -235,7 +235,11 @@ main:focus { outline: none; }
 .brand-text { color: inherit; }
 /* The name stands alone in the middle now - the सेवा · शिक्षा · स्वास्थ्य line
    it used to carry is in the footer, where there is room to read it. */
-.brand b { display: block; font-family: var(--head); font-weight: 400; font-size: 1.2rem;
+/* The समाज's name is the title of the site, so it is set to the mark's own
+   height rather than to the size of a label beside it. The line box is pulled
+   in to 1.2 - at this size the body's 1.72 would leave it floating. */
+.brand b { display: block; font-family: var(--head); font-weight: 400;
+           font-size: clamp(1.3rem, 0.95rem + 1.1vw, 1.7rem); line-height: 1.2;
            color: var(--red-d); }
 /* The band of pages: its own strip under the name, so ten Hindi words have
    room to breathe and each one is a 44px target. It stays at the top of the
@@ -538,7 +542,7 @@ body.lb-open { overflow: hidden; }
   .prose-split img { max-width: 220px; }
   .heritage img { height: auto; max-height: 320px; object-fit: cover; object-position: center 20%; }
 
-  .brand b { font-size: 1.05rem; }
+  .brand b { font-size: 1.25rem; }
   .site-header { min-height: 70px; }
   .brand img { width: 46px; height: 40px; }
 }
