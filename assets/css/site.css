@@ -427,6 +427,19 @@ main:has(.prose) .wrap { max-width: 880px; }
    hand-reviewed per donor - it has to read. */
 .donor-card.memoriam h3 { color: var(--ind); }
 
+/* A whole entry is one button on a सूची page, so it answers the pointer: the
+   second paper tone follows the cursor down the roll, which is how a reader
+   keeps their place in two columns of similar-looking rows. It comes after
+   .memoriam so a स्मृति entry lights up too, and only entries that really open
+   something get it - the home page preview has no button. Touch screens have
+   no hover; there a tap opens the pop-up at once. */
+.donor-card:has(.donor-open) { transition: background-color 0.12s ease; }
+@media (hover: hover) {
+  .donor-card:has(.donor-open):hover { background: var(--paper); }
+}
+/* The same band marks the entry a keyboard reader has tabbed to. */
+.donor-card:has(.donor-open:focus-visible) { background: var(--paper); }
+
 /* ---- the समाज's own photographs on the home page ---- */
 /* A ribbon under the hero: the page's first proof that this is a real,
    active समाज. Kept shorter than the heritage band so the two do not
