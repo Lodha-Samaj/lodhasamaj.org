@@ -49,6 +49,12 @@ body {
 }
 
 h1, h2, h3 { font-family: var(--head); font-weight: 400; line-height: 1.3; }
+/* Where a line turns is a typographic decision, not an accident of the box.
+   `balance` evens out a heading's lines instead of leaving one word below a
+   full one; `pretty` does the same for the last line of a paragraph. Both
+   degrade to ordinary wrapping where the browser does not know them. */
+h1, h2, h3, .fest-name, .brand b, .stat b { text-wrap: balance; }
+p, li, figcaption, .subtitle, .hero-lede, .stats-note { text-wrap: pretty; }
 /* The pages band holds the top of the screen, so a heading jumped to from a
    link stops below it rather than behind it. */
 :target, [id] { scroll-margin-top: 72px; }
@@ -295,7 +301,7 @@ main:focus { outline: none; }
               display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
 .hero h1 { margin: 0 0 16px; font-size: clamp(2.1rem, 1.4rem + 2.8vw, 3.2rem); line-height: 1.12;
            color: #f6ecd2; }
-.hero-lede { margin: 0 0 24px; max-width: 30ch; color: #cfc6e0; font-size: 1.1rem; }
+.hero-lede { margin: 0 0 24px; max-width: 36ch; color: #cfc6e0; font-size: 1.1rem; }
 .hero-do { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 0; }
 /* Marigold on the night: the one warm button on the page, and the colour the
    मंडप is dressed in. */
