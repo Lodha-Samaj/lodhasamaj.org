@@ -27,7 +27,13 @@ export function listOrder(index) {
 
 export const listDataUrl = (list) =>
   (list.kind === 'year' ? `/data/donors-${list.key}.json` : `/data/${list.key}.json`);
-export const listPageUrl = (list, lang) => `/${lang}/daan/${list.key}/`;
+/** The नवदुर्गा महोत्सव is held every year and each year has its own list, so
+ *  the page is named for the festival and the year together - the same shape
+ *  as kavad-yatra-2026. tools/validate_donors.py holds the same slug and a
+ *  test keeps the two in step. */
+export const FESTIVAL_SLUG = 'navdurga-mahotsav';
+export const listPageUrl = (list, lang) =>
+  `/${lang}/daan/${list.kind === 'year' ? `${FESTIVAL_SLUG}-${list.key}` : list.key}/`;
 export const historyUrl = (id, lang) => `/${lang}/daata/?id=${id}`;
 
 /** "/hi/daata/?id=D0042" -> "D0042". null for anything that is not a Donor ID. */

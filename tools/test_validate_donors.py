@@ -2,7 +2,7 @@ import json
 import re
 from pathlib import Path
 import pytest
-from validate_donors import validate_file, main, TYPES, UNITS
+from validate_donors import validate_file, main, TYPES, UNITS, FESTIVAL_SLUG
 
 
 def write(tmp_path: Path, payload, name="donors-2025.json") -> str:
@@ -173,7 +173,7 @@ def test_item_errors_name_the_item_position(tmp_path):
 
 
 def page_html(lang: str, year: int, data_year=None) -> str:
-    u = f"/{lang}/daan/{year}/"
+    u = f"/{lang}/daan/{FESTIVAL_SLUG}-{year}/"
     return (f'<link rel="canonical" href="{u}">\n'
             f'<link rel="alternate" hreflang="{lang}" href="{u}">\n'
             f'<meta property="og:url" content="{u}">\n'
@@ -182,7 +182,7 @@ def page_html(lang: str, year: int, data_year=None) -> str:
 
 def make_pages(root: Path, year: int, langs=("hi", "en")) -> None:
     for lang in langs:
-        d = root / lang / "daan" / str(year)
+        d = root / lang / "daan" / f"{FESTIVAL_SLUG}-{year}"
         d.mkdir(parents=True, exist_ok=True)
         (d / "index.html").write_text(page_html(lang, year), encoding="utf-8")
 
@@ -223,8 +223,8 @@ def test_listed_year_with_data_but_no_page_directory_is_reported(tmp_path, capsy
     # data file and index entry exist, but no hi/daan/2025 or en/daan/2025
     assert main(["validate_donors.py"], data_dir=tmp_path, site_root=tmp_path) == 1
     out = capsys.readouterr().out
-    assert "hi/daan/2025/index.html is missing" in out
-    assert "en/daan/2025/index.html is missing" in out
+    assert "hi/daan/navdurga-mahotsav-2025/index.html is missing" in out
+    assert "en/daan/navdurga-mahotsav-2025/index.html is missing" in out
 
 
 def test_only_one_language_page_missing_names_that_path(tmp_path, capsys):
@@ -233,8 +233,8 @@ def test_only_one_language_page_missing_names_that_path(tmp_path, capsys):
     make_pages(tmp_path, 2025, langs=("hi",))
     assert main(["validate_donors.py"], data_dir=tmp_path, site_root=tmp_path) == 1
     out = capsys.readouterr().out
-    assert "en/daan/2025/index.html is missing" in out
-    assert "hi/daan/2025/index.html is missing" not in out
+    assert "en/daan/navdurga-mahotsav-2025/index.html is missing" in out
+    assert "hi/daan/navdurga-mahotsav-2025/index.html is missing" not in out
 
 
 def _setup(tmp_path, index_text):
@@ -245,22 +245,23 @@ def _setup(tmp_path, index_text):
 
 def test_stale_data_year_is_reported(tmp_path, capsys):
     _setup(tmp_path, '{"years": [2025]}')
-    (tmp_path / "hi/daan/2025/index.html").write_text(
+    (tmp_path / "hi/daan/navdurga-mahotsav-2025/index.html").write_text(
         page_html("hi", 2025, data_year=2024), encoding="utf-8")
     assert main(["v"], data_dir=tmp_path, site_root=tmp_path) == 1
     out = capsys.readouterr().out
-    assert 'hi/daan/2025/index.html: expected data-year="2025" but found 2024' in out
+    assert ('hi/daan/navdurga-mahotsav-2025/index.html: expected data-year="2025" '
+            'but found 2024') in out
 
 
 def test_stale_canonical_ogurl_and_hreflang_are_reported(tmp_path, capsys):
     _setup(tmp_path, '{"years": [2025]}')
-    (tmp_path / "en/daan/2025/index.html").write_text(
+    (tmp_path / "en/daan/navdurga-mahotsav-2025/index.html").write_text(
         page_html("en", 2024).replace('data-year="2024"', 'data-year="2025"'), encoding="utf-8")
     assert main(["v"], data_dir=tmp_path, site_root=tmp_path) == 1
     out = capsys.readouterr().out
-    assert "canonical should contain /daan/2025/" in out
-    assert "og:url should contain /daan/2025/" in out
-    assert 'hreflang="en" should contain /daan/2025/' in out
+    assert "canonical should contain /daan/navdurga-mahotsav-2025/" in out
+    assert "og:url should contain /daan/navdurga-mahotsav-2025/" in out
+    assert 'hreflang="en" should contain /daan/navdurga-mahotsav-2025/' in out
 
 
 def test_index_trailing_comma_reports_line_and_column(tmp_path, capsys):
@@ -479,3 +480,20 @@ def test_malformed_register_shapes_are_reported_not_raised(tmp_path, reg, data):
     write(tmp_path, reg, "donors.json")
     errors = check_register(tmp_path, [Path(write(tmp_path, data))])
     assert errors and all(isinstance(e, str) for e in errors)
+
+
+def test_festival_slug_matches_the_site():
+    """history-core.js builds the link to a year list and this file checks the
+    page is there: both must spell the festival the same way, or every donor
+    history would link to a page the validator never looks at."""
+    root = Path(__file__).resolve().parents[1]
+    js = (root / "assets" / "js" / "history-core.js").read_text(encoding="utf-8")
+    m = re.search(r"FESTIVAL_SLUG = '([^']+)'", js)
+    assert m, "history-core.js no longer declares FESTIVAL_SLUG"
+    assert m.group(1) == FESTIVAL_SLUG, (
+        f"history-core.js says {m.group(1)!r}, validate_donors.py says {FESTIVAL_SLUG!r}")
+    # The दान page builds the year links in its own inline script, where
+    # check_links.py cannot follow them.
+    for lang in ("hi", "en"):
+        page = (root / lang / "daan" / "index.html").read_text(encoding="utf-8")
+        assert f"/daan/{FESTIVAL_SLUG}-" in page, f"{lang}/daan/ no longer links the year lists"

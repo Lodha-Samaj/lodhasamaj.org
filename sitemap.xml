@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://lodhasamaj.org/hi/daan/2024/</loc>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/2024/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/2024/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/2024/"/>
-  </url>
-  <url>
-    <loc>https://lodhasamaj.org/hi/daan/2025/</loc>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/2025/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/2025/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/2025/"/>
-  </url>
-  <url>
     <loc>https://lodhasamaj.org/hi/daan/hanuman-mandir/</loc>
     <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/hanuman-mandir/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/hanuman-mandir/"/>
@@ -29,6 +17,18 @@
     <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/kavad-yatra-2026/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/kavad-yatra-2026/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/kavad-yatra-2026/"/>
+  </url>
+  <url>
+    <loc>https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2024/</loc>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2024/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/navdurga-mahotsav-2024/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2024/"/>
+  </url>
+  <url>
+    <loc>https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2025/</loc>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2025/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/navdurga-mahotsav-2025/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2025/"/>
   </url>
   <url>
     <loc>https://lodhasamaj.org/hi/gallery/</loc>
@@ -85,18 +85,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/swasthya/"/>
   </url>
   <url>
-    <loc>https://lodhasamaj.org/en/daan/2024/</loc>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/2024/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/2024/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/2024/"/>
-  </url>
-  <url>
-    <loc>https://lodhasamaj.org/en/daan/2025/</loc>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/2025/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/2025/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/2025/"/>
-  </url>
-  <url>
     <loc>https://lodhasamaj.org/en/daan/hanuman-mandir/</loc>
     <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/hanuman-mandir/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/hanuman-mandir/"/>
@@ -113,6 +101,18 @@
     <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/kavad-yatra-2026/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/kavad-yatra-2026/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/kavad-yatra-2026/"/>
+  </url>
+  <url>
+    <loc>https://lodhasamaj.org/en/daan/navdurga-mahotsav-2024/</loc>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2024/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/navdurga-mahotsav-2024/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2024/"/>
+  </url>
+  <url>
+    <loc>https://lodhasamaj.org/en/daan/navdurga-mahotsav-2025/</loc>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2025/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/daan/navdurga-mahotsav-2025/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/daan/navdurga-mahotsav-2025/"/>
   </url>
   <url>
     <loc>https://lodhasamaj.org/en/gallery/</loc>

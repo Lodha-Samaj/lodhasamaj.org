@@ -40,7 +40,10 @@ test('lists are searched newest first: named lists, then years descending', () =
     { key: '2024', kind: 'year', year: 2024 }]);
   assert.equal(listDataUrl({ key: '2025', kind: 'year' }), '/data/donors-2025.json');
   assert.equal(listDataUrl({ key: 'hanuman-mandir', kind: 'list' }), '/data/hanuman-mandir.json');
-  assert.equal(listPageUrl({ key: '2025', kind: 'year' }, 'en'), '/en/daan/2025/');
+  // A year list lives under the festival's own name: the address says what the
+  // list is, not only when it was.
+  assert.equal(listPageUrl({ key: '2025', kind: 'year' }, 'en'), '/en/daan/navdurga-mahotsav-2025/');
+  assert.equal(listPageUrl({ key: '2024', kind: 'year' }, 'hi'), '/hi/daan/navdurga-mahotsav-2024/');
 });
 
 test('gatherHistory collects every gift, follows merges and names joint partners', () => {

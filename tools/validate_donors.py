@@ -131,10 +131,22 @@ def read_index(index_path: Path) -> tuple[list[int], list[str]]:
     return good, errors
 
 
+# The नवदुर्गा महोत्सव happens every year and each year has its own list, so
+# its page is named for the festival and the year together, like
+# kavad-yatra-2026. assets/js/history-core.js spells it the same way and
+# test_festival_slug_matches_the_site keeps the two in step.
+FESTIVAL_SLUG = "navdurga-mahotsav"
+
+
+def year_page(lang: str, year: int) -> str:
+    """Where the list for one year of the festival is published."""
+    return f"{lang}/daan/{FESTIVAL_SLUG}-{year}/index.html"
+
+
 def check_year_page(site_root: Path, lang: str, year: int) -> list[str]:
     """The page folder must exist AND be about this year (a copied folder
     whose data-year was not updated would publish last year's list)."""
-    rel = f"{lang}/daan/{year}/index.html"
+    rel = year_page(lang, year)
     f = site_root / rel
     if not f.is_file():
         return [f"donors-index.json lists {year} but {rel} is missing"]
@@ -148,7 +160,7 @@ def check_year_page(site_root: Path, lang: str, year: int) -> list[str]:
         errors.append(f"{rel}: expected data-year=\"{year}\" but found "
                       f"{', '.join(found) if found else 'no data-year attribute'}"
                       " - the page would show the wrong year's list")
-    want = f"/daan/{year}/"
+    want = f"/daan/{FESTIVAL_SLUG}-{year}/"
     tags = re.findall(r"<(?:link|meta)\b[^>]*>", html)
 
     def url_of(tag):

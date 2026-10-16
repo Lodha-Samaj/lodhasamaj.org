@@ -31,10 +31,10 @@ test('the markup names the donor, the Donor ID and how much they gave in all', (
 test('every list the donor appears in becomes a section linking to that list', () => {
   const html = historyHtml(history(), 'hi');
   assert.match(html, /<a href="\/hi\/daan\/hanuman-mandir\/">मंदिर<\/a>/);
-  assert.match(html, /<a href="\/hi\/daan\/2025\/">2025 दानदाता सूची<\/a>/);
+  assert.match(html, /<a href="\/hi\/daan\/navdurga-mahotsav-2025\/">2025 दानदाता सूची<\/a>/);
   assert.match(html, /21 बोरी सीमेंट/);
   // Newest first: the named list comes before the year, as listOrder decided.
-  assert.ok(html.indexOf('hanuman-mandir') < html.indexOf('/hi/daan/2025/'));
+  assert.ok(html.indexOf('hanuman-mandir') < html.indexOf('/hi/daan/navdurga-mahotsav-2025/'));
 });
 
 test('a joint gift names the partner and links to their own history', () => {
