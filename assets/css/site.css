@@ -48,18 +48,19 @@ h1, h2, h3, .fest-name, .brand b { letter-spacing: normal; }
 
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 16px; }
 
-/* A link carries no rule until the pointer or the keyboard reaches it: the
-   page reads quieter, and the line appears exactly where a reader is about to
-   click. Anything shaped like a button or a tab opts out just below - a rule
-   inside a filled button only looks like a mistake - and answers the pointer
-   with colour or a filled surface instead. */
+/* No link on this site carries a rule - not at rest, not under the pointer.
+   Colour alone answers: a red link turns indigo, the समाज's other colour, which
+   is a change of hue rather than a shade and so is seen at a glance. A link
+   shaped like a button or a tab is listed below and answers with its own
+   surface instead. */
 a { color: var(--red); text-decoration: none; }
-a:hover, a:focus-visible {
-  color: var(--red-d); text-decoration: underline; text-underline-offset: 3px;
-}
-:is(.brand, .cta, .btn, .lang-toggle, .skip-link, .heritage a,
-    .site-nav a):is(:hover, :focus-visible, :focus) {
-  text-decoration: none;
+a:hover, a:focus-visible { color: var(--ind); text-decoration: none; }
+/* These set their own colour further down the file, where an equal (or
+   heavier) selector would hold it through the hover. Saying it once here, at a
+   weight none of them reach, keeps every link answering the pointer. */
+:is(.list-more a, .section-head .all, .gift-joint a, .dm-history a,
+    .crumbs a, .contact-list a, .link-row a):is(:hover, :focus-visible) {
+  color: var(--ind);
 }
 .site-nav a:hover, .site-nav a:focus-visible { color: var(--red); }
 .cta:hover, .cta:focus-visible, .btn:hover, .btn:focus-visible {
@@ -203,6 +204,11 @@ main:focus { outline: none; }
 .site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
 .site-nav a { color: #55505e; font-weight: 600; font-size: 0.85rem; text-decoration: none; }
 .site-nav a[aria-current="page"] { color: var(--red); border-bottom: 2px solid var(--red); }
+/* The page you are on is already red, so it deepens instead - otherwise it
+   would be the one item in the menu that ignores the pointer. */
+.site-nav a[aria-current="page"]:hover, .site-nav a[aria-current="page"]:focus-visible {
+  color: var(--red-d); border-bottom-color: var(--red-d);
+}
 .lang-toggle { margin-left: auto; padding: 4px 9px; border: 1px solid var(--line);
                border-radius: 4px; font-weight: 700; font-size: 0.75rem; text-decoration: none; }
 .cta { padding: 8px 15px; background: var(--red); color: #fff; border-radius: 5px;
@@ -483,7 +489,9 @@ main:has(.prose) .wrap { max-width: 880px; }
 .year-item { border-bottom: 1px solid var(--rule); }
 .year-item a { display: block; padding: 14px 2px; font-family: var(--head);
                font-size: 1.22rem; color: var(--ind); text-decoration: none; }
-.year-item a:hover, .year-item a:focus-visible { text-decoration: underline; }
+/* Indigo at rest, so this one turns the other way: red marks the year the
+   reader is about to open. */
+.year-item a:hover, .year-item a:focus-visible { color: var(--red); }
 
 /* ---- services: a list of ways in, ruled like the rest of the page ---- */
 .service-list { display: grid; border-top: 1px solid var(--rule); }
@@ -492,7 +500,7 @@ main:has(.prose) .wrap { max-width: 880px; }
                 text-decoration: none; color: var(--ink); }
 .service-card h3 { margin: 0; font-size: 1.22rem; color: var(--red); font-weight: 400; }
 .service-card p { margin: 0; color: var(--mute); font-size: 0.95rem; align-self: center; }
-.service-card:hover h3, .service-card:focus-visible h3 { text-decoration: underline; }
+.service-card:hover h3, .service-card:focus-visible h3 { color: var(--red-d); }
 
 /* A loose paragraph under a section heading still needs a measure. */
 .wrap.section > p { max-width: 68ch; }
@@ -528,7 +536,10 @@ main:has(.prose) .wrap { max-width: 880px; }
 .totals-note { margin: -8px 0 20px; color: var(--mute); font-size: 0.8rem; }
 .history-group { margin-top: 28px; }
 .history-group h2, .history-group h3 { margin: 0 0 8px; font-size: 1.25rem; }
-.history-group :is(h2, h3) a { color: var(--ind); text-decoration-color: var(--mar); }
+.history-group :is(h2, h3) a { color: var(--ind); }
+.history-group :is(h2, h3) a:hover, .history-group :is(h2, h3) a:focus-visible {
+  color: var(--red);
+}
 .gift-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .gift { padding: 12px 0; border-bottom: 1px solid var(--line); }
 .gift p { margin: 0; }
