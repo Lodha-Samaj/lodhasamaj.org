@@ -106,7 +106,7 @@
         .filter(Boolean)
         .sort((a, b) => Number(b[1]) - Number(a[1]));
       for (const [slug, year] of yatras) {
-        kavad.append(item(`/${lang}/daan/${slug}/`, `${year} सहयोगकर्ता सूची`));
+        kavad.append(item(`/${lang}/daan/${slug}/`, `${year} दानदाता सूची`));
       }
     } catch (error) {
       console.error(error);
