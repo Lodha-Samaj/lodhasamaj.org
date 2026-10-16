@@ -24,10 +24,11 @@
 
   --head: 'Tiro Devanagari Hindi', serif;
   --body: 'Mukta', system-ui, sans-serif;
-  /* The page runs edge to edge; only the reading measure is held back, on
-     .prose and on the paragraphs themselves. The gutter grows with the
-     screen so text never touches the glass. */
-  --wrap: none;
+  /* The page holds nine tenths of the screen, with the last tenth left as
+     margin either side; the reading measure is held back further, on .prose
+     and on the paragraphs themselves. The gutter grows with the screen so
+     text never touches the glass. */
+  --wrap: 90%;
   --gutter: clamp(16px, 3.2vw, 56px);
   --r: 8px;
 }
@@ -291,13 +292,15 @@ main:focus { outline: none; }
    sit beside the greeting as an invitation, and the समाज's own photograph
    follows immediately below - faces in daylight, never under a scrim. */
 .hero {
-  padding: 60px 16px 56px;
+  /* The side room is the page's gutter, carried by .hero-inner, so the
+     greeting starts on the same line as every heading below it. */
+  padding: 60px 0 56px;
   background: radial-gradient(circle at 10% -10%, rgba(232, 163, 61, 0.30), transparent 48%),
               radial-gradient(circle at 94% 112%, rgba(179, 38, 30, 0.34), transparent 54%),
               var(--ind-d);
   color: #ddd5ea;
 }
-.hero-inner { max-width: var(--wrap); margin: 0 auto;
+.hero-inner { max-width: var(--wrap); margin: 0 auto; padding-inline: var(--gutter);
               display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
 .hero h1 { margin: 0 0 16px; font-size: clamp(2.1rem, 1.4rem + 2.8vw, 3.2rem); line-height: 1.12;
            color: #f6ecd2; }
@@ -814,7 +817,7 @@ body.lb-open { overflow: hidden; }
   /* The hero's two columns need the width; below it the calendar follows the
      headline instead of being squeezed beside it. */
   .hero-inner { grid-template-columns: 1fr; gap: 28px; }
-  .hero { padding: 36px 16px 32px; }
+  .hero { padding: 36px 0 32px; }
 }
 @media (max-width: 760px) {
   .service-card, .fest, .contact-list li { grid-template-columns: 1fr; }
