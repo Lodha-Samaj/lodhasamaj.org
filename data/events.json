@@ -1,14 +1,27 @@
 {
-  "needsConfirmation": true,
+  "needsConfirmation": false,
   "events": [
-    {"titleHi": "नवदुर्गा महोत्सव", "titleEn": "Navdurga Mahotsav",
-     "when": "15–24 अक्टूबर, रात्रि 8 बजे",
-     "where": "महाराणा प्रताप चौराहा, महूनाका इंदौर"},
-    {"titleHi": "विजयादशमी महोत्सव", "titleEn": "Vijayadashami Mahotsav",
-     "when": "24 अक्टूबर, रात्रि 8 बजे",
-     "where": "महाराणा प्रताप चौराहा, महूनाका इंदौर"},
-    {"titleHi": "नगर कन्या भोज एवं विशाल भंडारा", "titleEn": "Nagar Kanya Bhoj and Vishal Bhandara",
-     "when": "25 अक्टूबर, शाम 6 बजे", "ordinal": {"bhandara": 45, "kanyaPujan": 22},
-     "where": "महाराणा प्रताप चौराहा, महूनाका इंदौर"}
+    {
+      "titleHi": "नवदुर्गा महोत्सव",
+      "titleEn": "Navdurga Mahotsav",
+      "when": "10–19 अक्टूबर, रात्रि 8 बजे",
+      "where": "महाराणा प्रताप चौराहा, महूनाका इंदौर"
+    },
+    {
+      "titleHi": "विजयादशमी महोत्सव",
+      "titleEn": "Vijayadashami Mahotsav",
+      "when": "20 अक्टूबर, रात्रि 8 बजे",
+      "where": "महाराणा प्रताप चौराहा, महूनाका इंदौर"
+    },
+    {
+      "titleHi": "नगर कन्या भोज एवं विशाल भंडारा",
+      "titleEn": "Nagar Kanya Bhoj and Vishal Bhandara",
+      "when": "23 अक्टूबर, शाम 6 बजे",
+      "ordinal": {
+        "bhandara": 46,
+        "kanyaPujan": 23
+      },
+      "where": "महाराणा प्रताप चौराहा, महूनाका इंदौर"
+    }
   ]
 }

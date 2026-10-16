@@ -98,13 +98,18 @@ def test_ordinals_match_in_the_home_hero():
     assert f"{o['kanyaPujan']}वां नगर कन्या पूजन" in hero
 
 
-def test_bhandara_ordinal_matches_in_the_home_stats_band():
+def test_the_stats_band_reports_the_bhandara_before_the_coming_one():
+    """The hero announces this year's भंडारा; the band under it reports the last
+    one, with the donor figures of that year. They are consecutive, so the band's
+    ordinal is one less - and the band must also name the year it reports."""
     o = ordinal_event()["ordinal"]
     stats = element("hi/index.html", r'<section class="stats">(.*?)</section>')
-    assert f"{o['bhandara']}वां विशाल भंडारा" in stats
-    # If a कन्या पूजन stat is ever added, it must carry the same number.
+    assert f"{o['bhandara'] - 1}वां विशाल भंडारा" in stats, stats
+    assert f"{o['bhandara']}वां" not in stats, "the band is about the भंडारा already held"
+    assert re.search(r"सन् (\d{4})", stats), stats
+    # If a कन्या पूजन stat is ever added, it belongs to that same year.
     for number in re.findall(r"(\d+)वां\s+नगर कन्या पूजन", stats):
-        assert int(number) == o["kanyaPujan"]
+        assert int(number) == o["kanyaPujan"] - 1
 
 
 def test_ordinals_match_on_the_karyakram_entry():
@@ -178,24 +183,24 @@ def test_english_ordinals_match_in_hero_stats_and_card():
     block = next(text(b) for b in fest_blocks("en/karyakram/index.html")
                  if ordinal_event()["titleEn"] in b)
     assert bhandara in hero and kanya in hero
-    assert bhandara in stats
+    # As in Hindi, the band reports the भंडारा already held: one ordinal back.
+    assert f"{ordinal_en(o['bhandara'] - 1)} Vishal Bhandara" in stats, stats
+    assert bhandara not in stats, "the band is about the bhandara already held"
     for number in re.findall(r"(\d+)(?:st|nd|rd|th)\s+Nagar Kanya Pujan", stats):
-        assert int(number) == o["kanyaPujan"]
+        assert int(number) == o["kanyaPujan"] - 1
     assert bhandara in block and kanya in block
 
 
-def test_english_pages_keep_the_visible_unconfirmed_dates_note():
-    # source() strips HTML comments, so a note that is commented out does not count as visible.
-    # Limitation: a note hidden with CSS (display:none etc.) needs a browser to detect and is
-    # NOT covered here.
-    for page in ("en/index.html", "en/karyakram/index.html"):
-        assert 'class="date-note">Dates will be updated once confirmed.' in source(page), page
-
-
-def test_hindi_pages_keep_the_visible_unconfirmed_dates_note():
-    # Same comment-stripping and same CSS-hiding limitation as the English test above.
-    for page in ("hi/index.html", "hi/karyakram/index.html"):
-        assert 'class="date-note">तिथियाँ पुष्टि के बाद अद्यतन की जाएँगी।' in source(page), page
+def test_no_page_still_warns_that_the_dates_are_unconfirmed():
+    """The समाज confirmed the 2026 dates, so the warning must be gone - from the
+    pages and from events.json, which is the publish gate's own flag. If a later
+    year is entered before the समाज has confirmed it, put the note back and turn
+    the flag on again; this test then has to be turned around with it."""
+    assert json.loads((ROOT / "data" / "events.json").read_text(encoding="utf-8")
+                      )["needsConfirmation"] is False
+    for page in ("hi/index.html", "hi/karyakram/index.html",
+                 "en/index.html", "en/karyakram/index.html"):
+        assert "date-note" not in source(page), page
 
 
 # en/parichay carries one REVIEW comment more than hi/parichay: the check of the
