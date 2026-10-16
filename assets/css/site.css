@@ -244,12 +244,12 @@ main:focus { outline: none; }
 .hero .btn:hover, .hero .btn:focus-visible { background: var(--gold); color: var(--ind-d); }
 .hero-more { font-weight: 700; color: var(--mar); }
 .hero-more:hover, .hero-more:focus-visible { color: #f6ecd2; }
-.hero .festivals { border-top-color: rgba(243, 233, 205, 0.3); }
-.hero .fest { border-bottom-color: rgba(243, 233, 205, 0.3); }
-.hero .fest-when { color: var(--mar); }
-.hero .fest-name { color: #f6ecd2; font-size: 1.3rem; }
-.hero .fest-where { color: #bdb4cf; }
-.hero .fest-where b { color: #f3e9cd; font-weight: 600; }
+:is(.hero, .invite) .festivals { border-top-color: rgba(243, 233, 205, 0.3); }
+:is(.hero, .invite) .fest { border-bottom-color: rgba(243, 233, 205, 0.3); }
+:is(.hero, .invite) .fest-when { color: var(--mar); }
+:is(.hero, .invite) .fest-name { color: #f6ecd2; font-size: 1.3rem; }
+:is(.hero, .invite) .fest-where { color: #bdb4cf; }
+:is(.hero, .invite) .fest-where b { color: #f3e9cd; font-weight: 600; }
 
 /* The festival calendar: date column, then the occasion. Ruled like an invitation. */
 .festivals { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
@@ -259,6 +259,17 @@ main:focus { outline: none; }
 .fest-name { margin: 0; font-size: 1.22rem; color: var(--ind); font-weight: 400; }
 .fest-where { margin: 14px 0 0; color: var(--mute); font-size: 0.9rem; }
 .fest-where b { font-weight: 600; color: var(--ink); }
+
+/* The कार्यक्रम page's own invitation: the same night as the home hero, so the
+   two pages speak with one voice, and the dates are the page's anchor rather
+   than another ruled list among several. */
+.invite { margin-block: 8px 12px; padding-block: 44px;
+          background: radial-gradient(circle at 8% -20%, rgba(232, 163, 61, 0.26), transparent 46%),
+                      radial-gradient(circle at 96% 120%, rgba(179, 38, 30, 0.30), transparent 52%),
+                      var(--ind-d);
+          color: #ddd5ea; }
+.invite .section-head h2 { color: #f6ecd2; }
+.invite .fest-note { color: #bdb4cf; }
 
 /* ---- stats (आधुनिक zone) ---- */
 /* What the समाज fed last नवरात्र, in three figures. It was one sentence, and
@@ -604,6 +615,12 @@ main:has(.prose) .wrap { max-width: 880px; }
 
 /* A loose paragraph under a section heading still needs a measure. */
 .wrap.section > p { max-width: 68ch; }
+/* The first paragraph of a page says what the page is for; it is read before
+   anything else, so it is set a size up and to a shorter measure. */
+.wrap.section > .section-head:first-child + p,
+.wrap.section > .section-head:first-child + .prose > p:first-child {
+  max-width: 56ch; font-size: 1.14rem; line-height: 1.66; color: var(--ink);
+}
 
 /* Mobile stays last in the file, as the rest of this stylesheet does. */
 @media (max-width: 860px) {
