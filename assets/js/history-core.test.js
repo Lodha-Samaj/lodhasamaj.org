@@ -94,3 +94,20 @@ test('historyLinks carries the canonical ID with each link, so the pop-up need n
   // A merged ID resolves to the kept one.
   assert.deepEqual(historyLinks({ donorIds: ['D0009'] }, register, 'hi').map((l) => l.id), ['D0001']);
 });
+
+// "सूचियों में अन्य नाम" has to mean what the lists print. A register alias can
+// outlive the entry it came from - a merged ID, a spelling the समाज corrected -
+// and naming a spelling no page carries any more only puzzles the reader.
+test('the other spellings are the ones the lists actually print, not every alias', () => {
+  const quiet = {
+    donors: { D0001: { name: { hi: 'श्री संजू जाट' },
+                       aliases: ['श्री संजू जाट', 'श्री संजू जी जाट', 'श्री संजू'] } },
+    merged: { D0009: 'D0001' },        // the 2025 entry below is filed under D0009
+  };
+  const onlyCanonical = [{ key: '2025', kind: 'year', year: 2025, data: { donors: [
+    { name: { hi: 'श्री संजू जाट' }, donorIds: ['D0001'], items: [cash(1100)] }] } }];
+  assert.deepEqual(gatherHistory(quiet, onlyCanonical, 'D0001').aliases, []);
+  // The spelling a list really used is still shown - but a joint gift's
+  // printed name is two people, so it is not one of this donor's spellings.
+  assert.deepEqual(gatherHistory(register, lists, 'D0001').aliases, ['श्री संजू जी जाट']);
+});

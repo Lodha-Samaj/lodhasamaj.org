@@ -62,8 +62,17 @@ export function gatherHistory(register, lists, id) {
     if (entries.length) groups.push({ list, entries });
   }
   const all = groups.flatMap((g) => g.entries.map((e) => e.entry));
+  // The other spellings are the ones the lists print, not every alias in the
+  // register: an alias outlives its entry (a merged ID, a corrected spelling),
+  // and "सूचियों में अन्य नाम" must name only what a page still shows. A joint
+  // gift is skipped - its printed name is two people, not a spelling of one;
+  // the gift itself prints that line.
+  const printed = [...new Set(groups.flatMap((g) => g.entries
+    .filter((e) => !e.partners.length)
+    .map((e) => e.entry.name?.hi)).filter(Boolean))]
+    .filter((spelling) => spelling !== donor.name?.hi);
   return {
-    id: canonical, merged: canonical !== id, name: donor.name, aliases: donor.aliases || [],
+    id: canonical, merged: canonical !== id, name: donor.name, aliases: printed,
     groups, count: all.length, listCount: groups.length, totals: totals(all),
   };
 }
