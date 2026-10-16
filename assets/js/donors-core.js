@@ -18,6 +18,7 @@ export const TYPE_LABELS = {
   dal:     { hi: 'दाल',             en: 'Dal' },
   vegetables: { hi: 'हरी सब्जियाँ', en: 'Vegetables' },
   falahar: { hi: 'फलाहार',          en: 'Falahar (fruit fare)' },
+  sweets:  { hi: 'मिठाई',           en: 'Sweets' },
   // कावड़ यात्रा: someone paid for a whole arrangement at one stop rather than
   // handing over goods. No quantity - the `note` says where.
   lodging: { hi: 'धर्मशाला व्यवस्था', en: 'Lodging arranged' },

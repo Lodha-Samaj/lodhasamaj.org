@@ -41,7 +41,9 @@ CONNECTORS = {"के", "की", "का", "पुत्र", "पुत्र�
 # The mirror image of those: "… जी, पिता श्री X" names a parent to say WHICH
 # donor this is. The parent did not give, so no one gets an ID for them.
 PARENT_WORDS = {"पिता", "पिताजी", "माता", "माताजी"}
-FAMILY_WORDS = {"का", "की", "के", "परिवार", "द्वारा", "ओर", "से"}
+# Words that round off a gift without naming anyone else: "… के परिवार द्वारा",
+# "… एवं मित्रगण". They stay in the printed name and get no ID of their own.
+FAMILY_WORDS = {"का", "की", "के", "परिवार", "द्वारा", "ओर", "से", "मित्रगण", "मित्रगणों"}
 # Spelling variants seen across the lists; used only to SUGGEST a review pair.
 WORD_FOLDS = {"जामदार": "जमदार", "वेंकट": "बंकट"}
 CHAR_FOLDS = str.maketrans({"ौ": "ो", "ू": "ु", "ी": "ि", "झ": "ज"})
@@ -51,7 +53,9 @@ LOOSE_TITLES = {"आचार्य", "डॉ."}
 PLACE_PUNCT = re.compile(r"[,:;.]")
 BRACKET = re.compile(r"\(([^)]*)\)")
 JOINERS = re.compile(r"(\s+एवं\s+|\s+और\s+|\s*,\s*)")   # captured: kept as printed
-ANONYMOUS = re.compile(r"^गुप्त\s+दान")
+# Anywhere in the name, not only at its start: the 2025 कावड़ list writes
+# "श्री शिवभक्त (गुप्त दान)", and four of those are four people, not one.
+ANONYMOUS = re.compile(r"गुप्त\s*दान")
 
 
 def _words(text: str) -> list[str]:
@@ -145,7 +149,7 @@ def split_people(name: str) -> list[dict]:
     memorial they all stay. "गुप्त दान" is anonymous and names nobody.
     """
     name = unicodedata.normalize("NFC", name).strip()
-    if ANONYMOUS.match(name):
+    if ANONYMOUS.search(name):
         return []
     name = drop_parent_clause(name)
     held: list[str] = []

@@ -494,3 +494,21 @@ def test_a_father_named_to_identify_the_donor_is_not_a_donor():
 def test_पुत्र_still_attaches_the_son_to_the_parent_who_gave():
     """The opposite wording is unchanged: there the parent is the giver."""
     assert texts("स्व. श्री भारत जी मंजे के पुत्र श्री गोलू") == ["स्व. श्री भारत जी मंजे के पुत्र श्री गोलू"]
+
+
+# The 2025 कावड़ list writes anonymous gifts as "श्री शिवभक्त (गुप्त दान)" - four
+# of them. Taken as a name it would be one person credited with four gifts.
+def test_a_gift_marked_gupt_daan_names_nobody_wherever_the_words_sit():
+    assert a.split_people("श्री शिवभक्त (गुप्त दान)") == []
+    assert a.split_people("गुप्त दान — जय श्री राम") == []
+    assert a.split_people("गुप्त दानदाता") == []
+    # A donor really called that keeps their ID: the words must be together.
+    assert texts("श्री गुप्ता जी दानी") == ["श्री गुप्ता जी दानी"]
+
+
+# "श्री अजय जमदार एवं मित्रगण": the friends are thanked, but मित्रगण is no more a
+# person than परिवार is - it must not become a donor of its own.
+def test_friends_in_a_joint_gift_name_nobody():
+    assert texts("श्री अजय जमदार एवं मित्रगण") == ["श्री अजय जमदार एवं मित्रगण"]
+    assert texts("श्री निलेश बंकट, श्री अजय जमदार एवं मित्रगण") == [
+        "श्री निलेश बंकट", "श्री अजय जमदार एवं मित्रगण"]

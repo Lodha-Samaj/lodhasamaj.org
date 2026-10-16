@@ -78,7 +78,7 @@ def test_item_without_qty_is_allowed(tmp_path):
 def test_vocabularies_match_the_spec():
     assert TYPES == {"sugar", "flour", "oil", "salt", "ghee", "mawa", "cash",
                      "water", "gas", "coconut", "pattal", "besan", "rava",
-                     "rice", "dal", "vegetables", "falahar",
+                     "rice", "dal", "vegetables", "falahar", "sweets",
                      "lodging", "meals", "vehicle",
                      "cement", "brick", "rebar", "tiles", "fan",
                      "other"}

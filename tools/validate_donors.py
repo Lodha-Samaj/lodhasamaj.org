@@ -14,7 +14,7 @@ from pathlib import Path
 
 TYPES = {"sugar", "flour", "oil", "salt", "ghee", "mawa", "cash",
          "water", "gas", "coconut", "pattal", "besan", "rava", "rice",
-         "dal", "vegetables", "falahar",
+         "dal", "vegetables", "falahar", "sweets",
          # कावड़ यात्रा: an arrangement paid for at one stop, not goods.
          "lodging", "meals", "vehicle",
          "cement", "brick", "rebar", "tiles", "fan", "other"}

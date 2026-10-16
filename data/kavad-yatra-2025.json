@@ -1,0 +1,1017 @@
+{
+  "list": "kavad-yatra-2025",
+  "title": {
+    "hi": "श्री नर्मदेश्वर महादेव भव्य कावड़ एवं जलाभिषेक यात्रा 2025",
+    "en": "Shri Narmadeshwar Mahadev Kavad and Jalabhishek Yatra 2025"
+  },
+  "subtitle": {
+    "hi": "27 जुलाई 2025, सिंधु भवन · कार्यक्रम, भोजन प्रसादी एवं अन्य व्यवस्था · सहयोगकर्ताओं की सूची",
+    "en": "27 July 2025, Sindhu Bhavan · the programme, the meal and the rest · List of contributors"
+  },
+  "donors": [
+    {
+      "name": {
+        "hi": "श्री अमित राजपूत"
+      },
+      "donorIds": [
+        "D0166"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री गोपाल पटेल (महू)"
+      },
+      "donorIds": [
+        "D0167"
+      ],
+      "items": [
+        {
+          "type": "oil",
+          "qty": 1,
+          "unit": "tin"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री सुमित पाटिल"
+      },
+      "donorIds": [
+        "D0198"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 501,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री सुनील अमृत जमदार (महाराष्ट्र)"
+      },
+      "donorIds": [
+        "D0381"
+      ],
+      "items": [
+        {
+          "type": "flour",
+          "qty": 100,
+          "unit": "kg"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री धनराज लाले जाट"
+      },
+      "donorIds": [
+        "D0382"
+      ],
+      "items": [
+        {
+          "type": "gas",
+          "qty": 1,
+          "unit": "cylinder"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री प्रभु जाट, श्री चंद्रु जाट"
+      },
+      "donorIds": [
+        "D0034",
+        "D0383"
+      ],
+      "items": [
+        {
+          "type": "gas",
+          "qty": 1,
+          "unit": "cylinder"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री रूपा जमदार"
+      },
+      "donorIds": [
+        "D0384"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री कैलाश जमदार (सचिव, लोधा समाज इंदौर)"
+      },
+      "donorIds": [
+        "D0206"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 2100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री मन्नूलाल कन्हैयालाल जी वर्मा"
+      },
+      "donorIds": [
+        "D0118"
+      ],
+      "items": [
+        {
+          "type": "sweets",
+          "note": "संपूर्ण व्यवस्था"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "स्वर्गीय श्री छोटेलाल कोतुल एवं स्वर्गीय श्री प्रदीप कोतुल"
+      },
+      "donorIds": [
+        "D0385",
+        "D0386"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "स्वर्गीय श्री कृपाराम कोतुल, श्री कालु कोतुल"
+      },
+      "donorIds": [
+        "D0387"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री मनोहर वर्मा (जलगांव)"
+      },
+      "donorIds": [
+        "D0127"
+      ],
+      "items": [
+        {
+          "type": "flour",
+          "qty": 21,
+          "unit": "kg"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री देव चौधरी, श्री रजत चौधरी"
+      },
+      "donorIds": [
+        "D0388",
+        "D0186"
+      ],
+      "items": [
+        {
+          "type": "oil",
+          "qty": 1,
+          "unit": "tin"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री गुलाब जमदार, श्री पवन जमदार"
+      },
+      "donorIds": [
+        "D0044",
+        "D0389"
+      ],
+      "items": [
+        {
+          "type": "vehicle",
+          "note": "संपूर्ण यात्रा में लोडिंग गाड़ी"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री अजय जमदार"
+      },
+      "donorIds": [
+        "D0094"
+      ],
+      "items": [
+        {
+          "type": "water",
+          "note": "सम्पूर्ण यात्रा में जार व्यवस्था"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री कृष्णा मंजे, श्री शंकर जाट"
+      },
+      "donorIds": [
+        "D0390",
+        "D0115"
+      ],
+      "items": [
+        {
+          "type": "water",
+          "note": "सम्पूर्ण यात्रा में बोतल व्यवस्था"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री निलेश वेंकट, श्री संजय जमदार (कालु), श्री अजय जमदार एवं मित्रगण"
+      },
+      "donorIds": [
+        "D0391",
+        "D0392",
+        "D0393"
+      ],
+      "items": [
+        {
+          "type": "falahar",
+          "note": "बलराज होटल से सिंधु भवन तक"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री राजु जाट, श्री मोहन जाट (MXR)"
+      },
+      "donorIds": [
+        "D0394",
+        "D0376"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 5100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री संजु जाट, श्री कमल जाट"
+      },
+      "donorIds": [
+        "D0395",
+        "D0087"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 5100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री विजय हज़ारी जमदार"
+      },
+      "donorIds": [
+        "D0396"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री नंदू भगवती प्रसाद वर्मा (साईदा)"
+      },
+      "donorIds": [
+        "D0397"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री जितेन्द्र मंजे (बालदा)"
+      },
+      "donorIds": [
+        "D0398"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 2100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री सुभाष मांगीलाल जमदार"
+      },
+      "donorIds": [
+        "D0282"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री कृष्णा छोटु जमदार"
+      },
+      "donorIds": [
+        "D0399"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 551,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री प्रदीप वर्मा (भूतपूर्व अध्यक्ष एवं उस्ताद — लोधा समाज इंदौर)"
+      },
+      "donorIds": [
+        "D0400"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ],
+      "memoriam": true
+    },
+    {
+      "name": {
+        "hi": "श्री चमनलाल जाट"
+      },
+      "donorIds": [
+        "D0401"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "स्वर्गीय श्री दुलारे वर्मा, श्री अनिल वर्मा (जलगांव)"
+      },
+      "donorIds": [
+        "D0402"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 2100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री जय वर्मा (B.B)"
+      },
+      "donorIds": [
+        "D0403"
+      ],
+      "items": [
+        {
+          "type": "falahar",
+          "note": "प्रथम दिन ओंकारेश्वर के रास्ते में"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "स्वर्गीय श्री कन्हैयालाल वर्मा, श्री पप्पू वर्मा"
+      },
+      "donorIds": [
+        "D0204"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "स्वर्गीय श्री श्याम जमदार, श्री नितिन जमदार"
+      },
+      "donorIds": [
+        "D0344"
+      ],
+      "items": [
+        {
+          "type": "oil",
+          "qty": 1,
+          "unit": "tin"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री शेखर मुकेश भवानी (बालदा)"
+      },
+      "donorIds": [
+        "D0404"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री आकाश चौधरी"
+      },
+      "donorIds": [
+        "D0226"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री विनय अर्जुन चौधरी"
+      },
+      "donorIds": [
+        "D0105"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री संजू मोहन जमदार"
+      },
+      "donorIds": [
+        "D0405"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री भगवती जमदार"
+      },
+      "donorIds": [
+        "D0406"
+      ],
+      "items": [
+        {
+          "type": "flour",
+          "qty": 51,
+          "unit": "kg"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री बबला जगन बंकट"
+      },
+      "donorIds": [
+        "D0407"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 501,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री अजय कौतुल"
+      },
+      "donorIds": [
+        "D0408"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 501,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री लोकेश राम मंजे"
+      },
+      "donorIds": [
+        "D0409"
+      ],
+      "items": [
+        {
+          "type": "oil",
+          "qty": 1,
+          "unit": "tin"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री प्रताप लखन कोतुल (कोषाध्यक्ष — लोधा समाज इंदौर)"
+      },
+      "donorIds": [
+        "D0123"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 2100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री वीरू तुकाराम चौधरी"
+      },
+      "donorIds": [
+        "D0410"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 501,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री मनोहर चौधरी"
+      },
+      "donorIds": [
+        "D0027"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 551,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री मुकेश जमदार"
+      },
+      "donorIds": [
+        "D0222"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री जगन बैंकट"
+      },
+      "donorIds": [
+        "D0411"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री सुनील जमदार (S.P)"
+      },
+      "donorIds": [
+        "D0412"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री अशोक जमदार"
+      },
+      "donorIds": [
+        "D0185"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 500,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री भजन चौधरी, श्री दिलीप चौधरी"
+      },
+      "donorIds": [
+        "D0413",
+        "D0327"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री मुरली नारायण जमदार"
+      },
+      "donorIds": [
+        "D0017"
+      ],
+      "items": [
+        {
+          "type": "flour",
+          "qty": 31,
+          "unit": "kg"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री सागर रूपराम जमदार"
+      },
+      "donorIds": [
+        "D0414"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री वरूण बंकट"
+      },
+      "donorIds": [
+        "D0415"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 555,
+          "unit": "inr"
+        }
+      ],
+      "memoriam": true
+    },
+    {
+      "name": {
+        "hi": "श्री राजू जी जमदार (द्वारकापुरी)"
+      },
+      "donorIds": [
+        "D0416"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री बबला जमदार"
+      },
+      "donorIds": [
+        "D0015"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री संजय जमदार"
+      },
+      "donorIds": [
+        "D0417"
+      ],
+      "items": [
+        {
+          "type": "flour",
+          "qty": 51,
+          "unit": "kg"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री शिव कोतुल"
+      },
+      "donorIds": [
+        "D0418"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री गोपाल वर्मा"
+      },
+      "donorIds": [
+        "D0224"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री लड्डू कोतुल, श्री गोलू कोतुल"
+      },
+      "donorIds": [
+        "D0247",
+        "D0248"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री राजेश बंकट"
+      },
+      "donorIds": [
+        "D0419"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री राजा धन्नालाल चौधरी"
+      },
+      "donorIds": [
+        "D0030"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री शिवभक्त (गुप्त दान)"
+      },
+      "donorIds": [],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री तेजा कोतवाल"
+      },
+      "donorIds": [
+        "D0152"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री रवी जमदार"
+      },
+      "donorIds": [
+        "D0420"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री शिवभक्त (गुप्त दान)"
+      },
+      "donorIds": [],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 500,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री सुभाष वर्मा (जलगांव)"
+      },
+      "donorIds": [
+        "D0301"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री राजेन्द्र मंजे"
+      },
+      "donorIds": [
+        "D0421"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 551,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री राजवीर विक्रम जमदार"
+      },
+      "donorIds": [
+        "D0422"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री गोविन्द जाट"
+      },
+      "donorIds": [
+        "D0032"
+      ],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 500,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री शिवभक्त (गुप्त दान)"
+      },
+      "donorIds": [],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 200,
+          "unit": "inr"
+        }
+      ]
+    },
+    {
+      "name": {
+        "hi": "श्री शिवभक्त (गुप्त दान)"
+      },
+      "donorIds": [],
+      "items": [
+        {
+          "type": "cash",
+          "qty": 1100,
+          "unit": "inr"
+        }
+      ]
+    }
+  ]
+}
