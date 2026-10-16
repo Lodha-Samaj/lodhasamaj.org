@@ -46,14 +46,18 @@ if (header) {
   header.innerHTML = `
     <div class="gold-line"></div>
     <div class="wrap site-header-inner">
+      <!-- One link home, in two places: the name in the middle of the row and
+           the mark at the right edge. The <a> itself lays out nothing
+           (display: contents), so its two children can sit in different
+           columns of the header grid and still be one link. -->
       <a class="brand" href="${base}">
-        <img src="/assets/img/logo.png" alt="" width="60" height="52">
-        <span><b>${lang === 'hi' ? 'लोधा समाज इंदौर' : 'Lodha Samaj Indore'}</b>
+        <span class="brand-text"><b>${lang === 'hi' ? 'लोधा समाज इंदौर' : 'Lodha Samaj Indore'}</b>
         <i>${lang === 'hi' ? 'सेवा · शिक्षा · स्वास्थ्य' : 'Service · Education · Health'}</i></span>
+        <img src="/assets/img/logo.png" alt="" width="60" height="52">
       </a>
-      <button class="nav-toggle" aria-expanded="false"
-              aria-controls="site-nav" aria-label="${lang === 'hi' ? 'मेनू' : 'Menu'}">☰</button>
       <div class="head-do">
+        <button class="nav-toggle" aria-expanded="false"
+                aria-controls="site-nav" aria-label="${lang === 'hi' ? 'मेनू' : 'Menu'}">☰</button>
         ${langToggleHtml()}
         <a class="cta" href="${base}daan/">${lang === 'hi' ? 'दान कीजिए' : 'Donate'}</a>
       </div>
