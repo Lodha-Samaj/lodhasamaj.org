@@ -9,17 +9,26 @@
     {
       "nameHi": "बहादुर मंजे जी",
       "roleHi": "उपाध्यक्ष",
-      "roleEn": "Vice President"
+      "roleEn": "Vice President",
+      "photo": "/assets/img/officials/bahadur-manje.jpg"
     },
     {
       "nameHi": "राजू वर्मा जी",
       "roleHi": "सचिव",
-      "roleEn": "Secretary"
+      "roleEn": "Secretary",
+      "photo": "/assets/img/officials/raju-verma.jpg"
+    },
+    {
+      "nameHi": "बबलू जमदार जी",
+      "roleHi": "सह सचिव",
+      "roleEn": "Joint Secretary",
+      "photo": "/assets/img/officials/bablu-jamdar.jpg"
     },
     {
       "nameHi": "कमल जाट जी",
       "roleHi": "कोषाध्यक्ष",
-      "roleEn": "Treasurer"
+      "roleEn": "Treasurer",
+      "photo": "/assets/img/officials/kamal-jat.jpg"
     }
   ],
   "former": [
@@ -61,8 +70,8 @@
     },
     {
       "nameHi": "श्रवण वर्मा जी",
-      "roleHi": "सह सचिव",
-      "roleEn": "Joint Secretary",
+      "roleHi": "पूर्व सह सचिव",
+      "roleEn": "Former Joint Secretary",
       "photo": "/assets/img/officials/shravan-verma.jpg"
     },
     {
