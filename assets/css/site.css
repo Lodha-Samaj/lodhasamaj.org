@@ -516,6 +516,15 @@ main:focus { outline: none; }
                    padding: 13px 0; border-bottom: 1px solid var(--rule); }
 .contact-list .lab { color: var(--mute); }
 .contact-list .big { font-size: 1.1rem; font-weight: 700; }
+/* A scheme and what it is for: the contact list's two columns, but the name
+   needs the room, so it gets a wider one and the site's heading face. */
+.scheme-list { margin: 0 0 18px; padding: 0; list-style: none;
+               border-top: 1px solid var(--rule); }
+.scheme-list li { display: grid; grid-template-columns: 15rem 1fr; gap: 4px 22px;
+                  padding: 13px 0; border-bottom: 1px solid var(--rule); }
+.scheme-list .lab { font-family: var(--head); font-size: 1.1rem; color: var(--ind); }
+@media (max-width: 640px) { .scheme-list li { grid-template-columns: 1fr; } }
+
 .link-row { display: flex; gap: 12px 18px; flex-wrap: wrap; }
 .link-row a { min-height: 44px; display: inline-flex; align-items: center; font-weight: 700; }
 
