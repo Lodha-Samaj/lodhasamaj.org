@@ -23,12 +23,12 @@ const T = {
   hi: { search: 'दानदाता खोजें…', allTypes: 'सभी प्रकार', typeBy: 'प्रकार से छाँटें', sortBy: 'क्रम',
         byName: 'नाम से', byGroup: 'प्रकार के समूह', byList: 'सूची क्रम', none: 'कोई परिणाम नहीं मिला', count: (n) => `${n} परिणाम`,
         error: 'सूची लोड नहीं हो सकी', empty: 'इस वर्ष की सूची जल्द ही यहाँ प्रकाशित होगी।', archive: 'सभी वर्ष देखें',
-        donors: 'दानदाता', title: (y) => `${y} दानदाता सूची`,
+        donors: 'दानदाता', title: (y) => `नवदुर्गा महोत्सव, नगर कन्या भोज एवं विशाल भंडारा ${y}`,
         back: 'दान पृष्ठ', listEmpty: 'सूची जल्द ही यहाँ प्रकाशित होगी।' },
   en: { search: 'Search donors…', allTypes: 'All types', typeBy: 'Filter by type', sortBy: 'Sort donors',
         byName: 'By name', byGroup: 'Grouped by type', byList: 'List order', none: 'No results found', count: (n) => `${n} results`,
         error: 'The list could not be loaded', empty: 'This year\'s list will be published here soon.', archive: 'View all years',
-        donors: 'donors', title: (y) => `${y} Donor List`,
+        donors: 'donors', title: (y) => `Navdurga Mahotsav, Nagar Kanya Bhoj and Vishal Bhandara ${y}`,
         back: 'Donate page', listEmpty: 'The list will be published here soon.' },
 }[lang];
 
