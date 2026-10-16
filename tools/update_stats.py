@@ -3,8 +3,8 @@
 
 The दान page named three आयोजन and then listed their years, but never said
 what any of them received. Under each heading there is now a short sheet: one
-line per year - how many gave, the cash, and the two kinds that आयोजन is
-mostly given. The नवदुर्गा महोत्सव and the कावड़ यात्रा show 2026 and 2025; the
+line per year - how many gave, the cash, and the three kinds that आयोजन is
+mostly given (मावा earns its place in the भंडारा's). The नवदुर्गा महोत्सव and the कावड़ यात्रा show 2026 and 2025; the
 मंदिर has no years, so it shows one line, अब तक.
 
 The figures are written into the HTML rather than fetched, so the page opens
@@ -88,7 +88,7 @@ def totals(donors: list) -> dict:
     return out
 
 
-def goods_columns(card: dict, how_many: int = 2) -> list[str]:
+def goods_columns(card: dict, how_many: int = 3) -> list[str]:
     """The kinds this आयोजन is mostly given, cash aside.
 
     Counted first by how many of its lists brought that kind, then by how much:

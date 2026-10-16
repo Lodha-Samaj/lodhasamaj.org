@@ -70,11 +70,13 @@ def test_a_line_carries_that_lists_own_donor_count_and_cash():
                 assert f"<b>₹{indian_grouping(int(cash))}</b>" in block, (card["slug"], key)
 
 
-def test_a_cards_two_kinds_are_the_ones_it_is_mostly_given():
-    # The मंदिर is built of ईंट and सीमेंट; the भंडारा is fed with आटा and शक्कर.
-    assert goods_columns(next(c for c in CARDS if c["slug"] == "temple")) == ["brick", "cement"]
+def test_a_cards_three_kinds_are_the_ones_it_is_mostly_given():
+    # The मंदिर is built of ईंट, सीमेंट and सरिया; the भंडारा is fed with आटा,
+    # शक्कर and मावा - the समाज asked for मावा by name.
+    assert goods_columns(next(c for c in CARDS if c["slug"] == "temple")) == \
+        ["brick", "cement", "rebar"]
     assert sorted(goods_columns(next(c for c in CARDS if c["slug"] == "festival"))) == \
-        ["flour", "sugar"]
+        ["flour", "mawa", "sugar"]
     # Both years of a card show the same two kinds, or the lines cannot be compared.
     for card in CARDS:
         block = sheet(card, "hi", TYPES, UNITS)
