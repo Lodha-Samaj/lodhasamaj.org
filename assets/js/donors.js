@@ -1,6 +1,6 @@
 import {
   typeLabel, displayName, displayNameParts, formatItems, formatTotal, festivalHeading, donorTypes, matchesType, matchesQuery,
-  presentTypes, totals, sortDonors, initialOf, listSource,
+  presentTypes, totals, sortDonors, initialOf, listSource, groupByType,
 } from './donors-core.js';
 
 import { initModal } from './donor-modal.js';
@@ -21,12 +21,12 @@ let visible = [];
 
 const T = {
   hi: { search: 'दानदाता खोजें…', allTypes: 'सभी प्रकार', typeBy: 'प्रकार से छाँटें', sortBy: 'क्रम',
-        byName: 'नाम से', byType: 'प्रकार से', none: 'कोई परिणाम नहीं मिला', count: (n) => `${n} परिणाम`,
+        byName: 'नाम से', byGroup: 'प्रकार के समूह', byList: 'सूची क्रम', none: 'कोई परिणाम नहीं मिला', count: (n) => `${n} परिणाम`,
         error: 'सूची लोड नहीं हो सकी', empty: 'इस वर्ष की सूची जल्द ही यहाँ प्रकाशित होगी।', archive: 'सभी वर्ष देखें',
         donors: 'दानदाता', title: (y) => `${y} दानदाता सूची`,
         back: 'दान पृष्ठ', listEmpty: 'सूची जल्द ही यहाँ प्रकाशित होगी।' },
   en: { search: 'Search donors…', allTypes: 'All types', typeBy: 'Filter by type', sortBy: 'Sort donors',
-        byName: 'By name', byType: 'By type', none: 'No results found', count: (n) => `${n} results`,
+        byName: 'By name', byGroup: 'Grouped by type', byList: 'List order', none: 'No results found', count: (n) => `${n} results`,
         error: 'The list could not be loaded', empty: 'This year\'s list will be published here soon.', archive: 'View all years',
         donors: 'donors', title: (y) => `${y} Donor List`,
         back: 'Donate page', listEmpty: 'The list will be published here soon.' },
@@ -49,17 +49,18 @@ function totalsHtml(donors) {
   ).join('')}</div>`;
 }
 
-function cardHtml(donor, index) {
+function cardHtml(donor, index, blockType) {
   // No type tag on the row: formatItems already names every type it would list
   // ("501 किलो शक्कर", "101 किलो आटा + ₹1,100 नगद"). Verified against all 82
   // donors in both languages. The type filter reads the donor data, not the DOM.
+  // Inside a type block the heading says it instead, so the row drops that one.
   const photo = donor.photo
     ? `<img class="avatar" src="${esc(donor.photo)}" alt="" width="44" height="44">`
     : `<span class="avatar avatar-initial" aria-hidden="true">${esc(initialOf(donor))}</span>`;
   return `<article class="donor-card${donor.memoriam ? ' memoriam' : ''}">
     ${photo}
     <h3>${nameHtml(donor)}</h3>
-    <p>${esc(formatItems(donor, lang))}</p>
+    <p>${esc(formatItems(donor, lang, blockType))}</p>
     <button class="donor-open" data-index="${index}"
             aria-label="${esc(displayName(donor, lang))}"></button>
   </article>`;
@@ -100,12 +101,12 @@ function render(data) {
           `<option value="${esc(c)}">${esc(typeLabel(c, lang))}</option>`).join('')}
       </select>
       <select id="sort" aria-label="${esc(T.sortBy)}">
-        <option value="">${esc(T.sortBy)}</option>
+        <option value="group">${esc(T.byGroup)}</option>
         <option value="name">${esc(T.byName)}</option>
-        <option value="type">${esc(T.byType)}</option>
+        <option value="">${esc(T.byList)}</option>
       </select>
     </div>
-    <div class="donor-roll" id="grid"></div>
+    <div id="grid"></div>
     <p class="no-results" id="none" role="status"></p>`;
 
   const [q, type, sort, grid, none] =
@@ -114,10 +115,24 @@ function render(data) {
   function paint() {
     const shown = sortDonors(donors, sort.value, lang)
       .filter((d) => matchesType(d, type.value) && matchesQuery(d, q.value, lang));
-    grid.innerHTML = shown.map(cardHtml).join('');
-    none.textContent = shown.length ? T.count(shown.length) : T.none;
-    // Task 6A's modal cycles the *visible* set, so it reads this.
-    visible = shown;
+    // Grouped is the default view: धर्मशाला व्यवस्था, भोजन व्यवस्था, नगद and the
+    // rest each get their own block, because a flat roll printed every kind of
+    // giving in the same weight and the kinds were impossible to tell apart.
+    if (sort.value === 'group') {
+      const blocks = groupByType(shown, lang);
+      // The modal walks `visible` by index, so the indices must follow the
+      // order the blocks are painted in, not the order of the data.
+      visible = blocks.flatMap((block) => block.donors);
+      let i = 0;
+      grid.innerHTML = blocks.map((block) => `
+        <h2 class="roll-head">${esc(block.label)}<span>${block.donors.length}</span></h2>
+        <div class="donor-roll">${block.donors.map((donor) => cardHtml(donor, i++, block.type)).join('')}</div>`
+      ).join('');
+    } else {
+      visible = shown;
+      grid.innerHTML = `<div class="donor-roll">${shown.map(cardHtml).join('')}</div>`;
+    }
+    none.textContent = visible.length ? T.count(visible.length) : T.none;
   }
 
   [q, type, sort].forEach((el) => el.addEventListener('input', paint));

@@ -97,9 +97,24 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .donor-roll { display: grid; gap: 0 36px; max-width: 820px;
                border-top: 1px solid var(--rule); }
 /* The full list (/daan/) runs to the page width in two columns; the home
-   preview keeps one column, so three entries do not leave a hole. */
-#grid.donor-roll { max-width: none; }
-@media (min-width: 900px) { #grid.donor-roll { grid-template-columns: 1fr 1fr; } }
+   preview keeps one column, so three entries do not leave a hole. On a दान
+   सूची page #grid holds one roll per type block, so the rolls inside it are
+   what widen, not #grid itself. */
+#grid .donor-roll { max-width: none; }
+@media (min-width: 900px) { #grid .donor-roll { grid-template-columns: 1fr 1fr; } }
+
+/* The heading of one type block: what was given, and how many gave it. The
+   roll's own top rule draws the line under it. */
+.roll-head {
+  display: flex; align-items: baseline; gap: 9px;
+  margin: 30px 0 7px; font-family: var(--head); font-size: 1.1rem;
+  font-weight: 700; color: var(--ind);
+}
+#grid > .roll-head:first-child { margin-top: 0; }
+.roll-head span {
+  color: var(--mute); font-size: 0.8rem; font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
 
 .donor-card {
   position: relative;

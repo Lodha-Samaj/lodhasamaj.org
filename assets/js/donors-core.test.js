@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import {
   TYPE_LABELS, typeLabel, normalize, displayName, donorTypes, matchesType,
   matchesQuery, presentTypes, totals, formatTotal, nameIsHindiOnly, displayNameParts, ordinal, festivalHeading, sortDonors, formatItems, initialOf,
-  listSource,
+  listSource, groupByType,
 } from './donors-core.js';
 
 const d = (hi, items, extra = {}) => ({ name: { hi }, items, ...extra });
@@ -311,4 +311,62 @@ test('the यात्रा arrangements have labels in both languages', () => 
 test('an arrangement with no quantity reads as the label, with its place in brackets', () => {
   const donor = { items: [{ type: 'lodging', note: 'ओंकारेश्वर में' }] };
   assert.equal(formatItems(donor, 'hi'), 'धर्मशाला व्यवस्था (ओंकारेश्वर में)');
+});
+
+// Grouping: the दान सूची page shows one block per kind of giving, so a reader
+// can see at a glance who arranged the धर्मशाला and who gave नगद.
+test('groupByType: one block per type, in the order the list introduces them', () => {
+  const donors = [
+    d('क', [{ type: 'lodging', note: 'ओंकारेश्वर में' }]),
+    d('ख', [{ type: 'cash', qty: 1100, unit: 'inr' }]),
+    d('ग', [{ type: 'lodging', note: 'बड़वाह में' }]),
+    d('घ', [{ type: 'flour', qty: 51, unit: 'kg' }]),
+  ];
+  const groups = groupByType(donors, 'hi');
+  assert.deepEqual(groups.map((g) => [g.type, g.label, g.donors.length]), [
+    ['lodging', 'धर्मशाला व्यवस्था', 2],
+    ['cash', 'नगद', 1],
+    ['flour', 'आटा', 1],
+  ]);
+  // Within a block the समाज's own order survives.
+  assert.deepEqual(groups[0].donors.map((x) => x.name.hi), ['क', 'ग']);
+  assert.equal(groupByType(donors, 'en')[0].label, 'Lodging arranged');
+});
+
+test('groupByType: a donor who gave two things sits under the first, and only once', () => {
+  const donors = [
+    d('क', [{ type: 'flour', qty: 101, unit: 'kg' }, { type: 'cash', qty: 1100, unit: 'inr' }]),
+    d('ख', [{ type: 'cash', qty: 500, unit: 'inr' }]),
+  ];
+  const groups = groupByType(donors, 'hi');
+  assert.deepEqual(groups.map((g) => [g.type, g.donors.map((x) => x.name.hi)]),
+    [['flour', ['क']], ['cash', ['ख']]]);
+  // Every donor is shown exactly once, however many things they gave.
+  assert.equal(groups.reduce((n, g) => n + g.donors.length, 0), donors.length);
+});
+
+test('groupByType: a gift with no type recorded falls under अन्य, not its own blank block', () => {
+  const groups = groupByType([d('क', []), d('ख', [{ type: 'other', note: 'सेवा' }])], 'hi');
+  assert.deepEqual(groups.map((g) => [g.type, g.label, g.donors.length]), [['other', 'अन्य', 2]]);
+});
+
+// Inside a type block the heading already says what was given, so the row
+// repeating it ("धर्मशाला व्यवस्था (ओंकारेश्वर में)" under धर्मशाला व्यवस्था) is noise.
+test('formatItems can leave out the type the block heading already names', () => {
+  assert.equal(formatItems(d('x', [{ type: 'lodging', note: 'ओंकारेश्वर में' }]), 'hi', 'lodging'),
+    'ओंकारेश्वर में');
+  assert.equal(formatItems(d('x', [{ type: 'cash', qty: 2100, unit: 'inr' }]), 'hi', 'cash'), '₹2,100');
+  assert.equal(formatItems(d('x', [{ type: 'flour', qty: 51, unit: 'kg' }]), 'hi', 'flour'), '51 किलो');
+  assert.equal(formatItems(d('x', [{ type: 'lodging', note: 'Omkareshwar' }]), 'en', 'lodging'), 'Omkareshwar');
+  // A row with two gifts keeps both names: "101 किलो + ₹1,100 नगद" would leave
+  // the first quantity counting nothing.
+  assert.equal(formatItems(d('x', [{ type: 'flour', qty: 101, unit: 'kg' },
+                                   { type: 'cash', qty: 1100, unit: 'inr' }]), 'hi', 'flour'),
+    '101 किलो आटा + ₹1,100 नगद');
+  // Without the argument nothing changes.
+  assert.equal(formatItems(d('x', [{ type: 'cash', qty: 2100, unit: 'inr' }]), 'hi'), '₹2,100 नगद');
+});
+
+test('formatItems never empties a row: a type with no quantity or note keeps its name', () => {
+  assert.equal(formatItems(d('x', [{ type: 'lodging' }]), 'hi', 'lodging'), 'धर्मशाला व्यवस्था');
 });
