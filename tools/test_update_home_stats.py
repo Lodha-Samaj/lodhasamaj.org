@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from update_home_stats import (ROOT, _labels, block, figure, indian_grouping,
-                               lists_in_order, main, totals)
+from update_home_stats import (ROOT, _labels, block, figure, group_title,
+                               indian_grouping, ledgers, main, totals)
 
 INDEX = json.loads((ROOT / "data" / "donors-index.json").read_text(encoding="utf-8"))
 TYPES, UNITS = _labels("TYPE_LABELS"), _labels("UNIT_LABELS")
@@ -22,31 +22,44 @@ def test_the_home_pages_carry_the_current_figures():
         "the home page cards are stale - run python3 tools/update_home_stats.py")
 
 
-def test_every_list_in_the_index_gets_a_card():
-    keys = [row["key"] for row in lists_in_order(INDEX)]
+def test_every_list_in_the_index_gets_a_line():
+    groups = ledgers(INDEX)
+    keys = [row["key"] for g in groups for row in g["rows"]]
     assert sorted(keys) == sorted([str(y) for y in INDEX["years"]] + INDEX["lists"])
-    # Newest first, and a year's महोत्सव before that year's यात्रा.
-    assert keys[0] == str(max(INDEX["years"]))
-    assert keys.index("2026") < keys.index("kavad-yatra-2026") < keys.index("2025")
-    assert keys[-1] == "hanuman-mandir"
+    # One आयोजन per block, its years newest first, and the मंदिर last.
+    assert [g["kind"] for g in groups] == ["festival", "yatra", "mandir"]
+    for g in groups:
+        years = [r["year"] for r in g["rows"] if r["year"]]
+        assert years == sorted(years, reverse=True)
+    assert groups[-1]["rows"][0]["key"] == "hanuman-mandir"
 
 
-def test_a_cards_figures_are_the_lists_own_totals():
+def test_a_group_is_named_once_without_its_year():
+    # "श्री नर्मदेश्वर महादेव भव्य कावड़ यात्रा 2026" titles one list; the block
+    # above three such lists must not carry any one of their years.
+    yatra = next(g for g in ledgers(INDEX) if g["kind"] == "yatra")
+    for lang in ("hi", "en"):
+        title = group_title(yatra, lang)
+        assert not re.search(r"\d{4}", title), title
+    assert group_title(ledgers(INDEX)[0], "hi") == "नवदुर्गा महोत्सव एवं विशाल भंडारा"
+
+
+def test_a_lines_figures_are_the_lists_own_totals():
     year = max(INDEX["years"])
     donors = json.loads((ROOT / "data" / f"donors-{year}.json").read_text(encoding="utf-8"))["donors"]
     cash = totals(donors)[("cash", "inr")]
     html = block("hi", INDEX, TYPES, UNITS)
     card = html[html.index(f"navdurga-mahotsav-{year}"):]
-    card = card[:card.index("</li>")]
+    card = card[:card.index("</li>")]  # that year's line
     assert f"₹{indian_grouping(int(cash))}" in card
     assert f"{len(donors)} दानदाता" in card
 
 
-def test_cash_leads_a_card_and_then_the_largest_quantities():
+def test_cash_leads_a_line_and_then_the_largest_quantities():
     html = block("hi", INDEX, TYPES, UNITS)
     card = html[html.index("hanuman-mandir"):]
-    card = card[:card.index("</ul>")]
-    figures = re.findall(r"<b>([^<]+)</b> <span>([^<]+)</span>", card)
+    card = card[:card.index("</li>")]
+    figures = re.findall(r'<span class="fig"><b>([^<]+)</b> ([^<]+)</span>', card)
     assert figures[0][1] == "नगद"
     assert ("551", "ईंट") in [(a.split()[0], b) for a, b in figures]
 

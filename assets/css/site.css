@@ -780,25 +780,51 @@ body.lb-open { overflow: hidden; }
   .give-card { position: static; order: -1; }
 }
 
-/* ---- home: what each list received, one card apiece ----
-   The home page used to print one year's three figures and three hand-picked
-   donors. Every आयोजन now has a card of its own, in the दान page's colours:
-   indigo for the मंदिर, red for the यात्रा, gold for the महोत्सव. Gold is a
-   border colour only - as text on paper it fails contrast - so the heading
-   stays indigo and the border carries the signal. */
-.tally-grid { list-style: none; margin: 0; padding: 0; display: grid;
-              grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: 16px; }
-.tally { padding: 15px 18px 14px; background: #fff; border: 1px solid var(--rule);
-         border-top: 4px solid var(--accent, var(--rule)); border-radius: var(--r); }
-.tally h3 { margin: 0 0 3px; font-size: 1.15rem; line-height: 1.28; }
-.tally h3 a { color: var(--ind); }
-.tally h3 a:hover, .tally h3 a:focus-visible { color: var(--red); }
-.tally-who { margin: 0 0 10px; color: var(--mute); font-size: 0.85rem; }
-.tally-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
-.tally-rows li { display: flex; align-items: baseline; gap: 8px; }
-.tally-rows b { font-family: var(--head); font-weight: 400; font-size: 1.12rem;
-                color: var(--red-d); font-variant-numeric: tabular-nums; }
-.tally-rows span { color: var(--mute); font-size: 0.9rem; }
+/* ---- home: the समाज's register of giving ----
+   Not cards. This is a हिसाब - a ruled register, read down the page: the
+   आयोजन names itself once, and under it one line per year, the way the
+   समाज's own book would have it. The year sits in the margin, what came in
+   is set in the heading face so the figures carry the line, and the आयोजन's
+   colour appears once, under its name. */
+.ledger + .ledger { margin-top: 30px; }
+.ledger > h3 { margin: 0 0 0; padding-bottom: 7px; font-size: 1.32rem; color: var(--ind);
+               border-bottom: 2px solid var(--accent, var(--rule)); }
+.ledger-festival { --accent: var(--gold); }
+.ledger-yatra    { --accent: var(--red); }
+.ledger-temple   { --accent: var(--ind); }
+.ly-rows { list-style: none; margin: 0; padding: 0; }
+.ly { border-bottom: 1px solid var(--line); }
+.ly > a { display: grid; grid-template-columns: 5.5rem minmax(7.5rem, auto) 1fr;
+          align-items: baseline; gap: 2px 22px; padding: 13px 2px;
+          color: var(--ink); text-decoration: none; }
+.ly > a:hover, .ly > a:focus-visible { background: var(--paper); }
+/* The year is the entry's name in the margin; the one being collected now is
+   set darker and larger than the years already closed. */
+.ly-when { font-family: var(--head); font-size: 1.3rem; color: var(--mute); }
+.ly.is-latest .ly-when { color: var(--red-d); font-size: 1.5rem; }
+.ly-who { color: var(--mute); font-size: 0.92rem; }
+/* Which भंडारा and which कन्या पूजन that year's list counted. */
+.ly-held { grid-column: 2; color: var(--mute); font-size: 0.8rem; }
+/* Four columns, not a wrapping row: a register is read down as much as across,
+   and नगद under नगद lets one year be compared with the next at a glance. */
+.ly-figs { grid-column: 3; grid-row: 1 / span 2; display: grid;
+           grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 20px;
+           align-items: baseline; }
+.fig { color: var(--mute); font-size: 0.88rem; }
+.fig b { display: block; font-family: var(--head); font-weight: 400; font-size: 1.16rem;
+         color: var(--ink); font-variant-numeric: tabular-nums; }
+/* A kind that year's list has none of: the column holds its place. */
+.fig.is-none { color: var(--rule); }
+.fig.is-none b { color: var(--rule); }
+.ly.is-latest .fig b { color: var(--red-d); }
+.ly > a:hover .ly-when, .ly > a:focus-visible .ly-when { color: var(--red); }
+@media (max-width: 760px) {
+  /* On a phone the three columns stack: year and count on one line, the
+     figures in two columns under them. */
+  .ly > a { grid-template-columns: 4.5rem 1fr; gap: 2px 14px; }
+  .ly-figs { grid-column: 1 / -1; grid-row: auto; display: grid;
+             grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-top: 8px; }
+}
 
 /* ---- /daan/ archive: the years on offer ---- */
 .year-list { list-style: none; margin: 0; padding: 0; max-width: 520px;

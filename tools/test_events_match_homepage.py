@@ -82,13 +82,13 @@ def test_karyakram_states_the_shared_venue_from_events_json():
 
 
 def home_cards(page: str) -> dict:
-    """{"2026": "44 दानदाता · 46वां विशाल भंडारा …"} - the home page's one card per
-    list, keyed by the year its link names. tools/update_home_stats.py writes them."""
+    """{"2026": "2026 44 दानदाता 46वां विशाल भंडारा …"} - the home register's line for
+    each नवदुर्गा year. tools/update_home_stats.py writes them."""
     out = {}
-    for block in re.findall(r'<li class="tally.*?</ul>\s*</li>', source(page), flags=re.S):
-        year = re.search(r'navdurga-mahotsav-(\d{4})/', block)
+    for line in re.findall(r'<li class="ly.*?</li>', source(page), flags=re.S):
+        year = re.search(r'navdurga-mahotsav-(\d{4})/', line)
         if year:
-            out[year.group(1)] = " ".join(re.sub(r"<[^>]+>", " ", block).split())
+            out[year.group(1)] = " ".join(re.sub(r"<[^>]+>", " ", line).split())
     return out
 
 

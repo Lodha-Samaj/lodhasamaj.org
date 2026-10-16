@@ -31,13 +31,14 @@ START = "<!-- tally:start -->"
 END = "<!-- tally:end -->"
 
 # A year's list is the नवदुर्गा महोत्सव's; the same wording as the donor history.
-YEAR_TITLE = {"hi": lambda y: f"नवदुर्गा महोत्सव एवं विशाल भंडारा {y}",
-              "en": lambda y: f"Navdurga Mahotsav and Vishal Bhandara {y}"}
+FESTIVAL_NAME = {"hi": "नवदुर्गा महोत्सव एवं विशाल भंडारा",
+                 "en": "Navdurga Mahotsav and Vishal Bhandara"}
+SO_FAR = {"hi": "अब तक", "en": "so far"}
 YEAR_URL = {"hi": lambda y: f"/hi/daan/navdurga-mahotsav-{y}/",
             "en": lambda y: f"/en/daan/navdurga-mahotsav-{y}/"}
 DONORS_WORD = {"hi": "दानदाता", "en": ("donor", "donors")}
 # The दान page's three colours: the मंदिर indigo, the यात्रा red, the महोत्सव gold.
-ACCENT = {"mandir": "give-temple", "yatra": "give-yatra", "festival": "give-festival"}
+ACCENT = {"mandir": "ledger-temple", "yatra": "ledger-yatra", "festival": "ledger-festival"}
 LEAD = {"hi": ("हर आयोजन का हिसाब", "सभी सूचियाँ",
                'हर सूची उसी आयोजन की है। पूरी सूची और खोज <a href="/hi/daan/">दान पृष्ठ</a> पर है।'),
         "en": ("What each event received", "All lists",
@@ -114,58 +115,120 @@ def figure(key, qty, lang, types, units) -> tuple[str, str]:
     return f"{amount} {word}".strip(), label
 
 
-def lists_in_order(index: dict) -> list[dict]:
-    """Newest first: a year's महोत्सव, then that year's यात्रा; the मंदिर last."""
-    rows = []
-    for year in sorted(index["years"], reverse=True):
-        rows.append({"key": str(year), "year": year, "kind": "festival"})
-        for slug in index["lists"]:
-            if slug.endswith(f"-{year}"):
-                rows.append({"key": slug, "year": year, "kind": "yatra"})
-    for slug in index["lists"]:
-        if not any(r["key"] == slug for r in rows):
-            rows.append({"key": slug, "year": None, "kind": "mandir"})
-    return rows
+def ledgers(index: dict) -> list[dict]:
+    """The समाज's three आयोजन, newest year first inside each.
+
+    Grouping by आयोजन rather than by year is what the page is actually about:
+    the नवदुर्गा महोत्सव is one यज्ञ held every year, and printing its name
+    three times said nothing three times.
+    """
+    years = sorted(index["years"], reverse=True)
+    festival = [{"key": str(y), "year": y} for y in years]
+    yatra = [{"key": s, "year": int(s[-4:])} for s in index["lists"] if s.startswith("kavad-yatra-")]
+    yatra.sort(key=lambda r: -r["year"])
+    rest = [{"key": s, "year": None} for s in index["lists"]
+            if not s.startswith("kavad-yatra-")]
+    out = []
+    if festival:
+        out.append({"kind": "festival", "title": FESTIVAL_NAME, "rows": festival})
+    if yatra:
+        out.append({"kind": "yatra", "title": None, "rows": yatra})
+    for row in rest:
+        out.append({"kind": "mandir", "title": None, "rows": [row]})
+    return out
 
 
-def card(row: dict, lang: str, types: dict, units: dict) -> str:
+def read_list(key: str) -> dict:
+    path = DATA / (f"donors-{key}.json" if key.isdigit() else f"{key}.json")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def group_title(group: dict, lang: str) -> str:
+    """The आयोजन's name, without the year: the rows below carry those."""
+    if group["title"]:
+        return group["title"][lang]
+    # A named list titles itself, and a यात्रा's title ends in its year.
+    title = read_list(group["rows"][0]["key"])["title"]
+    name = title.get(lang) or title["hi"]
+    return re.sub(r"\s*(19|20)\d{2}$", "", name)
+
+
+def group_columns(group: dict) -> list[str]:
+    """The four kinds this आयोजन is mostly given, newest-year-first by weight.
+
+    Every row of a block prints these same four, so a column means one thing
+    all the way down: a reader comparing two years is comparing आटा with आटा.
+    नगद leads wherever it appears - it is the one kind every list has.
+    """
+    weight, seen = {}, {}
+    for row in group["rows"]:
+        kinds = set()
+        for (kind, _unit), qty in totals(read_list(row["key"])["donors"]).items():
+            weight[kind] = weight.get(kind, 0) + qty
+            kinds.add(kind)          # one list counts once, whatever units it used
+        for kind in kinds:
+            seen[kind] = seen.get(kind, 0) + 1
+    # How many years gave it comes before how much of it: a kind one year
+    # happened to bring would leave the other rows holding an empty column.
+    ranked = sorted(weight, key=lambda k: (k != "cash", -seen[k], -weight[k]))
+    return ranked[:4]
+
+
+def row_html(row: dict, group: dict, lang: str, types: dict, units: dict, latest: bool) -> str:
     key = row["key"]
-    path = DATA / (f"donors-{key}.json" if row["year"] and key.isdigit() else f"{key}.json")
-    data = json.loads(path.read_text(encoding="utf-8"))
+    data = read_list(key)
     donors = data["donors"]
-    if key.isdigit():
-        title, url = YEAR_TITLE[lang](key), YEAR_URL[lang](key)
-    else:
-        title = data["title"].get(lang) or data["title"]["hi"]
-        url = f"/{lang}/daan/{key}/"
+    url = YEAR_URL[lang](key) if key.isdigit() else f"/{lang}/daan/{key}/"
     n = len(donors)
     who = f"{n} {DONORS_WORD['hi']}" if lang == "hi" else \
           f"{n} {DONORS_WORD['en'][0] if n == 1 else DONORS_WORD['en'][1]}"
-    # A नवदुर्गा list counts its भंडारा and its कन्या पूजन; the card says which
-    # ones it is reporting, in the same words as that list's own page.
-    who = " · ".join([who, *filter(None, festival_heading(data.get("festival"), lang))])
-    ranked = sorted(totals(donors).items(), key=lambda kv: (kv[0][0] != "cash", -kv[1]))
-    rows = "".join(
-        f'\n          <li><b>{amount}</b> <span>{label}</span></li>'
-        for amount, label in (figure(k, q, lang, types, units) for k, q in ranked[:4]))
+    # A नवदुर्गा year counts its भंडारा and its कन्या पूजन; the row says which.
+    held = festival_heading(data.get("festival"), lang)
+    when = row["year"] if row["year"] else SO_FAR[lang]
+    mine = totals(donors)
+    cells = []
+    for kind in group["columns"]:
+        match = [(k, q) for k, q in mine.items() if k[0] == kind]
+        if not match:
+            # Nothing of that kind this year. The gap is itself worth seeing.
+            label = types.get(kind, {}).get(lang, kind)
+            cells.append(f'\n              <span class="fig is-none"><b>—</b> {label}</span>')
+            continue
+        key, qty = max(match, key=lambda kv: kv[1])
+        amount, label = figure(key, qty, lang, types, units)
+        cells.append(f'\n              <span class="fig"><b>{amount}</b> {label}</span>')
+    figures = "".join(cells)
+    held_html = (f'\n            <span class="ly-held">{" · ".join(held)}</span>' if held else "")
+    return (f'        <li class="ly{" is-latest" if latest else ""}">\n'
+            f'          <a href="{url}">\n'
+            f'            <span class="ly-when">{when}</span>\n'
+            f'            <span class="ly-who">{who}</span>{held_html}\n'
+            f'            <span class="ly-figs">{figures}\n            </span>\n'
+            f'          </a>\n'
+            f'        </li>\n')
+
+
+def ledger_html(group: dict, lang: str, types: dict, units: dict) -> str:
+    group = {**group, "columns": group_columns(group)}
+    rows = "".join(row_html(r, group, lang, types, units, i == 0)
+                   for i, r in enumerate(group["rows"]))
     hi_only = ' lang="hi"' if lang == "en" else ""
-    return (f'      <li class="tally {ACCENT[row["kind"]]}">\n'
-            f'        <h3><a href="{url}"{hi_only}>{title}</a></h3>\n'
-            f'        <p class="tally-who">{who}</p>\n'
-            f'        <ul class="tally-rows">{rows}\n        </ul>\n'
-            f'      </li>\n')
+    return (f'      <section class="ledger {ACCENT[group["kind"]]}">\n'
+            f'        <h3{hi_only}>{group_title(group, lang)}</h3>\n'
+            f'      <ol class="ly-rows">\n{rows}      </ol>\n'
+            f'      </section>\n')
 
 
 def block(lang: str, index: dict, types: dict, units: dict) -> str:
     heading, all_text, note = LEAD[lang]
-    cards = "".join(card(row, lang, types, units) for row in lists_in_order(index))
+    body = "".join(ledger_html(g, lang, types, units) for g in ledgers(index))
     return (f'{START}\n'
             f'    <div class="wrap section">\n'
             f'      <div class="section-head">\n'
             f'        <h2>{heading}</h2>\n'
             f'        <a class="all" href="/{lang}/daan/">{all_text}</a>\n'
             f'      </div>\n'
-            f'      <ul class="tally-grid">\n{cards}      </ul>\n'
+            f'{body}'
             f'      <p class="stats-note">{note}</p>\n'
             f'    </div>\n'
             f'    {END}')
