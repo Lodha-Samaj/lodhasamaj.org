@@ -211,23 +211,39 @@ main:focus { outline: none; }
 
 /* ---- chrome (आधुनिक zone) ---- */
 .gold-line { height: 3px; background: linear-gradient(90deg, var(--gold), var(--mar), var(--gold)); }
-.site-header { background: #fff; border-bottom: 1px solid var(--line); min-height: 76px; }
+.site-header { background: #fff; }
 /* The mark carries the समाज's name and वीरांगना अवंतीबाई लोधी around the arc; at
    40px tall none of it could be read. Source art is 512x443, so this is still
    served at 2x. */
 .brand img { width: 60px; height: 52px; }
-.site-header-inner { display: flex; align-items: center; gap: 15px; padding: 11px 16px; }
+.site-header-inner { display: flex; align-items: center; gap: 15px; padding: 12px 16px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
 .brand b { display: block; font-family: var(--head); font-weight: 400; font-size: 1.05rem; color: var(--red-d); }
 .brand i { font-style: normal; font-size: 0.68rem; color: var(--mute); }
-.site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
-.site-nav a { color: #55505e; font-weight: 600; font-size: 0.85rem; text-decoration: none; }
-.site-nav a[aria-current="page"] { color: var(--red); border-bottom: 2px solid var(--red); }
+/* The band of pages: its own strip under the name, so ten Hindi words have
+   room to breathe and each one is a 44px target. It stays at the top of the
+   screen while the page scrolls - on a list of five hundred donors, going
+   back to the menu should not mean scrolling back to the beginning. */
+.nav-bar { background: var(--paper); border-block: 1px solid var(--line); }
+/* The band stays at the top of the screen, not the whole header: the header
+   is sticky with its own top row's height as a negative offset, so that row
+   scrolls away and the pages band comes to rest against the top edge.
+   (A sticky child cannot leave its parent's box, which is why the band itself
+   is not the sticky one.) --head-top is that row: 12px padding twice and the
+   52px mark beside the name. */
+.site-header { position: sticky; top: calc(-1 * var(--head-top)); z-index: 40;
+               --head-top: 85px; }
+.site-nav { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0 4px; }
+.site-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px;
+              color: #4a4556; font-weight: 600; font-size: 0.95rem; text-decoration: none;
+              border-bottom: 3px solid transparent; }
+.site-nav a[aria-current="page"] { color: var(--red); border-bottom-color: var(--red); }
 /* The page you are on is already red, so it deepens instead - otherwise it
    would be the one item in the menu that ignores the pointer. */
 .site-nav a[aria-current="page"]:hover, .site-nav a[aria-current="page"]:focus-visible {
   color: var(--red-d); border-bottom-color: var(--red-d);
 }
+.site-nav a:hover { background: #fffdfa; }
 .lang-toggle { margin-left: auto; padding: 4px 9px; border: 1px solid var(--line);
                border-radius: 4px; font-weight: 700; font-size: 0.75rem; text-decoration: none; }
 .cta { padding: 8px 15px; background: var(--red); color: #fff; border-radius: 5px;
@@ -511,21 +527,25 @@ body.lb-open { overflow: hidden; }
   .brand img { width: 46px; height: 40px; }
 }
 
-/* The header's menu needs about 1010px on one line in English (830px in
-   Hindi). Below that it wrapped into two rows and squeezed the name to a word
-   per line, so the ☰ menu takes over up to tablet-landscape widths. */
-@media (max-width: 1040px) {
+/* On its own band the menu fits to about 900px in Hindi (960 in English).
+   Below that the ☰ button in the top row opens it as a list. */
+@media (max-width: 960px) {
+  /* No band to pin below 960px - the ☰ sits in the top row, so the whole
+     header stays instead, and the menu is one tap away down a long list. */
+  .site-header { top: 0; }
   .site-header-inner { flex-wrap: wrap; gap: 8px; }
   /* Basis 0: the name wraps inside its own box before the buttons beside it
      are pushed onto a second row. */
   .brand { flex: 1 1 0; min-width: 0; }
   .brand img { flex-shrink: 0; }
   .nav-toggle { display: block; }
-  /* Last in the row, so an open menu drops below every button. */
-  .site-nav { display: none; flex-basis: 100%; order: 1; }
-  .site-nav.open { display: flex; flex-direction: column; }
-  .site-nav a { display: block; padding: 10px 6px; }
-  .lang-toggle { margin-left: 0; min-height: 44px; display: inline-flex; align-items: center; }
+  .nav-bar { position: static; border-top: 0; }
+  .nav-bar:not(:has(.open)) { border-bottom: 0; }
+  .site-nav { display: none; }
+  .site-nav.open { display: flex; flex-direction: column; padding-block: 4px; }
+  .site-nav a { width: 100%; padding: 0 6px; border-bottom: 0; border-left: 3px solid transparent; }
+  .site-nav a[aria-current="page"] { border-left-color: var(--red); }
+  .lang-toggle { margin-left: auto; min-height: 44px; display: inline-flex; align-items: center; }
   .cta { min-height: 44px; display: inline-flex; align-items: center; }
 }
 /* After the block above, which sets the tablet gap. On a 320px phone the

@@ -39,6 +39,10 @@ if (main) {
 const header = document.getElementById('site-header');
 if (header) {
   header.className = 'site-header';
+  // Two rows: who we are and the one thing we ask on top, the ten pages on a
+  // band of their own below. Ten Hindi words never had room beside the name,
+  // and the band keeps its place at the top of the screen while you scroll a
+  // list of five hundred donors.
   header.innerHTML = `
     <div class="gold-line"></div>
     <div class="wrap site-header-inner">
@@ -49,9 +53,11 @@ if (header) {
       </a>
       <button class="nav-toggle" aria-expanded="false"
               aria-controls="site-nav" aria-label="${lang === 'hi' ? 'मेनू' : 'Menu'}">☰</button>
-      <nav id="site-nav" class="site-nav" aria-label="${lang === 'hi' ? 'मुख्य मेनू' : 'Main'}">${navHtml()}</nav>
       ${langToggleHtml()}
       <a class="cta" href="${base}daan/">${lang === 'hi' ? 'दान कीजिए' : 'Donate'}</a>
+    </div>
+    <div class="nav-bar">
+      <nav id="site-nav" class="site-nav wrap" aria-label="${lang === 'hi' ? 'मुख्य मेनू' : 'Main'}">${navHtml()}</nav>
     </div>`;
 
   const button = header.querySelector('.nav-toggle');
