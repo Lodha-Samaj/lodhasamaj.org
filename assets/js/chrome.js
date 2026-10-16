@@ -51,9 +51,8 @@ if (header) {
            (display: contents), so its two children can sit in different
            columns of the header grid and still be one link. -->
       <a class="brand" href="${base}">
-        <span class="brand-text"><b>${lang === 'hi' ? 'लोधा समाज इंदौर' : 'Lodha Samaj Indore'}</b>
-        <i>${lang === 'hi' ? 'सेवा · शिक्षा · स्वास्थ्य' : 'Service · Education · Health'}</i></span>
         <img src="/assets/img/logo.png" alt="" width="60" height="52">
+        <span class="brand-text"><b>${lang === 'hi' ? 'लोधा समाज इंदौर' : 'Lodha Samaj Indore'}</b></span>
       </a>
       <div class="head-do">
         <button class="nav-toggle" aria-expanded="false"

@@ -221,20 +221,22 @@ main:focus { outline: none; }
    the name in the centre, EN and दान कीजिए on the right. */
 .site-header-inner { display: grid; grid-template-columns: 1fr auto 1fr;
                      align-items: center; gap: 12px; padding: 12px 16px; }
-/* Left: what a visitor can do (menu, language, दान). Middle: whose site this
-   is. Right: the mark. Every cell names its row, or the grid would auto-place
-   the second child onto a row of its own. */
-.head-do { grid-column: 1; grid-row: 1; justify-self: start;
-           display: flex; align-items: center; gap: 10px; }
+/* Left: the mark. Middle: whose site this is. Right: what a visitor can do
+   (menu, language, दान). Every cell names its row, or the grid would
+   auto-place the second child onto a row of its own. */
+.brand img { grid-column: 1; grid-row: 1; justify-self: start; }
 .brand-text { grid-column: 2; grid-row: 1; justify-self: center; text-align: center; }
-.brand img { grid-column: 3; grid-row: 1; justify-self: end; }
+.head-do { grid-column: 3; grid-row: 1; justify-self: end;
+           display: flex; align-items: center; gap: 10px; }
 /* The link lays out nothing itself; its two halves are placed by the header
    grid. Browsers keep the link in the accessibility tree, and the focus ring
    is drawn around both halves. */
 .brand { display: contents; color: inherit; }
 .brand-text { color: inherit; }
-.brand b { display: block; font-family: var(--head); font-weight: 400; font-size: 1.05rem; color: var(--red-d); }
-.brand i { font-style: normal; font-size: 0.68rem; color: var(--mute); }
+/* The name stands alone in the middle now - the सेवा · शिक्षा · स्वास्थ्य line
+   it used to carry is in the footer, where there is room to read it. */
+.brand b { display: block; font-family: var(--head); font-weight: 400; font-size: 1.2rem;
+           color: var(--red-d); }
 /* The band of pages: its own strip under the name, so ten Hindi words have
    room to breathe and each one is a 44px target. It stays at the top of the
    screen while the page scrolls - on a list of five hundred donors, going
@@ -536,8 +538,7 @@ body.lb-open { overflow: hidden; }
   .prose-split img { max-width: 220px; }
   .heritage img { height: auto; max-height: 320px; object-fit: cover; object-position: center 20%; }
 
-  .brand i { display: none; }
-  .brand b { font-size: 0.95rem; }
+  .brand b { font-size: 1.05rem; }
   .site-header { min-height: 70px; }
   .brand img { width: 46px; height: 40px; }
 }
@@ -572,9 +573,9 @@ body.lb-open { overflow: hidden; }
 }
 @media (max-width: 640px) {
   .site-header-inner { row-gap: 10px; }
-  /* The name keeps the middle and the mark the right edge; the controls take
+  /* The mark keeps the left edge and the name the middle; the controls take
      the row below, where ☰, EN and दान कीजिए have room side by side. */
-  .head-do { grid-column: 1 / -1; grid-row: 2; }
+  .head-do { grid-column: 1 / -1; grid-row: 2; justify-self: end; }
 }
 
 .donor-modal {
