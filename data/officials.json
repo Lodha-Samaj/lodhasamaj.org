@@ -36,7 +36,8 @@
       "nameHi": "सुनील कोतुल जी",
       "roleHi": "पूर्व अध्यक्ष",
       "roleEn": "Former President",
-      "photo": "/assets/img/officials/sunil-kotul.png"
+      "photo": "/assets/img/officials/sunil-kotul.png",
+      "term": "2023 – 2025"
     },
     {
       "nameHi": "बहादुर कोतुल जी",
@@ -48,7 +49,8 @@
       "nameHi": "विक्रम जाट जी",
       "roleHi": "पूर्व उपाध्यक्ष",
       "roleEn": "Former Vice President",
-      "photo": "/assets/img/officials/vikram-jat.png"
+      "photo": "/assets/img/officials/vikram-jat.png",
+      "term": "2023 – 2025"
     },
     {
       "nameHi": "धन्नालाल जाट जी",
@@ -60,7 +62,8 @@
       "nameHi": "कैलाश जामदार जी",
       "roleHi": "पूर्व सचिव",
       "roleEn": "Former Secretary",
-      "photo": "/assets/img/officials/kailash-jamdar.png"
+      "photo": "/assets/img/officials/kailash-jamdar.png",
+      "term": "2023 – 2025"
     },
     {
       "nameHi": "गोपाल वर्मा जी",
@@ -78,7 +81,8 @@
       "nameHi": "श्री प्रताप कोतुल",
       "roleHi": "पूर्व कोषाध्यक्ष",
       "roleEn": "Former Treasurer",
-      "photo": "/assets/img/officials/pratap-kotul.jpg"
+      "photo": "/assets/img/officials/pratap-kotul.jpg",
+      "term": "2023 – 2025"
     }
   ],
   "brahmlin": [

@@ -495,6 +495,10 @@ main:focus { outline: none; }
                             color: var(--gold); font-family: var(--head); font-size: 2.5rem; }
 .person-card h3 { margin: 0 0 2px; font-size: 1.1rem; color: var(--ind); }
 .person-card .role { margin: 0 0 6px; color: var(--mute); font-size: 0.9rem; }
+/* How long they held the post. Quieter than the role, and tabular so a column
+   of years lines up down the grid. */
+.person-card .term { margin: -4px 0 6px; color: var(--mute); font-size: 0.82rem;
+                     font-variant-numeric: tabular-nums; }
 .person-card .phone { display: inline-block; min-height: 44px; line-height: 44px; font-weight: 700; }
 /* ब्रह्मलीन: the card read exactly like a serving office bearer's. */
 .person-card.memoriam { background: var(--paper); border-color: var(--rule); }
