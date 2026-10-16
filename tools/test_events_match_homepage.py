@@ -81,17 +81,6 @@ def test_karyakram_states_the_shared_venue_from_events_json():
         "hi/karyakram/index.html", r'<p class="fest-where">(.*?)</p>')
 
 
-def home_cards(page: str) -> dict:
-    """{"2026": "2026 44 दानदाता 46वां विशाल भंडारा …"} - the home register's line for
-    each नवदुर्गा year. tools/update_home_stats.py writes them."""
-    out = {}
-    for line in re.findall(r'<li class="ly.*?</li>', source(page), flags=re.S):
-        year = re.search(r'navdurga-mahotsav-(\d{4})/', line)
-        if year:
-            out[year.group(1)] = " ".join(re.sub(r"<[^>]+>", " ", line).split())
-    return out
-
-
 def element(page: str, pattern: str) -> str:
     match = re.search(pattern, source(page), flags=re.S)
     assert match, f"{pattern} not found in {page}"
@@ -109,21 +98,18 @@ def test_ordinals_match_in_the_home_hero():
     assert f"{o['kanyaPujan']}वां नगर कन्या पूजन" in hero
 
 
-def test_the_home_card_for_this_year_counts_the_same_bhandara_as_the_hero():
-    """The hero announces this year's भंडारा out of events.json; the card under it
-    reports the donors of that same भंडारा, and its ordinal comes from the donor
-    file. Two files, one number - this is where they are made to agree. The year
-    before it is one ordinal back, because the भंडारा is held every year."""
+def test_the_stats_band_reports_the_bhandara_before_the_coming_one():
+    """The hero announces this year's भंडारा; the band under it reports the last
+    one, with the donor figures of that year. They are consecutive, so the band's
+    ordinal is one less - and the band must also name the year it reports."""
     o = ordinal_event()["ordinal"]
-    cards = home_cards("hi/index.html")
-    this_year = max(cards)                     # the newest list on the page
-    assert f"{o['bhandara']}वां विशाल भंडारा" in cards[this_year], cards[this_year]
-    assert f"{o['kanyaPujan']}वां नगर कन्या पूजन" in cards[this_year], cards[this_year]
-    earlier = cards.get(str(int(this_year) - 1), "")
-    for number in re.findall(r"(\d+)वां\s+विशाल भंडारा", earlier):
-        assert int(number) == o["bhandara"] - 1, earlier
-    for number in re.findall(r"(\d+)वां\s+नगर कन्या पूजन", earlier):
-        assert int(number) == o["kanyaPujan"] - 1, earlier
+    stats = element("hi/index.html", r'<section class="stats">(.*?)</section>')
+    assert f"{o['bhandara'] - 1}वां विशाल भंडारा" in stats, stats
+    assert f"{o['bhandara']}वां" not in stats, "the band is about the भंडारा already held"
+    assert re.search(r"सन् (\d{4})", stats), stats
+    # If a कन्या पूजन stat is ever added, it belongs to that same year.
+    for number in re.findall(r"(\d+)वां\s+नगर कन्या पूजन", stats):
+        assert int(number) == o["kanyaPujan"] - 1
 
 
 def test_ordinals_match_on_the_karyakram_entry():
@@ -193,16 +179,14 @@ def test_english_ordinals_match_in_hero_stats_and_card():
     bhandara = f"{ordinal_en(o['bhandara'])} Vishal Bhandara"
     kanya = f"{ordinal_en(o['kanyaPujan'])} Nagar Kanya Pujan"
     hero = element("en/index.html", r'<section class="hero">(.*?)</section>')
-    cards = home_cards("en/index.html")
-    this_year = max(cards)
+    stats = element("en/index.html", r'<section class="stats">(.*?)</section>')
     block = next(text(b) for b in fest_blocks("en/karyakram/index.html")
                  if ordinal_event()["titleEn"] in b)
     assert bhandara in hero and kanya in hero
-    # As in Hindi: this year's card reports this year's भंडारा, the one before it
-    # is one ordinal back.
-    assert bhandara in cards[this_year] and kanya in cards[this_year], cards[this_year]
-    earlier = cards.get(str(int(this_year) - 1), "")
-    for number in re.findall(r"(\d+)(?:st|nd|rd|th)\s+Nagar Kanya Pujan", earlier):
+    # As in Hindi, the band reports the भंडारा already held: one ordinal back.
+    assert f"{ordinal_en(o['bhandara'] - 1)} Vishal Bhandara" in stats, stats
+    assert bhandara not in stats, "the band is about the bhandara already held"
+    for number in re.findall(r"(\d+)(?:st|nd|rd|th)\s+Nagar Kanya Pujan", stats):
         assert int(number) == o["kanyaPujan"] - 1
     assert bhandara in block and kanya in block
 
