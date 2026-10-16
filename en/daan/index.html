@@ -40,7 +40,7 @@
 
   <main>
     <div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><a href="/en/">Home</a> › Donate</nav></div>
-    <div class="wrap section">
+    <div class="wrap section give-top">
       <div class="section-head"><h1>Donate</h1></div>
       <div class="prose">
         <p>Everything Lodha Samaj Indore does — the temple construction, the Kavad Yatra and the Navdurga Mahotsav — is possible only with the support of the community's families.</p>
@@ -86,6 +86,7 @@
            <a href="tel:+919098781740">+91 90987 81740</a></p>
         <p class="give-line"><strong>Address</strong>
            <span>Lodha Colony Dharmshala, Maharana Pratap Chauraha, Mhow Naka, Indore, Madhya Pradesh</span></p>
+        <p class="give-sum" id="give-sum" hidden></p>
         <p><a class="btn" href="/en/sampark/">Contact page</a></p>
       </aside>
     </div>
@@ -139,6 +140,14 @@
         count.className = 'n';
         count.textContent = `${counts['hanuman-mandir']} donors`;
         link.append(count);
+      }
+      // What the six lists add up to - said once, where someone deciding
+      // whether to give can see it.
+      const total = Object.values(counts).reduce((sum, n) => sum + (Number(n) || 0), 0);
+      const sum = document.getElementById('give-sum');
+      if (total && sum) {
+        sum.textContent = `These lists record ${total.toLocaleString('en-IN')} gifts so far.`;
+        sum.hidden = false;
       }
     } catch (error) {
       console.error(error);

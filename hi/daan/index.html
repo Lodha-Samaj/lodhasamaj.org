@@ -39,7 +39,7 @@
   </noscript>
   <main>
     <div class="wrap"><nav class="crumbs" aria-label="पथ"><a href="/hi/">होम</a> › दान</nav></div>
-    <div class="wrap section">
+    <div class="wrap section give-top">
       <div class="section-head"><h1>दान</h1></div>
       <div class="prose">
         <p>लोधा समाज इंदौर के आयोजन — मंदिर निर्माण, कावड़ यात्रा और नवदुर्गा महोत्सव — समाज के परिवारों के सहयोग से ही संभव होते हैं।</p>
@@ -85,6 +85,7 @@
            <a href="tel:+919098781740">+91 90987 81740</a></p>
         <p class="give-line"><strong>पता</strong>
            <span>लोधा कॉलोनी धर्मशाला, महाराणा प्रताप चौराहा, महूनाका इंदौर, मध्यप्रदेश</span></p>
+        <p class="give-sum" id="give-sum" hidden></p>
         <p><a class="btn" href="/hi/sampark/">संपर्क पृष्ठ</a></p>
       </aside>
     </div>
@@ -138,6 +139,14 @@
         count.className = 'n';
         count.textContent = `${counts['hanuman-mandir']} दानदाता`;
         link.append(count);
+      }
+      // What the six lists add up to - said once, where someone deciding
+      // whether to give can see it.
+      const total = Object.values(counts).reduce((sum, n) => sum + (Number(n) || 0), 0);
+      const sum = document.getElementById('give-sum');
+      if (total && sum) {
+        sum.textContent = `इन सूचियों में अब तक ${total.toLocaleString('en-IN')} दान दर्ज हैं।`;
+        sum.hidden = false;
       }
     } catch (error) {
       console.error(error);

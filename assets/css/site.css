@@ -447,7 +447,11 @@ main:focus { outline: none; }
    left edge and the text is not stranded in the left half of a wide frame. Scoping
    this per section instead would make the headings step in and out down the page.
    Browsers without :has() keep the old full-width behaviour, which is merely looser. */
-main:has(.prose) .wrap { max-width: 880px; }
+/* A page that is mostly prose narrows; one that holds a two-column layout
+   does not - on the दान page this rule was squeezing the lists into 488px and
+   pushing the whole page 200px to the right. */
+main:has(.prose):not(:has(.give-grid)) .wrap { max-width: 880px; }
+main:has(.give-grid) .prose { max-width: 62ch; }
 .prose { max-width: 68ch; }
 .prose p { margin: 0 0 1em; }
 .prose-split { display: grid; grid-template-columns: 1fr 220px; gap: 24px; align-items: start; }
@@ -691,13 +695,16 @@ body.lb-open { overflow: hidden; }
                    border-radius: var(--r); background: var(--warm); }
 
 /* ---- the दान page: lists on the left, the way to give on the right ---- */
-.give-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 40px;
-             padding-block: 8px 52px; align-items: start; }
+.give-grid { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 44px;
+             padding-block: 4px 52px; align-items: start; }
 /* Three different things were being read as one long ladder. Each is its own
    card now, under a band of its own colour: the temple in indigo (it is being
    built, year after year), the यात्रा in red (सावन, बोल बम), the महोत्सव in
    marigold (the नवरात्र मंडप). The colour is only the signal - the type and
    the rows inside stay the same, so the three still belong to one page. */
+/* The page's own opening: the title and one line, then the lists. 52px of
+   padding under a single sentence left the first card below the fold. */
+.give-top { padding-block: 34px 10px; }
 .give-part { padding: 22px 24px 8px; border: 1px solid var(--rule); border-radius: var(--r);
              border-top: 4px solid var(--accent, var(--rule)); background: #fff; }
 .give-part + .give-part { margin-top: 26px; }
@@ -718,6 +725,8 @@ body.lb-open { overflow: hidden; }
 .give-card p { margin: 0 0 12px; font-size: 0.95rem; }
 .give-line { display: grid; grid-template-columns: 4.2rem 1fr; gap: 4px 10px; }
 .give-line strong { color: var(--mute); font-weight: 600; }
+.give-sum { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule);
+            color: var(--mute); font-size: 0.9rem; }
 .give-card .btn { margin-top: 2px; }
 @media (max-width: 900px) {
   .give-grid { grid-template-columns: 1fr; gap: 28px; }
