@@ -98,18 +98,19 @@ def test_ordinals_match_in_the_home_hero():
     assert f"{o['kanyaPujan']}वां नगर कन्या पूजन" in hero
 
 
-def test_the_stats_band_reports_the_bhandara_before_the_coming_one():
-    """The hero announces this year's भंडारा; the band under it reports the last
-    one, with the donor figures of that year. They are consecutive, so the band's
-    ordinal is one less - and the band must also name the year it reports."""
+def test_the_stats_band_reports_the_same_bhandara_the_hero_announces():
+    """The hero announces this year's भंडारा; the band under it now reports what
+    has come in for that same भंडारा, not the last one. So the two ordinals are
+    equal, the band names its year, and - because that भंडारा is still ahead -
+    the band says अब तक rather than presenting the figures as final."""
     o = ordinal_event()["ordinal"]
     stats = element("hi/index.html", r'<section class="stats">(.*?)</section>')
-    assert f"{o['bhandara'] - 1}वां विशाल भंडारा" in stats, stats
-    assert f"{o['bhandara']}वां" not in stats, "the band is about the भंडारा already held"
+    assert f"{o['bhandara']}वां विशाल भंडारा" in stats, stats
+    assert "अब तक" in stats, stats
     assert re.search(r"सन् (\d{4})", stats), stats
     # If a कन्या पूजन stat is ever added, it belongs to that same year.
     for number in re.findall(r"(\d+)वां\s+नगर कन्या पूजन", stats):
-        assert int(number) == o["kanyaPujan"] - 1
+        assert int(number) == o["kanyaPujan"]
 
 
 def test_ordinals_match_on_the_karyakram_entry():
@@ -183,11 +184,11 @@ def test_english_ordinals_match_in_hero_stats_and_card():
     block = next(text(b) for b in fest_blocks("en/karyakram/index.html")
                  if ordinal_event()["titleEn"] in b)
     assert bhandara in hero and kanya in hero
-    # As in Hindi, the band reports the भंडारा already held: one ordinal back.
-    assert f"{ordinal_en(o['bhandara'] - 1)} Vishal Bhandara" in stats, stats
-    assert bhandara not in stats, "the band is about the bhandara already held"
+    # As in Hindi: the band reports the same bhandara, and says it is not over.
+    assert bhandara in stats, stats
+    assert "so far" in stats, stats
     for number in re.findall(r"(\d+)(?:st|nd|rd|th)\s+Nagar Kanya Pujan", stats):
-        assert int(number) == o["kanyaPujan"] - 1
+        assert int(number) == o["kanyaPujan"]
     assert bhandara in block and kanya in block
 
 

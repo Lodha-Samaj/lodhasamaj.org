@@ -780,6 +780,24 @@ body.lb-open { overflow: hidden; }
   .give-card { position: static; order: -1; }
 }
 
+/* ---- दान page: each आयोजन's figures, in the home band's hand ----
+   The same big-number-small-label pair the home page uses, one line per year,
+   so the तीन आयोजन can be read before their lists are opened. The year sits
+   first, in the heading face, and the line rules separate the years. */
+.sheet { margin: 0 0 16px; }
+.sheet-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 30px;
+             padding: 11px 0; border-top: 1px solid var(--line); }
+.sheet-row h3 { margin: 0; min-width: 4.4rem; font-size: 1.22rem; color: var(--accent, var(--ind)); }
+/* The महोत्सव's gold fails contrast as text; its sheet keeps the indigo. */
+.give-festival .sheet-row h3 { color: var(--red-d); }
+.sheet-row .stat { margin: 0; flex-direction: row; align-items: baseline; gap: 6px; }
+.sheet-row .stat b { font-size: 1.16rem; }
+.sheet-row .stat span { font-size: 0.85rem; }
+@media (max-width: 560px) {
+  .sheet-row { gap: 4px 18px; }
+  .sheet-row h3 { min-width: 100%; }
+}
+
 /* ---- /daan/ archive: the years on offer ---- */
 .year-list { list-style: none; margin: 0; padding: 0; max-width: 520px;
              border-top: 1px solid var(--rule); }
