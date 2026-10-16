@@ -59,9 +59,11 @@ a:hover, a:focus-visible { color: var(--ind); text-decoration: none; }
    heavier) selector would hold it through the hover. Saying it once here, at a
    weight none of them reach, keeps every link answering the pointer. */
 :is(.list-more a, .section-head .all, .gift-joint a, .dm-history a,
-    .crumbs a, .contact-list a, .link-row a):is(:hover, :focus-visible) {
+    .crumbs a, .contact-list a, .link-row a):not(.btn, .cta):is(:hover, :focus-visible) {
   color: var(--ind);
 }
+/* The :not() matters: .link-row holds the filled दान buttons, and this rule is
+   heavier than .btn:hover - it was painting their white label indigo on red. */
 .site-nav a:hover, .site-nav a:focus-visible { color: var(--red); }
 .cta:hover, .cta:focus-visible, .btn:hover, .btn:focus-visible {
   background: var(--red-d); color: #fff;
@@ -291,13 +293,25 @@ main:focus { outline: none; }
 .f-donate { display: inline-flex; align-items: center; min-height: 38px; margin-top: 6px;
             padding: 6px 16px; border: 1px solid var(--gold); border-radius: 4px;
             font-weight: 700; }
-.f-donate:hover, .f-donate:focus-visible { background: var(--gold); color: var(--ind-d); }
+/* Named through .site-footer: the marigold given to every footer link on
+   hover is heavier than a bare .f-donate:hover, and it was painting the label
+   marigold on this button's gold fill - gold on gold, the button went blank. */
+.site-footer .f-donate:hover, .site-footer .f-donate:focus-visible {
+  background: var(--gold); color: var(--ind-d);
+}
 .site-footer p { margin: 0 0 6px; line-height: 1.65; }
 .site-footer b { color: #f3e9cd; font-family: var(--head); font-weight: 400; font-size: 1.15rem; }
 .f-tag { margin-top: 4px; color: #a79cbb; font-size: 0.8rem; }
 .f-head { margin: 0 0 10px; font-family: var(--head); font-weight: 400; font-size: 0.95rem;
           color: #f3e9cd; }
+/* Each contact line opens with its own mark, so pin, handset and envelope
+   tell address, phone and email apart before a word is read. The mark sits
+   inside the link, so it takes the same colour when the pointer arrives. */
+.f-line { display: flex; align-items: flex-start; gap: 9px; }
+.f-line a { display: inline-flex; align-items: flex-start; gap: 9px; }
+.f-line svg { flex: none; width: 16px; height: 16px; margin-top: 2px; }
 .f-addr { max-width: 34ch; }
+.f-addr svg { color: #a79cbb; }
 .site-footer a { color: var(--gold); }     /* gold on indigo: contrast is fine here */
 
 /* The four marks: gold discs at rest, each one lighting up in its own

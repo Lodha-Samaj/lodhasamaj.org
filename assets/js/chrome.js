@@ -88,6 +88,22 @@ const SOCIAL_ICONS = {
     + '<path d="M9.5 8.7c.3-.1.6 0 .8.3l.8 1.3c.1.2.1.5-.1.7l-.5.5c-.1.1-.2.3-.1.5.5 1 1.3 1.8 2.3 2.3.2.1.4 0 .5-.1'
     + 'l.5-.5c.2-.2.5-.2.7-.1l1.3.8c.3.2.4.5.3.8-.2.7-.9 1.1-1.6 1.1-2.9-.3-5.2-2.6-5.5-5.5 0-.7.4-1.3 1.1-1.5z"/>',
 };
+// Small marks for the contact lines, drawn the same way as the social ones.
+const UI_ICONS = {
+  place: '<path d="M12 20.6s6.4-6 6.4-10.1a6.4 6.4 0 1 0-12.8 0c0 4.1 6.4 10.1 6.4 10.1z"'
+    + ' fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>'
+    + '<circle cx="12" cy="10.4" r="2.4" fill="none" stroke="currentColor" stroke-width="1.7"/>',
+  phone: '<rect x="6.6" y="2.4" width="10.8" height="19.2" rx="2.6" fill="none"'
+    + ' stroke="currentColor" stroke-width="1.7"/>'
+    + '<path d="M10.4 18.6h3.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  mail: '<rect x="2.6" y="4.8" width="18.8" height="14.4" rx="2.4" fill="none"'
+    + ' stroke="currentColor" stroke-width="1.7"/>'
+    + '<path d="m3.6 6.6 8.4 6.2 8.4-6.2" fill="none" stroke="currentColor" stroke-width="1.7"'
+    + ' stroke-linecap="round" stroke-linejoin="round"/>',
+};
+const mark = (name) =>
+  `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">${UI_ICONS[name]}</svg>`;
+
 const HEX = /^#[0-9a-f]{6}$/i;
 const socialHtml = () => CONTACT.socials.map((s) => {
   const mark = SOCIAL_ICONS[s.label];
@@ -126,10 +142,12 @@ if (footer) {
       </nav>
       <div class="f-col">
         <h2 class="f-head">${F.contact}</h2>
-        <p class="f-addr">${esc(CONTACT.address[lang])}</p>
-        <p><a href="tel:${esc(CONTACT.phone.replace(/\s/g, ''))}">${esc(CONTACT.phone)}</a></p>${
+        <p class="f-line f-addr">${mark('place')}<span>${esc(CONTACT.address[lang])}</span></p>
+        <p class="f-line"><a href="tel:${esc(CONTACT.phone.replace(/\s/g, ''))}">${
+          mark('phone')}<span>${esc(CONTACT.phone)}</span></a></p>${
           CONTACT.email ? `
-        <p><a href="mailto:${esc(CONTACT.email)}">${esc(CONTACT.email)}</a></p>` : ''}
+        <p class="f-line"><a href="mailto:${esc(CONTACT.email)}">${
+          mark('mail')}<span>${esc(CONTACT.email)}</span></a></p>` : ''}
         <p><a class="f-donate" href="${base}daan/">${F.donate}</a></p>
       </div>
       <div class="f-col">
