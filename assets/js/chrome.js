@@ -100,28 +100,50 @@ const socialHtml = () => CONTACT.socials.map((s) => {
 const footer = document.getElementById('site-footer');
 if (footer) {
   const F = lang === 'hi'
-    ? { name: 'लोधा समाज इंदौर', tag: 'सेवा · शिक्षा · स्वास्थ्य',
-        contact: 'संपर्क', follow: 'हमसे जुड़ें' }
-    : { name: 'Lodha Samaj Indore', tag: 'Service · Education · Health',
-        contact: 'Contact', follow: 'Follow us' };
+    ? { name: 'लोधा समाज इंदौर', tag: 'सेवा · शिक्षा · स्वास्थ्य', pages: 'पृष्ठ',
+        contact: 'संपर्क', follow: 'हमसे जुड़ें', donate: 'दान कीजिए',
+        by: 'वेबसाइट प्रबंधन' }
+    : { name: 'Lodha Samaj Indore', tag: 'Service · Education · Health', pages: 'Pages',
+        contact: 'Contact', follow: 'Follow us', donate: 'Donate',
+        by: 'Website managed by' };
+  // The same ten pages as the menu, so the reader who has scrolled to the
+  // bottom does not have to go back up to move on.
+  const pagesHtml = NAV.map(({ href, ...labels }) =>
+    `<li><a href="${base}${href}">${esc(labels[lang])}</a></li>`).join('');
   footer.className = 'site-footer';
   footer.innerHTML = `
     <div class="wrap site-footer-inner">
       <div class="f-brand">
-        <b>${F.name}</b>
-        <p class="f-tag">${F.tag}</p>
+        <img src="/assets/img/logo.png" alt="" width="54" height="47">
+        <div>
+          <b>${F.name}</b>
+          <p class="f-tag">${F.tag}</p>
+        </div>
       </div>
+      <nav class="f-col" aria-label="${esc(F.pages)}">
+        <h2 class="f-head">${F.pages}</h2>
+        <ul class="f-links">${pagesHtml}</ul>
+      </nav>
       <div class="f-col">
         <h2 class="f-head">${F.contact}</h2>
         <p class="f-addr">${esc(CONTACT.address[lang])}</p>
         <p><a href="tel:${esc(CONTACT.phone.replace(/\s/g, ''))}">${esc(CONTACT.phone)}</a></p>${
           CONTACT.email ? `
         <p><a href="mailto:${esc(CONTACT.email)}">${esc(CONTACT.email)}</a></p>` : ''}
+        <p><a class="f-donate" href="${base}daan/">${F.donate}</a></p>
       </div>
       <div class="f-col">
         <h2 class="f-head">${F.follow}</h2>
         <ul class="socials">${socialHtml()}</ul>
       </div>
     </div>
-    <div class="f-base"><div class="wrap">© ${new Date().getFullYear()} ${F.name}</div></div>`;
+    <div class="f-base">
+      <div class="wrap f-base-inner">
+        <p>© ${new Date().getFullYear()} ${F.name}</p>
+        <p class="f-by">${F.by}
+          <a href="https://www.armourinfosec.com/" rel="noopener" aria-label="Armour Infosec">
+            <img src="/assets/img/armour-infosec.png" alt="Armour Infosec" width="144" height="22">
+          </a></p>
+      </div>
+    </div>`;
 }

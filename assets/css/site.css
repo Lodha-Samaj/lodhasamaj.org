@@ -276,8 +276,22 @@ main:focus { outline: none; }
    to follow - instead of one flex row where the address, the phone and four
    link words ran together. The last line is a rule apart, like a colophon. */
 .site-footer { margin-top: 48px; background: var(--ind-d); color: #bdb4cf; }
-.site-footer-inner { display: grid; grid-template-columns: 1.3fr 1.1fr auto;
-                     gap: 26px 44px; padding: 32px 16px 26px; font-size: 0.85rem; }
+.site-footer-inner { display: grid; grid-template-columns: 1.15fr 1fr 1.1fr auto;
+                     gap: 28px 44px; padding: 34px 16px 28px; font-size: 0.85rem; }
+.f-brand { display: flex; align-items: flex-start; gap: 12px; }
+.f-brand img { flex: none; }
+/* The menu again, in two short columns so ten pages do not become a ladder. */
+.f-links { columns: 2; column-gap: 24px; margin: 0; padding: 0; list-style: none; }
+.f-links li { margin: 0 0 6px; break-inside: avoid; }
+/* Named through .site-footer, or the gold set for every footer link further
+   down would hold these too - and a link already gold cannot turn gold. */
+.site-footer .f-links a { color: #d9d1e6; }
+.site-footer .f-links a:hover, .site-footer .f-links a:focus-visible { color: var(--gold); }
+/* The one thing the समाज asks for, kept where a reader ends up. */
+.f-donate { display: inline-flex; align-items: center; min-height: 38px; margin-top: 6px;
+            padding: 6px 16px; border: 1px solid var(--gold); border-radius: 4px;
+            font-weight: 700; }
+.f-donate:hover, .f-donate:focus-visible { background: var(--gold); color: var(--ind-d); }
 .site-footer p { margin: 0 0 6px; line-height: 1.65; }
 .site-footer b { color: #f3e9cd; font-family: var(--head); font-weight: 400; font-size: 1.15rem; }
 .f-tag { margin-top: 4px; color: #a79cbb; font-size: 0.8rem; }
@@ -300,12 +314,25 @@ main:focus { outline: none; }
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* The colophon line: the समाज's name and the year, under a hairline. */
+/* The colophon: the समाज's name and year on one side, who keeps the site
+   running on the other, under a hairline. */
 .f-base { border-top: 1px solid rgba(243, 233, 205, 0.14); }
 .f-base .wrap { padding: 12px 16px; font-size: 0.78rem; color: #a79cbb; }
+.f-base-inner { display: flex; flex-wrap: wrap; align-items: center;
+                justify-content: space-between; gap: 8px 20px; }
+.f-base p { margin: 0; }
+.f-by { display: inline-flex; align-items: center; gap: 9px; }
+.f-by a { display: inline-flex; padding: 3px; border-radius: 3px; opacity: 0.85;
+          transition: opacity 0.15s ease, background-color 0.15s ease; }
+.f-by a:hover, .f-by a:focus-visible { opacity: 1; background: rgba(255, 255, 255, 0.08); }
+.f-by img { display: block; height: 22px; width: auto; }
 
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
+  .site-footer-inner { grid-template-columns: 1fr 1fr; gap: 26px 32px; }
+}
+@media (max-width: 620px) {
   .site-footer-inner { grid-template-columns: 1fr; gap: 22px; padding: 26px 16px 20px; }
+  .f-base-inner { justify-content: flex-start; }
 }
 
 /* ---- inner pages (Task 9): prose, people, events, contact, gallery ---- */
