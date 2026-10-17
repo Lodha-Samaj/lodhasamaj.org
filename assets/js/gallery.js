@@ -3,8 +3,11 @@
 // thumb; the viewer traps focus while open and hands it back on close.
 import { step, slideOf, counterText } from './lightbox-core.js';
 
-const grid = document.querySelector('.gallery-grid');
-if (grid) {
+// There is a roll per year now, so every .gallery-grid on the page feeds one
+// viewer: ❮ ❯ walk from the last picture of one year into the first of the next
+// rather than stopping at a heading.
+const grids = [...document.querySelectorAll('.gallery-grid')];
+if (grids.length) {
   const lang = document.documentElement.lang.toLowerCase().startsWith('en') ? 'en' : 'hi';
   const T = lang === 'hi'
     ? { open: 'बड़ा करके देखें', close: 'बंद करें', prev: 'पिछला चित्र', next: 'अगला चित्र',
@@ -17,7 +20,7 @@ if (grid) {
 
   // Each <img> becomes the face of a button. The markup stays plain HTML for
   // anyone without JavaScript: there the pictures are simply pictures.
-  const shots = [...grid.querySelectorAll('img')];
+  const shots = grids.flatMap((g) => [...g.querySelectorAll('img')]);
   shots.forEach((img, i) => {
     const button = document.createElement('button');
     button.type = 'button';

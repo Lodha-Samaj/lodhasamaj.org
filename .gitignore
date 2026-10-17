@@ -7,3 +7,9 @@ __pycache__/
 # Working notes for the समाज and the maintainer: kept local, never published.
 docs/
 undefined/
+
+# The phone files the समाज sends, as they arrive: 4K60 clips of 50-140 MB that
+# GitHub would refuse anyway. tools/encode_media.sh turns them into what the
+# site serves; the originals stay on the maintainer's disk. Anchored with a
+# leading slash so it does not also hide assets/*/2026/, which IS published.
+/2026/
