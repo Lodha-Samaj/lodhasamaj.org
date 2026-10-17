@@ -93,6 +93,43 @@ CARD = """
   </figure>
 """
 
+# भंडारे का पूरा पर्दा। दिन और समय समाज के अपने निमंत्रण पत्र से हैं, जो
+# दायीं ओर पूरा का पूरा दिखता भी है - छपे हुए पत्र को काटा नहीं जाता।
+BHANDARA = {
+    "kicker": "23वाँ आयोजन · लोधा समाज उत्सव समिति (सन् 1981)",
+    "title": "नगर कन्या भोज<br>एवं विशाल भंडारा",
+    "day": "शुक्रवार, 23 अक्टूबर 2026",
+    "times": [("महाआरती", "शाम 7 बजे"), ("महाप्रसादी", "शाम 7:30 बजे")],
+    "where": "लोधा कॉलोनी, महूनाका चौराहा, इंदौर",
+    "nimantran": "/assets/img/karyakram/bhandara-2026-nimantran.jpg",
+}
+
+BHANDARA_CARD = """
+  <figure class="screen card nyota" id="{slug}">
+    <img class="bg" src="/assets/img/gallery/2026/pratima-7.jpg" alt="">
+    <div class="veil"></div>
+    <div class="side">
+      <p class="kicker">{kicker}</p>
+      <h2>{title}</h2>
+      <p class="day">{day}</p>
+      <ul class="times">{times}</ul>
+      <p class="where">{where}</p>
+      <div class="foot">
+        <img src="/assets/img/logo-social.png" alt="">
+        <div>
+          <p class="url">lodhasamaj.org</p>
+          <p class="who">लोधा समाज इंदौर</p>
+        </div>
+      </div>
+    </div>
+    <div class="patra"><img src="{nimantran}" alt=""></div>
+    <div class="strip"></div>
+  </figure>
+"""
+
+TIME_ROW = """
+        <li><b>{0}</b><span>{1}</span></li>"""
+
 PEOPLE = """
   <figure class="screen card people" id="{slug}">
     <img class="bg" src="/assets/img/gallery/2026/pratima-7.jpg" alt="">
@@ -159,6 +196,10 @@ def screens():
     cells = "".join(PERSON_CELL.format(**person) for person in officials())
     out.append(("card-padadhikari", PEOPLE.format(slug="card-padadhikari",
                                                   people=cells), False))
+    rows = "".join(TIME_ROW.format(*pair) for pair in BHANDARA["times"])
+    out.append(("card-bhandara", BHANDARA_CARD.format(slug="card-bhandara",
+                                                      times=rows, **{
+        k: v for k, v in BHANDARA.items() if k != "times"}), False))
     return out
 
 
@@ -198,6 +239,10 @@ OBS में कैसे लगाएँ
        प्रतीक्षा  →  card-pratiksha-1920x1080.jpg
        विश्राम   →  card-vishram-1920x1080.jpg
        धन्यवाद  →  card-dhanyavaad-1920x1080.jpg
+
+   भंडारे वाला पर्दा — card-bhandara-1920x1080.jpg — 23 अक्टूबर के live
+   में प्रारंभ से पहले और बीच-बीच में दिखाइए। उस पर दिन, महाआरती और
+   महाप्रसादी का समय, स्थान, और समाज का निमंत्रण पत्र पूरा है।
 
    पदाधिकारी वाला पर्दा — card-padadhikari-1920x1080.jpg — किसी भी दृश्य
    में डालकर बीच-बीच में दिखाया जा सकता है, या उसका अपना एक दृश्य बना

@@ -90,6 +90,35 @@
     .card .strip { position: absolute; left: 0; right: 0; bottom: 0; height: 14px;
                    background: linear-gradient(90deg, var(--red), var(--mar), var(--gold)); }
 
+    /* ───────────── भंडारे वाला पर्दा ───────────── */
+    /* बायीं ओर बात, दायीं ओर समाज का निमंत्रण पत्र पूरा - छपा हुआ पत्र
+       काटा नहीं जाता, केवल ऊँचाई में बैठाया गया है। */
+    .nyota .side { position: absolute; left: 0; top: 0; bottom: 0; width: 1240px;
+                   display: flex; flex-direction: column; justify-content: center;
+                   gap: 16px; padding: 80px 70px 92px 110px; }
+    .nyota .kicker { margin: 0; color: var(--mar); font-size: 32px; font-weight: 600;
+                     letter-spacing: 0.08em; }
+    .nyota h2 { margin: 6px 0 0; font-family: var(--head); font-weight: 400;
+                font-size: 92px; line-height: 1.12; }
+    .nyota .day { margin: 18px 0 0; font-size: 46px; font-weight: 700;
+                  color: var(--gold); }
+    .nyota .times { list-style: none; margin: 16px 0 0; padding: 0;
+                    display: flex; flex-direction: column; gap: 10px; }
+    .nyota .times li { display: flex; align-items: baseline; gap: 18px;
+                       font-size: 38px; }
+    .nyota .times b { font-weight: 700; min-width: 230px; }
+    .nyota .times span { color: #f3e7d2; font-weight: 600; }
+    .nyota .where { margin: 18px 0 0; font-size: 32px; font-weight: 600;
+                    color: #f3e7d2; }
+    .nyota .foot { display: flex; align-items: center; gap: 18px; margin-top: 28px; }
+    .nyota .foot img { width: 66px; height: auto; }
+    .nyota .url { margin: 0; font-size: 40px; font-weight: 800; }
+    .nyota .who { margin: 0; font-size: 28px; font-weight: 600; color: #f3e7d2; }
+    .nyota .patra { position: absolute; right: 96px; top: 0; bottom: 0;
+                    display: grid; place-items: center; }
+    .nyota .patra img { height: 936px; width: auto; border-radius: 8px;
+                        border: 6px solid rgba(201,162,39,0.8); }
+
     /* ───────────── पदाधिकारी वाला पर्दा ───────────── */
     /* पाँच चित्र एक पंक्ति में। गोल काटे गए हैं, जैसे पदाधिकारी पन्ने पर हैं,
        और चौड़ाई इतनी रखी है कि पाँचों 140px के हाशिये के भीतर रहें। */

@@ -10,8 +10,9 @@ import subprocess
 import pytest
 
 from make_live_thumb import NIGHTS
-from make_obs_kit import (CARDS, OUT, PADADHIKARI_PAGE, filename, officials,
-                          overlay_slug, page, screens, text_kit, third_line)
+from make_obs_kit import (BHANDARA, CARDS, OUT, PADADHIKARI_PAGE, filename,
+                          officials, overlay_slug, page, screens, text_kit,
+                          third_line)
 
 ALL = screens()
 IDS = [s[0] for s in ALL]
@@ -28,9 +29,9 @@ def test_har_raat_ka_overlay_hai_aur_naam_dohraya_nahi():
     assert len(set(IDS)) == len(IDS)
     for night in NIGHTS:
         assert overlay_slug(night) in IDS, night["slug"]
-    # हर रात का overlay, CARDS के पर्दे, और पदाधिकारी वाला एक।
-    assert len(ALL) == len(NIGHTS) + len(CARDS) + 1
-    assert "card-padadhikari" in IDS
+    # हर रात का overlay, CARDS के पर्दे, और दो अपने — पदाधिकारी तथा भंडारा।
+    assert len(ALL) == len(NIGHTS) + len(CARDS) + 2
+    assert "card-padadhikari" in IDS and "card-bhandara" in IDS
 
 
 def test_overlay_pardarshi_hai_aur_poore_parde_nahi():
@@ -154,3 +155,22 @@ def test_padadhikari_parda_jpeg_hai_aur_kit_me_likha_hai():
     kit = text_kit(ALL)
     assert "card-padadhikari-1920x1080.jpg" in kit
     assert "पदाधिकारी" in kit
+
+
+def test_bhandare_ke_parde_par_patra_samay_aur_sthan_hain():
+    html = next(h for slug, h, _ in ALL if slug == "card-bhandara")
+    assert BHANDARA["nimantran"] in html
+    assert (OUT.parent.parent.parent / BHANDARA["nimantran"].lstrip("/")).exists()
+    assert BHANDARA["day"] in html and BHANDARA["where"] in html
+    for name, when in BHANDARA["times"]:
+        assert name in html and when in html
+    assert ("card-bhandara", False) in [(s[0], s[2]) for s in ALL]
+    assert "card-bhandara-1920x1080.jpg" in text_kit(ALL)
+
+
+def test_bhandare_ka_sthan_patra_wala_hi_rahe():
+    # निमंत्रण पत्र और बैनर दोनों लोधा कॉलोनी कहते हैं; बाक़ी आयोजनों का
+    # महाराणा प्रताप चौराहा यहाँ नहीं आना चाहिए।
+    html = next(h for slug, h, _ in ALL if slug == "card-bhandara")
+    assert "लोधा कॉलोनी" in BHANDARA["where"]
+    assert "महाराणा प्रताप" not in html
