@@ -152,6 +152,19 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .posters figcaption { margin-top: 8px; color: var(--mute); font-size: 0.85rem;
                       text-align: center; }
 
+/* The whole नवरात्र reel, above the clips it is made of. It is 9:16 and two
+   minutes long, so it is held to a phone's width rather than the column's -
+   at full width it would stand taller than the screen and no one would see the
+   roll underneath it. */
+.reel { margin: 0 0 26px; }
+.reel video {
+  display: block; width: 100%; max-width: 340px; height: auto;
+  border-radius: var(--r); background: #000;
+}
+.reel video:focus-visible { outline: 3px solid var(--ind); outline-offset: 3px; }
+.reel figcaption { margin-top: 8px; max-width: 340px; color: var(--mute);
+                   font-size: 0.85rem; }
+
 /* The clips are phone footage: seven stand upright and three lie flat. Each
    keeps its own shape rather than being cropped to a common box, so this is
    columns rather than a grid - a grid row is as tall as its tallest clip and
