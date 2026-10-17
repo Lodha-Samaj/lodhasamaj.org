@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>लोधा समाज इंदौर — reel end card</title>
+  <!--
+    The last shot of the introduction reel. It is a page rather than something
+    drawn in ffmpeg so that it uses the site's own fonts, colours and logo - the
+    card a viewer sees last should look like the place it is sending them to.
+
+    It needs the site's /assets/ to resolve, so it has to be served from the
+    site root - but it is NOT a page of the site, and a published page there
+    would be served by Pages, indexed, and (rightly) failed by the head-tag
+    guard in tools/test_set_domain.py. So this file is a template, not HTML:
+    reel-intro-capture.mjs copies it to .reel-endcard.html at the root, shoots
+    it, and removes it. The leading dot is what keeps it out - both
+    set_domain.is_site_file and check_links skip dot-paths, and so does Pages.
+  -->
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      display: grid; place-items: center; text-align: center;
+      background:
+        radial-gradient(120% 70% at 50% 0%, rgba(232, 163, 61, 0.22), transparent 62%),
+        var(--ind-d);
+      color: #fff;
+    }
+    .card { padding: 0 44px; }
+    .card img { width: 128px; height: auto; margin-bottom: 26px; }
+    .card h1 {
+      margin: 0; font-family: var(--head); font-weight: 400;
+      font-size: 2.6rem; line-height: 1.2; color: #fff;
+    }
+    .tag {
+      margin: 10px 0 34px; color: var(--mar);
+      font-size: 1.15rem; letter-spacing: 0.04em;
+    }
+    .url {
+      display: inline-block; padding: 14px 26px;
+      border: 2px solid var(--gold); border-radius: 10px;
+      font-family: var(--body); font-weight: 700; font-size: 1.75rem;
+      letter-spacing: 0.01em; color: #fff;
+    }
+    .phone { margin-top: 30px; font-size: 1.15rem; color: #e6dff5; }
+    .phone b { display: block; font-size: 1.5rem; color: #fff; font-weight: 700; }
+    .jai { margin-top: 44px; font-family: var(--head); font-size: 1.4rem; color: var(--gold); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="/assets/img/logo.png" alt="">
+    <h1>लोधा समाज इंदौर</h1>
+    <p class="tag">सेवा · शिक्षा · स्वास्थ्य</p>
+    <p class="url">lodhasamaj.org</p>
+    <p class="phone">फ़ोन एवं व्हाट्सऐप<b>+91 90987 81740</b></p>
+    <p class="jai">॥ जय माता दी ॥</p>
+  </div>
+</body>
+</html>
