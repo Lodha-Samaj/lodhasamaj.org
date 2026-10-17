@@ -116,9 +116,18 @@ def main() -> int:
     ap.add_argument("--script", type=Path, default=ROOT / "tools" / "reel-intro-script.json")
     ap.add_argument("--out", type=Path, default=ROOT / "assets" / "video" / "2026" / "parichay-reel.mp4")
     ap.add_argument("--target", type=float, default=90.0, help="intended length, seconds")
+    # Trying a different narrator should not mean editing the script, and the
+    # two go together: a slower voice reading the same words runs long, so the
+    # pace usually has to move with it.
+    ap.add_argument("--voice", help="override the voice named in the script")
+    ap.add_argument("--length-scale", type=float, help="override the pace; >1 is slower")
     args = ap.parse_args()
 
     spec = json.loads(args.script.read_text(encoding="utf-8"))
+    if args.voice:
+        spec["voice"] = args.voice
+    if args.length_scale:
+        spec["lengthScale"] = args.length_scale
     model = args.voices / (spec["voice"] + ".onnx")
     if not model.exists():
         print(f"no such voice: {model}", file=sys.stderr)
