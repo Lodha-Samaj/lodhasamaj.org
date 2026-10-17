@@ -37,6 +37,11 @@ NIGHTS = [
     {"slug": "vijayadashami", "num": "१०", "kicker": "लोधा समाज इंदौर · महूनाका",
      "title": "विजयादशमी\nमहोत्सव", "day": "दशमी", "photo": "pratima-7.jpg",
      "bhog": ""},
+    # नवरात्रि की रात नहीं, पर उसी महीने का आयोजन और उसी kit से बनता है।
+    # समय शाम का है, रात्रि का नहीं, और नाम लंबा है - सो time और size।
+    {"slug": "bhandara", "num": "४६", "kicker": "46वाँ भंडारा · 23वाँ नगर कन्या पूजन",
+     "title": "नगर कन्या भोज\nएवं विशाल भंडारा", "day": "23 अक्टूबर",
+     "time": "शाम ७ बजे", "size": 64, "photo": "pratima-3.jpg", "bhog": ""},
 ]
 
 CARD = """
@@ -45,9 +50,9 @@ CARD = """
       <span class="num">{num}</span>
       <span class="live"><i></i>LIVE</span>
       <p class="kicker">{kicker}</p>
-      <h2>{title}</h2>
+      <h2 style="font-size:{size}px">{title}</h2>
       <div class="rule"></div>
-      <p class="day">{day} · रात्रि ८ बजे</p>
+      <p class="day">{day} · {time}</p>
       <div class="bottom">
         <img src="/assets/img/logo-social.png" alt="">
         <div>
@@ -82,7 +87,8 @@ def card(night) -> str:
     return CARD.format(photo=night["photo"], num=night["num"],
                        kicker=night["kicker"], slug=night["slug"],
                        title=night["title"].replace("\n", "<br>"),
-                       day=night["day"])
+                       day=night["day"], time=night.get("time", "रात्रि ८ बजे"),
+                       size=night.get("size", 104))
 
 
 def page(nights) -> str:
@@ -92,6 +98,23 @@ def page(nights) -> str:
 
 def words(night) -> str:
     slug, title, day = night["slug"], night["title"].replace("\n", " "), night["day"]
+    if slug == "bhandara":
+        return f"""
+   ── नगर कन्या भोज एवं विशाल भंडारा ─────────────────────
+   thumbnail: thumb-bhandara-1280x720.jpg
+   शीर्षक  : LIVE | 46वाँ विशाल भंडारा एवं 23वाँ नगर कन्या पूजन | लोधा समाज इंदौर
+   विवरण   :
+नगर कन्या भोज एवं विशाल भंडारा का सीधा प्रसारण — 23 अक्टूबर 2026,
+शाम 7 बजे, महाराणा प्रताप चौराहा, महूनाका इंदौर।
+
+यह समाज का 46वाँ विशाल भंडारा और 23वाँ नगर कन्या पूजन है।
+
+आयोजक: लोधा समाज इंदौर · https://lodhasamaj.org
+संपर्क: +91 90987 81740
+॥ जय माता दी ॥
+   tags    : विशाल भंडारा, नगर कन्या भोज, कन्या पूजन, लोधा समाज इंदौर,
+             महूनाका, इंदौर, Bhandara, Kanya Bhoj, Indore
+"""
     if slug == "vijayadashami":
         return f"""
    ── विजयादशमी ─────────────────────────────────────────

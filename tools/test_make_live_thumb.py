@@ -35,8 +35,8 @@ def test_kard_par_devi_din_aur_pata_likha_hai(night):
     assert "lodhasamaj.org" in html
     assert "LIVE" in html
     # नाम टूटा नहीं: <br> हटाने पर वही नाम वापस मिले।
-    assert html.count("<h2>") == 1
-    head = re.search(r"<h2>(.+?)</h2>", html, re.S).group(1)
+    assert html.count("<h2") == 1
+    head = re.search(r"<h2[^>]*>(.+?)</h2>", html, re.S).group(1)
     assert head.replace("<br>", "\n") == night["title"]
 
 
@@ -78,10 +78,24 @@ def test_shabdon_me_sheershak_vivaran_aur_thumbnail_ka_naam_hai(night):
         assert f"भोग में {night['bhog']} अर्पित" in kit
 
 
-def test_vijayadashami_ko_navdurga_mahotsav_nahi_kaha_gaya():
-    # events.json में ये दो अलग आयोजन हैं; कार्ड पर भी अलग ही रहें।
-    dashami = next(n for n in NIGHTS if n["slug"] == "vijayadashami")
-    assert "नवदुर्गा" not in card(dashami)
+def test_navdurga_ka_naam_sirf_navratri_ki_raaton_par():
+    # events.json में नवदुर्गा महोत्सव, विजयादशमी और भंडारा तीन अलग आयोजन
+    # हैं; कार्ड पर भी कोई किसी का नाम न ओढ़े।
     for night in NIGHTS:
-        if night["slug"] != "vijayadashami":
+        if night["slug"].startswith("navratri-"):
             assert night["kicker"] == "नवदुर्गा महोत्सव 2026"
+        else:
+            assert "नवदुर्गा" not in card(night), night["slug"]
+
+
+def test_samay_aur_naap_har_aayojan_ke_apne_hain():
+    # नवरात्रि की रातें रात्रि ८ बजे की हैं; भंडारा शाम ७ बजे का, और उसका
+    # नाम लंबा है सो उसके अक्षर छोटे।
+    for night in NIGHTS:
+        html = card(night)
+        if night["slug"] == "bhandara":
+            assert "शाम ७ बजे" in html and "रात्रि" not in html
+            assert "font-size:64px" in html
+        else:
+            assert "रात्रि ८ बजे" in html
+            assert "font-size:104px" in html
