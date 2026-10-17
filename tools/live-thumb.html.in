@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>लोधा समाज इंदौर — live thumbnails</title>
+  <!--
+    नवदुर्गा महोत्सव की हर रात के YouTube live का thumbnail, हर एक ठीक
+    1280x720 पर खींचा हुआ। tools/make_live_thumb.py नीचे के CARDS वाले
+    निशान पर कार्ड जोड़ता है, फिर एक-एक को screenshot करता है - इसलिए
+    जो फ़ाइल बनती है वह पहले से सही नाप की होती है, बाद में छोटी-बड़ी
+    नहीं की जाती, जहाँ अक्षर धुँधले पड़ते हैं।
+
+    youtube-kit.html.in और reel-intro-endcard.html.in की तरह यह भी
+    साँचा है, साइट का पन्ना नहीं: shot लेने भर के लिए इसकी नक़ल जड़ में
+    एक dot-फ़ाइल बनकर जाती है और फिर हट जाती है।
+  -->
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <style>
+    body { margin: 0; background: #555; font-family: var(--body); }
+    .thumb { width: 1280px; height: 720px; position: relative; overflow: hidden;
+             color: #fff; margin: 0 0 24px; display: flex;
+             background: var(--ind-d); }
+
+    /* बायीं पट्टी। जो पढ़ा जाना है, सब यहीं है - दायीं ओर केवल दर्शन। */
+    .panel { width: 718px; height: 100%; position: relative; flex: none;
+      background:
+        radial-gradient(120% 90% at 10% 20%, rgba(232,163,61,0.22), transparent 62%),
+        var(--ind-d);
+      padding: 64px 56px 64px 72px; display: flex; flex-direction: column;
+      justify-content: center; gap: 20px; z-index: 2; }
+
+    /* दिन का अंक, बहुत बड़ा और बहुत हल्का: छोटे आकार में यह केवल बनावट
+       दिखता है, और चित्र खोलने पर दिन का अंक। */
+    .num { position: absolute; right: 18px; bottom: -92px; font-family: var(--head);
+           font-size: 420px; line-height: 1; color: rgba(255,255,255,0.07); }
+
+    /* LIVE की गोली। कार्ड पर यही एक चटक लाल है, सो छोटे आकार में आँख
+       सबसे पहले इसी पर पड़ती है। flex:none के बिना पट्टी इसे दबा देती है। */
+    .live { display: inline-flex; flex: none; align-self: flex-start;
+            align-items: center; gap: 14px;
+            background: #e01b24; color: #fff; font-weight: 800;
+            font-size: 34px; letter-spacing: 0.14em;
+            padding: 10px 28px 12px; border-radius: 999px; }
+    .live i { width: 18px; height: 18px; border-radius: 50%; background: #fff;
+              display: block; }
+
+    .kicker { color: var(--mar); font-size: 34px; font-weight: 600;
+              letter-spacing: 0.10em; margin: 0; }
+    h2 { font-family: var(--head); font-weight: 400; margin: 0; line-height: 1.1;
+         font-size: 104px; position: relative; }
+    .rule { width: 140px; height: 7px; flex: none; background: var(--mar);
+            border-radius: 4px; }
+    .day { font-size: 44px; font-weight: 700; color: var(--gold); margin: 0;
+           position: relative; }
+
+    .bottom { display: flex; align-items: center; gap: 18px; position: relative; }
+    .bottom img { width: 64px; height: auto; }
+    .url { font-size: 38px; font-weight: 800; margin: 0; }
+    .foot { font-size: 30px; font-weight: 600; margin: 0; color: #f3e7d2; }
+
+    /* दायीं ओर समाज की अपनी प्रतिमा। किनारे पर पट्टी का रंग घुलता है ताकि
+       जोड़ कटा हुआ न दिखे। */
+    .shot { flex: 1; position: relative; }
+    .shot img { position: absolute; inset: 0; width: 100%; height: 100%;
+                object-fit: cover; object-position: 50% 26%; }
+    .shot .edge { position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(44,35,72,0.95), transparent 22%); }
+  </style>
+</head>
+<body>
+<!-- CARDS -->
+</body>
+</html>
