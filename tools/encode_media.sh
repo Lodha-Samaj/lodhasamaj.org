@@ -77,14 +77,21 @@ clip() {
   grade "${2%.mp4}.jpg"
 }
 
+# All seven frames the समाज sent, kept in the order they were taken, so the
+# roll walks the way the photographer walked: wide, in close, round to one
+# side, and wide again. Four of them are near neighbours of one another; they
+# stay, because which one is the good one is the समाज's call, not ours.
+#
 # The crops take the pandal's surroundings off the edges - a shop board, a
 # stack of bricks, the neighbouring wall - so each frame holds the प्रतिमा and
 # nothing that distracts from it.
 photo_night photo_6235348819742757518_y.jpg "$img/pratima-1.jpg" '89%x100%+11%+0'
 photo_night photo_6235348819742757519_y.jpg "$img/pratima-2.jpg"
-photo_night photo_6235348819742757521_y.jpg "$img/pratima-3.jpg" '94%x100%+6%+0'
-photo_night photo_6235348819742757523_y.jpg "$img/pratima-4.jpg"
-photo_night photo_6235348819742757525_y.jpg "$img/pratima-5.jpg"
+photo_night photo_6235348819742757520_y.jpg "$img/pratima-3.jpg"
+photo_night photo_6235348819742757521_y.jpg "$img/pratima-4.jpg" '94%x100%+6%+0'
+photo_night photo_6235348819742757522_y.jpg "$img/pratima-5.jpg"
+photo_night photo_6235348819742757523_y.jpg "$img/pratima-6.jpg"
+photo_night photo_6235348819742757525_y.jpg "$img/pratima-7.jpg"
 
 # The two announcement boards for the 23 October भंडारा. They live with the
 # कार्यक्रम page, not in the गैलरी roll: they are an invitation, not a photograph.
