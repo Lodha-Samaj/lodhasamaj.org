@@ -1,12 +1,21 @@
 #!/usr/bin/env python3
 """Cuts the website-introduction reel: narration, page captures, end card.
 
+    # read by a person (preferred):
+    python3 tools/make_intro_reel.py --voice-file <recording> --shots <dir>
+
+    # spoken by the machine:
     python3 tools/make_intro_reel.py --piper <venv-python> --voices <dir> \
         --shots <dir> [--out assets/video/2026/parichay-reel.mp4]
 
+    # the sheet to read from, printed from the same script:
+    python3 tools/make_intro_reel.py --reading-sheet
+
 What it needs, none of which belongs in the repository:
-  * a Piper voice (`pip install piper-tts`, then `python -m piper.download_voices
-    hi_IN-pratham-medium`) - the narration is spoken, not recorded;
+  * a narrator - either a recording (--voice-file) or a Piper voice
+    (`pip install piper-tts`, then `python -m piper.download_voices
+    hi_IN-priyamvada-medium`). A person reading it is better and this is a
+    समाज's own website, so --voice-file is the one to reach for;
   * the stills from tools/reel-intro-capture.mjs, which drives a browser over
     the real pages so the film shows the site as it is, not a mock-up;
   * assets/video/2026/garba-reel.mp4, for the one shot that moves.
@@ -63,6 +72,74 @@ def silence(seconds: float, rate: int, out: Path):
          "-i", f"anullsrc=r={rate}:cl=mono", "-t", f"{seconds:.3f}", str(out)])
 
 
+def to_wav(src: Path, out: Path):
+    """Whatever the phone produced - .opus, .m4a, .mp3 - becomes one mono wav,
+    with the dead air at either end trimmed and the level evened out."""
+    run(["ffmpeg", "-v", "error", "-y", "-i", str(src),
+         "-af", "silenceremove=start_periods=1:start_silence=0.1:start_threshold=-45dB,"
+                "areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-45dB,"
+                "areverse,loudnorm=I=-16:TP=-1.5:LRA=11",
+         "-ac", "1", "-ar", "48000", str(out)])
+
+
+def pauses_in(wav: Path, floor_db: int = -38, shortest: float = 0.30):
+    """Every silence in the recording, as (middle, length), longest first."""
+    proc = subprocess.run(
+        ["ffmpeg", "-v", "info", "-i", str(wav),
+         "-af", f"silencedetect=noise={floor_db}dB:d={shortest}", "-f", "null", "-"],
+        capture_output=True, text=True, check=True)
+    starts, found = [], []
+    for line in proc.stderr.splitlines():
+        if "silence_start:" in line:
+            starts.append(float(line.rsplit("silence_start:", 1)[1].strip()))
+        elif "silence_end:" in line and starts:
+            end, _, dur = line.rsplit("silence_end:", 1)[1].partition("|")
+            begin = starts.pop()
+            found.append(((begin + float(end)) / 2, float(end) - begin))
+    return sorted(found, key=lambda p: -p[1])
+
+
+def split_recording(wav: Path, segments, work: Path):
+    """Give each written line the slice of the recording where it was read.
+
+    The reader is asked to leave a clear pause between lines, so the cuts are
+    the longest silences: with n lines we want the n-1 longest, in time order.
+    If the recording does not hold that many - the reader ran lines together,
+    or the room was noisy - say so and fall back to splitting by how long each
+    line is to say, which keeps the film in step with the words even when it
+    cannot land on the breath.
+    """
+    total = float(subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "csv=p=0", str(wav)], capture_output=True, text=True,
+        check=True).stdout.strip().rstrip(","))
+    wanted = len(segments) - 1
+    found = pauses_in(wav)
+    if len(found) >= wanted:
+        cuts = sorted(p[0] for p in found[:wanted])
+        how = f"{len(found)} pauses found, used the {wanted} longest"
+    else:
+        weight = [len(seg["say"]) for seg in segments]
+        running, cuts = 0, []
+        for w in weight[:-1]:
+            running += w
+            cuts.append(total * running / sum(weight))
+        how = (f"WARNING: only {len(found)} clear pauses for {wanted} line breaks - "
+               "split by line length instead. Re-record with a fuller pause "
+               "between lines if the picture lags the words.")
+    print(f"  {how}")
+
+    edges = [0.0] + cuts + [total]
+    for i, seg in enumerate(segments, 1):
+        piece = work / f"say-{i:02d}.wav"
+        run(["ffmpeg", "-v", "error", "-y", "-i", str(wav),
+             "-ss", f"{edges[i-1]:.3f}", "-to", f"{edges[i]:.3f}",
+             "-c", "copy", str(piece)])
+        seg["wav"] = piece
+        seg["seconds"] = duration_of(piece)
+    return total
+
+
 def group_shots(segments, gap):
     """One take per run of consecutive lines sharing a shot, with its length."""
     takes = []
@@ -108,11 +185,49 @@ def video_take(src: Path, start: float, seconds: float, out: Path):
          *H264, str(out)])
 
 
+def reading_sheet(spec) -> str:
+    """The script as something to read from, not as JSON.
+
+    It is numbered because the pause between numbers is what lets the picture
+    be cut to the reading afterwards, and it says so at the top rather than
+    leaving the reader to guess why the lines are broken up this way.
+    """
+    out = [
+        "लोधा समाज इंदौर — वेबसाइट परिचय, पढ़ने की शीट",
+        "",
+        "कैसे पढ़ें:",
+        "  • शांत कमरे में, फ़ोन मुँह से एक बित्ता दूर। पंखा और कूलर बंद।",
+        "  • हर अंकित पंक्ति के बाद एक पूरी साँस रुकें — लगभग एक सेकंड।",
+        "    यही ठहराव बताता है कि चित्र कब बदलना है, इसलिए यह ज़रूरी है।",
+        "  • एक ही बार में पूरा पढ़ें। बीच में अटकें तो रुकिए मत — उसी पंक्ति को",
+        "    फिर से पढ़ दीजिए, बाद में काट दिया जाएगा।",
+        "  • सहज गति से। पूरा पढ़ने में लगभग डेढ़ मिनट लगना चाहिए।",
+        "",
+        "—" * 34,
+        "",
+    ]
+    for i, seg in enumerate(spec["segments"], 1):
+        out.append(f"{i:2d}.  {seg['say']}")
+        out.append("")
+    out += [
+        "—" * 34,
+        "",
+        "कुछ शब्द जैसे बोलने हैं वैसे ही लिखे हैं — \"लोधासमाज डॉट ओ आर जी\",",
+        "\"छियालीसवाँ\", \"नौ शून्य नौ आठ...\" — वैसे ही पढ़िए, अंकों में नहीं।",
+    ]
+    return "\n".join(out)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--piper", required=True, help="python of the venv holding piper-tts")
-    ap.add_argument("--voices", required=True, type=Path, help="directory of .onnx voices")
-    ap.add_argument("--shots", required=True, type=Path, help="stills from reel-intro-capture.mjs")
+    ap.add_argument("--voice-file", type=Path,
+                    help="a recording of someone reading the script, in any format "
+                         "ffmpeg opens. Preferred over --piper.")
+    ap.add_argument("--piper", help="python of the venv holding piper-tts")
+    ap.add_argument("--voices", type=Path, help="directory of .onnx voices")
+    ap.add_argument("--shots", type=Path, help="stills from reel-intro-capture.mjs")
+    ap.add_argument("--reading-sheet", action="store_true",
+                    help="print the lines to read aloud, numbered, and stop")
     ap.add_argument("--script", type=Path, default=ROOT / "tools" / "reel-intro-script.json")
     ap.add_argument("--out", type=Path, default=ROOT / "assets" / "video" / "2026" / "parichay-reel.mp4")
     ap.add_argument("--target", type=float, default=90.0, help="intended length, seconds")
@@ -124,35 +239,57 @@ def main() -> int:
     args = ap.parse_args()
 
     spec = json.loads(args.script.read_text(encoding="utf-8"))
+    if args.reading_sheet:
+        print(reading_sheet(spec))
+        return 0
+    if not args.shots:
+        ap.error("--shots is required")
+    if not args.voice_file and not (args.piper and args.voices):
+        ap.error("give --voice-file, or --piper together with --voices")
     if args.voice:
         spec["voice"] = args.voice
     if args.length_scale:
         spec["lengthScale"] = args.length_scale
-    model = args.voices / (spec["voice"] + ".onnx")
-    if not model.exists():
-        print(f"no such voice: {model}", file=sys.stderr)
-        return 1
     gap = float(spec["gapSeconds"])
+
+    model = None
+    if not args.voice_file:
+        model = args.voices / (spec["voice"] + ".onnx")
+        if not model.exists():
+            print(f"no such voice: {model}", file=sys.stderr)
+            return 1
 
     work = Path(tempfile.mkdtemp(prefix="intro-reel-"))
     try:
-        # 1. Speak every line and learn how long it is.
-        for i, seg in enumerate(spec["segments"], 1):
-            wav = work / f"say-{i:02d}.wav"
-            seg["seconds"] = speak(args.piper, model, seg["say"], spec["lengthScale"], wav)
-            seg["wav"] = wav
-            print(f"  {i:02d} {seg['seconds']:5.2f}s  {seg['shot']}")
+        if args.voice_file:
+            # 1. A person read it. Find where each line ends and cut there, so
+            #    the picture follows their pauses rather than a clock.
+            to_wav(args.voice_file, work / "read.wav")
+            split_recording(work / "read.wav", spec["segments"], work)
+            for i, seg in enumerate(spec["segments"], 1):
+                print(f"  {i:02d} {seg['seconds']:5.2f}s  {seg['shot']}")
+            # The reader's own pauses are already in the recording, so nothing
+            # is inserted between the lines - the narration IS the recording.
+            shutil.copyfile(work / "read.wav", work / "voice.wav")
+            gap = 0.0
+        else:
+            # 1. Speak every line and learn how long it is.
+            for i, seg in enumerate(spec["segments"], 1):
+                wav = work / f"say-{i:02d}.wav"
+                seg["seconds"] = speak(args.piper, model, seg["say"], spec["lengthScale"], wav)
+                seg["wav"] = wav
+                print(f"  {i:02d} {seg['seconds']:5.2f}s  {seg['shot']}")
 
-        rate = wave.open(str(spec["segments"][0]["wav"])).getframerate()
-        silence(gap, rate, work / "gap.wav")
+            rate = wave.open(str(spec["segments"][0]["wav"])).getframerate()
+            silence(gap, rate, work / "gap.wav")
 
-        # 2. The narration: every line, each followed by the same short rest.
-        listing = work / "audio.txt"
-        listing.write_text("".join(
-            f"file '{seg['wav']}'\nfile '{work / 'gap.wav'}'\n" for seg in spec["segments"]),
-            encoding="utf-8")
-        run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0",
-             "-i", str(listing), "-c", "copy", str(work / "voice.wav")])
+            # 2. The narration: every line, each followed by the same short rest.
+            listing = work / "audio.txt"
+            listing.write_text("".join(
+                f"file '{seg['wav']}'\nfile '{work / 'gap.wav'}'\n" for seg in spec["segments"]),
+                encoding="utf-8")
+            run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0",
+                 "-i", str(listing), "-c", "copy", str(work / "voice.wav")])
         spoken = duration_of(work / "voice.wav")
 
         # 3. One take per shot, each exactly as long as the lines it carries.
@@ -202,7 +339,9 @@ def main() -> int:
                              capture_output=True, text=True, check=True).stdout
         # One row, comma separated - not whitespace, whatever the field order.
         length, size = (float(x) for x in out.strip().split(","))
-        print(f"\n{args.out.relative_to(ROOT)}  {length:.1f}s  {size/1048576:.1f} MB"
+        # --out may point outside the repo (a trial cut), so do not assume it is under it.
+        shown = args.out.relative_to(ROOT) if args.out.is_relative_to(ROOT) else args.out
+        print(f"\n{shown}  {length:.1f}s  {size/1048576:.1f} MB"
               f"   (narration {spoken:.1f}s, target {args.target:.0f}s,"
               f" out by {abs(length - args.target):.1f}s)")
         return 0
