@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>लोधा समाज इंदौर — YouTube kit</title>
+  <!--
+    The five pictures a YouTube channel asks for, each drawn at the exact size
+    YouTube wants. tools/make_youtube_kit.py screenshots them one element at a
+    time, so what lands on disk is already the right shape - no resizing
+    afterwards, which is where text goes soft.
+
+    The banner's one real constraint is the safe area. YouTube shows the whole
+    2560x1440 only on a television; on a phone it shows a 1546x423 strip from
+    the middle and throws the rest away. So everything that must be read lives
+    inside .safe, and the area outside it carries colour and nothing else.
+
+    Like the reel's end card and the share card, this is a template and NOT a
+    page of the site: it is copied to a dot-path at the root for the shots and
+    removed. See the note in tools/reel-intro-endcard.html.in.
+  -->
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <style>
+    body { margin: 0; background: #555; font-family: var(--body); }
+    .shot { position: relative; overflow: hidden; margin: 0; }
+
+    /* ---- channel banner: 2560x1440, read on a phone as the middle 1546x423 ---- */
+    #banner { width: 2560px; height: 1440px;
+      background:
+        radial-gradient(90% 60% at 50% 50%, rgba(232, 163, 61, 0.26), transparent 70%),
+        var(--ind-d);
+      display: grid; place-items: center; }
+    #banner .safe {
+      width: 1546px; height: 423px;
+      display: flex; align-items: center; justify-content: center; gap: 46px;
+      color: #fff; text-align: left;
+    }
+    #banner .safe img { width: 210px; height: auto; }
+    #banner h1 { margin: 0; font-family: var(--head); font-weight: 400;
+                 font-size: 112px; line-height: 1.1; color: #fff; }
+    #banner .tag { margin: 10px 0 0; color: var(--mar); font-size: 38px; letter-spacing: 0.06em; }
+    #banner .url { margin: 18px 0 0; font-size: 46px; font-weight: 700; color: #fff; }
+
+    /* ---- profile picture: 800x800, but it is read at about 48px ---- */
+    /* The logo and nothing else. A name line under it was tried and cut: at
+       48px it is a grey smudge, and the logo already carries the words
+       "लोधा समाज इंदौर" inside it. YouTube crops this to a circle, so the logo
+       is sized against the inscribed circle, not the square. */
+    #avatar { width: 800px; height: 800px;
+      background: radial-gradient(85% 70% at 50% 40%, #4a3c7a, var(--ind-d));
+      display: grid; place-items: center; }
+    #avatar img { width: 560px; height: auto; }
+
+    /* ---- video thumbnails: 1280x720 ---- */
+    .thumb { width: 1280px; height: 720px; position: relative; color: #fff; }
+    .thumb .plate { position: absolute; inset: 0; display: grid; place-items: center;
+                    padding: 0 90px; text-align: center; }
+    .thumb h2 { margin: 0; font-family: var(--head); font-weight: 400;
+                font-size: 96px; line-height: 1.18; }
+    .thumb .kicker { margin: 0 0 18px; color: var(--mar); font-size: 38px;
+                     letter-spacing: 0.08em; }
+    .thumb .url { margin: 26px 0 0; font-size: 44px; font-weight: 700; }
+
+    #thumb-parichay {
+      background:
+        radial-gradient(95% 70% at 50% 0%, rgba(232, 163, 61, 0.26), transparent 66%),
+        var(--ind-d);
+    }
+    #thumb-parichay img.logo { width: 132px; margin-bottom: 20px; }
+
+    /* The गरबा thumbnail stands on a real frame of the reel, darkened enough
+       for white text to clear the contrast threshold over the brightest part
+       of it. */
+    #thumb-garba { background: #000; }
+    #thumb-garba .bg { position: absolute; inset: 0; width: 100%; height: 100%;
+                       object-fit: cover; }
+    #thumb-garba .veil { position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(20,16,34,0.55), rgba(20,16,34,0.78)); }
+
+    /* ---- watermark: 150x150, sits over the corner of every video ---- */
+    #watermark { width: 150px; height: 150px; display: grid; place-items: center;
+                 background: transparent; }
+    #watermark img { width: 150px; height: auto; }
+  </style>
+</head>
+<body>
+  <figure class="shot" id="banner">
+    <div class="safe">
+      <img src="/assets/img/logo.png" alt="">
+      <div>
+        <h1>लोधा समाज इंदौर</h1>
+        <p class="tag">सेवा · शिक्षा · स्वास्थ्य</p>
+        <p class="url">lodhasamaj.org</p>
+      </div>
+    </div>
+  </figure>
+
+  <figure class="shot" id="avatar"><img src="/assets/img/logo.png" alt=""></figure>
+
+  <figure class="shot thumb" id="thumb-parichay">
+    <div class="plate">
+      <div>
+        <img class="logo" src="/assets/img/logo.png" alt="">
+        <p class="kicker">लोधा समाज इंदौर</p>
+        <h2>वेबसाइट अब तैयार है</h2>
+        <p class="url">lodhasamaj.org</p>
+      </div>
+    </div>
+  </figure>
+
+  <figure class="shot thumb" id="thumb-garba">
+    <img class="bg" src="/assets/video/2026/garba-reel.jpg" alt="">
+    <div class="veil"></div>
+    <div class="plate">
+      <div>
+        <p class="kicker">लोधा समाज इंदौर</p>
+        <h2>नवदुर्गा महोत्सव 2026<br>गरबा</h2>
+        <p class="url">lodhasamaj.org</p>
+      </div>
+    </div>
+  </figure>
+
+  <figure class="shot" id="watermark"><img src="/assets/img/logo.png" alt=""></figure>
+</body>
+</html>

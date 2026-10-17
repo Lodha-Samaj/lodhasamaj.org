@@ -26,7 +26,7 @@ export const CONTACT = {
   socials: [
     { label: 'Facebook',  brand: '#1877f2', href: 'https://www.facebook.com/profile.php?id=61552495104262' },
     { label: 'Instagram', brand: '#e1306c', href: 'https://www.instagram.com/lodha.samaj/' },
-    { label: 'YouTube',   brand: '#ff0033', href: 'https://www.youtube.com/@lodhasamajindore2762' },
+    { label: 'YouTube',   brand: '#ff0033', href: 'https://www.youtube.com/@LodhaSamajIndoreOfficial' },
     { label: 'WhatsApp',  brand: '#25d366', href: 'https://wa.me/919098781740' },
   ],
 };
