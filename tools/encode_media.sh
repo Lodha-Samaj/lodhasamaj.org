@@ -98,15 +98,12 @@ photo_night photo_6235348819742757525_y.jpg "$img/pratima-7.jpg"
 photo photo_6228687252452218305_y.jpg "$poster/bhandara-2026.jpg"
 photo photo_6228687252452218306_y.jpg "$poster/bhandara-2026-nimantran.jpg"
 
-clip IMG_1245.MOV "$vid/garba-1.mp4"
-clip IMG_1246.MOV "$vid/garba-2.mp4" 6
-clip IMG_1247.MOV "$vid/garba-3.mp4"
-clip IMG_1248.MOV "$vid/garba-4.mp4"
-clip IMG_1256.MOV "$vid/garba-5.mp4"
-clip IMG_1258.MOV "$vid/garba-6.mp4"
-clip IMG_1259.MOV "$vid/garba-7.mp4"
-clip IMG_1273.MOV "$vid/garba-8.mp4"
-clip document_6235348819282764025.mp4 "$vid/garba-purush.mp4" 21
+# The nine गरबा clips are NOT encoded one by one any more. They went up that way
+# on 17 October and came down the same day: one reel reads better than nine
+# windows to choose between. tools/make_reel.sh builds that reel, and it reads
+# the same originals, so nothing here is needed to feed it.
+#
+# This one clip is not गरबा and is not in the reel, so it still stands alone.
 clip document_6235348819282764027.mp4 "$vid/nasha-mukti-pratigya.mp4"
 
 echo "---"

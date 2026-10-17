@@ -152,38 +152,20 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .posters figcaption { margin-top: 8px; color: var(--mute); font-size: 0.85rem;
                       text-align: center; }
 
-/* The whole नवरात्र reel, above the clips it is made of. It is 9:16 and two
-   minutes long, so it is held to a phone's width rather than the column's -
-   at full width it would stand taller than the screen and no one would see the
-   roll underneath it. */
-.reel { margin: 0 0 26px; }
-.reel video {
-  display: block; width: 100%; max-width: 340px; height: auto;
+/* A clip shown on its own, at a size a person can actually watch. The two on
+   the गैलरी are opposite shapes - a 9:16 reel and a 16:9 one - so the cap is on
+   BOTH sides: height holds the tall one to about a phone's worth of screen, and
+   width holds the wide one short of the column. One rule, both shapes, no
+   letterboxing and no clip taller than the window. */
+.clip { margin: 0 0 26px; }
+.clip video {
+  display: block; width: auto; height: auto;
+  max-width: min(100%, 560px); max-height: 600px;
   border-radius: var(--r); background: #000;
 }
-.reel video:focus-visible { outline: 3px solid var(--ind); outline-offset: 3px; }
-.reel figcaption { margin-top: 8px; max-width: 340px; color: var(--mute);
+.clip video:focus-visible { outline: 3px solid var(--ind); outline-offset: 3px; }
+.clip figcaption { margin-top: 8px; max-width: 560px; color: var(--mute);
                    font-size: 0.85rem; }
-
-/* The clips are phone footage: seven stand upright and three lie flat. Each
-   keeps its own shape rather than being cropped to a common box, so this is
-   columns rather than a grid - a grid row is as tall as its tallest clip and
-   would leave a hole beside every short one. Columns let a clip sit directly
-   under the one above it, and the roll reads down a column, then across.
-   Nothing is preloaded: a poster image is all the page fetches until someone
-   presses play. */
-.video-grid {
-  list-style: none; padding-left: 0; margin: 0;
-  columns: 3; column-gap: 14px;
-}
-.video-item { break-inside: avoid; margin-bottom: 18px; }
-.video-item figure { margin: 0; }
-.video-item video {
-  display: block; width: 100%; height: auto;
-  border-radius: var(--r); background: #000;
-}
-.video-item video:focus-visible { outline: 3px solid var(--ind); outline-offset: 3px; }
-.video-item figcaption { margin-top: 7px; color: var(--mute); font-size: 0.85rem; }
 
 /* The roll is ruled between entries, like a register; the rules ARE the
    separation, so the entries carry no box, radius or shadow of their own. */
@@ -623,8 +605,6 @@ body.lb-open { overflow: hidden; }
 @media (max-width: 760px) {
   /* Two across, not one: a dozen photographs one per row is a long scroll. */
   .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .video-grid { columns: 2; column-gap: 10px; }
-  .video-item { margin-bottom: 14px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .heritage { grid-template-columns: 1fr; }
   .prose-split { grid-template-columns: 1fr; }
@@ -634,14 +614,6 @@ body.lb-open { overflow: hidden; }
   .brand b { font-size: 1.25rem; }
   .site-header { min-height: 70px; }
   .brand img { width: 46px; height: 40px; }
-}
-
-/* A clip needs more width than a photograph: two across on a phone leaves
-   about 180px, and the browser's own play bar loses its volume and fullscreen
-   buttons at that width. So on a phone the clips run one to a row. This sits
-   after the 760px block because both match a phone and the later rule wins. */
-@media (max-width: 560px) {
-  .video-grid { columns: 1; }
 }
 
 /* On its own band the menu fits to about 900px in Hindi (960 in English).
