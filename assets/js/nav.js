@@ -26,7 +26,13 @@ export const CONTACT = {
   socials: [
     { label: 'Facebook',  brand: '#1877f2', href: 'https://www.facebook.com/profile.php?id=61552495104262' },
     { label: 'Instagram', brand: '#e1306c', href: 'https://www.instagram.com/lodha.samaj/' },
-    { label: 'YouTube',   brand: '#ff0033', href: 'https://www.youtube.com/@LodhaSamajIndoreOfficial' },
+    // Two YouTube channels, both called "Lodha Samaj Indore". `label` picks the
+    // icon; `name` is what a screen reader says, and it carries the handle because
+    // two links reading just "YouTube" would be indistinguishable by ear.
+    { label: 'YouTube',   name: 'YouTube @LodhaSamajIndoreOfficial',
+      brand: '#ff0033', href: 'https://www.youtube.com/@LodhaSamajIndoreOfficial' },
+    { label: 'YouTube',   name: 'YouTube @lodhasamajindore',
+      brand: '#ff0033', href: 'https://www.youtube.com/@lodhasamajindore' },
     { label: 'WhatsApp',  brand: '#25d366', href: 'https://wa.me/919098781740' },
   ],
 };

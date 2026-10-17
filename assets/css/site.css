@@ -152,6 +152,10 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .posters figcaption { margin-top: 8px; color: var(--mute); font-size: 0.85rem;
                       text-align: center; }
 
+/* The line above the two YouTube rows on संपर्क. Small and quiet: it exists to
+   explain why one icon appears twice, not to be read first. */
+.yt-note { margin: 14px 0 6px; color: var(--mute); font-size: 0.86rem; }
+
 /* ---- the साझा page ---- */
 /* Each ready-made message sits in its own ruled box with its button in the
    corner. The text is a <pre> because that is what it is: something to be

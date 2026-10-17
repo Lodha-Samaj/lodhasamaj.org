@@ -119,7 +119,8 @@ const HEX = /^#[0-9a-f]{6}$/i;
 const socialHtml = () => CONTACT.socials.map((s) => {
   const mark = SOCIAL_ICONS[s.label];
   const brand = HEX.test(s.brand || '') ? ` style="--brand:${s.brand}"` : '';
-  return `<li><a href="${esc(s.href)}" rel="noopener" aria-label="${esc(s.label)}"${brand}>${
+  // `name` when a row needs telling apart from another with the same icon.
+  return `<li><a href="${esc(s.href)}" rel="noopener" aria-label="${esc(s.name || s.label)}"${brand}>${
     mark ? `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">${mark}</svg>`
          : esc(s.label)}</a></li>`;
 }).join('');
