@@ -33,38 +33,39 @@
     /* पृष्ठभूमि रंगहीन; जो दिखता है वही पट्टियाँ हैं। */
     .overlay { background: transparent; }
 
-    /* ऊपर-बायें: logo, समाज का नाम और LIVE. एक ही गहरी तख़्ती पर, ताकि
-       कैमरा उजला हो या अँधेरा, अक्षर दोनों पर पढ़े जाएँ। */
+    /* ऊपर-बायें: logo, समाज का नाम और LIVE. एक ही तख़्ती पर, ताकि कैमरा
+       उजला हो या अँधेरा, अक्षर दोनों पर पढ़े जाएँ। तख़्तियाँ जान-बूझकर छोटी
+       और हल्की रखी गई हैं - परदे पर असल चीज़ वीडियो है, ये नहीं। */
     .bug { position: absolute; top: 42px; left: 48px; display: flex;
-           align-items: center; gap: 22px;
-           background: rgba(28, 22, 48, 0.82); border: 2px solid rgba(201,162,39,0.55);
-           border-radius: 999px; padding: 14px 32px 14px 18px;
+           align-items: center; gap: 16px;
+           background: rgba(28, 22, 48, 0.62); border: 2px solid rgba(201,162,39,0.45);
+           border-radius: 999px; padding: 10px 24px 10px 13px;
            backdrop-filter: blur(2px); }
-    .bug img { width: 72px; height: auto; border-radius: 50%; }
-    .bug b { font-size: 38px; font-weight: 700; letter-spacing: 0.02em; }
-    .bug .live { display: inline-flex; align-items: center; gap: 12px;
-                 background: #e01b24; border-radius: 999px;
-                 padding: 7px 22px 9px; font-size: 27px; font-weight: 800;
+    .bug img { width: 50px; height: auto; border-radius: 50%; }
+    .bug b { font-size: 27px; font-weight: 700; letter-spacing: 0.02em; }
+    .bug .live { display: inline-flex; align-items: center; gap: 9px;
+                 background: rgba(224, 27, 36, 0.88); border-radius: 999px;
+                 padding: 5px 16px 7px; font-size: 20px; font-weight: 800;
                  letter-spacing: 0.14em; }
-    .bug .live i { width: 14px; height: 14px; border-radius: 50%; background: #fff;
+    .bug .live i { width: 10px; height: 10px; border-radius: 50%; background: #fff;
                    display: block; }
 
     /* नीचे-बायें: दिन और देवी। बायीं ओर गेंदे की पट्टी, ताकि तख़्ती किसी भी
        दृश्य पर अलग दिखे। */
     .third { position: absolute; left: 48px; bottom: 56px; display: flex; }
-    .third .bar { width: 10px; flex: none; border-radius: 6px 0 0 6px;
+    .third .bar { width: 7px; flex: none; border-radius: 5px 0 0 5px;
                   background: linear-gradient(180deg, var(--mar), var(--red)); }
-    .third .body { background: rgba(28, 22, 48, 0.86); border-radius: 0 10px 10px 0;
-                   padding: 22px 46px 26px 34px; backdrop-filter: blur(2px); }
-    .third .kicker { margin: 0; color: var(--mar); font-size: 30px; font-weight: 600;
+    .third .body { background: rgba(28, 22, 48, 0.62); border-radius: 0 8px 8px 0;
+                   padding: 15px 32px 18px 24px; backdrop-filter: blur(2px); }
+    .third .kicker { margin: 0; color: var(--mar); font-size: 21px; font-weight: 600;
                      letter-spacing: 0.10em; }
-    .third h2 { margin: 4px 0 0; font-family: var(--head); font-weight: 400;
-                font-size: 68px; line-height: 1.15; }
+    .third h2 { margin: 3px 0 0; font-family: var(--head); font-weight: 400;
+                font-size: 44px; line-height: 1.15; }
 
     /* नीचे-दायें: पता। छोटा, पर हर समय परदे पर। */
     .addr { position: absolute; right: 48px; bottom: 56px;
-            background: rgba(28, 22, 48, 0.82); border-radius: 10px;
-            padding: 16px 30px 18px; font-size: 34px; font-weight: 800;
+            background: rgba(28, 22, 48, 0.62); border-radius: 8px;
+            padding: 11px 21px 13px; font-size: 24px; font-weight: 800;
             letter-spacing: 0.01em; backdrop-filter: blur(2px); }
 
     /* ───────────── card: पूरा पर्दा ───────────── */
