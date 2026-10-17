@@ -152,6 +152,54 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .posters figcaption { margin-top: 8px; color: var(--mute); font-size: 0.85rem;
                       text-align: center; }
 
+/* ---- the साझा page ---- */
+/* Each ready-made message sits in its own ruled box with its button in the
+   corner. The text is a <pre> because that is what it is: something to be
+   taken away exactly as written, line breaks and all - so it wraps rather
+   than scrolls sideways, and keeps the site's reading font rather than the
+   monospace a browser would otherwise give it. */
+.copy-box {
+  margin: 0 0 16px; padding: 14px 16px 4px;
+  border: 1px solid var(--rule); border-radius: var(--r); background: #fff;
+}
+.copy-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.copy-head h3 { margin: 0 0 6px; font-family: var(--head); font-weight: 400;
+                font-size: 1.05rem; color: var(--ind); }
+.copy-box pre {
+  margin: 0 0 12px; white-space: pre-wrap; overflow-wrap: anywhere;
+  font-family: var(--body); font-size: 0.97rem; line-height: 1.6; color: var(--ink);
+}
+.copy-btn {
+  flex-shrink: 0; min-height: 36px; padding: 6px 14px; cursor: pointer;
+  border: 1px solid var(--red); border-radius: 6px;
+  background: #fff; color: var(--red-d);
+  font-family: var(--body); font-size: 0.88rem; font-weight: 600;
+}
+.copy-btn:hover, .copy-btn:focus-visible { background: var(--red); color: #fff; }
+.copy-btn.is-done { border-color: var(--ind); background: var(--ind); color: #fff; }
+
+/* The three things to take away. auto-fit rather than a fixed count: the card
+   is square, the QR square, the reel upright, and at any width they should sit
+   as many across as fit without any of them being squeezed. */
+.share-kit {
+  list-style: none; padding-left: 0; margin: 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 22px; align-items: start; justify-items: center;
+}
+.share-kit figure { margin: 0; text-align: center; }
+.share-kit img {
+  display: block; width: auto; max-width: 100%; max-height: 300px; height: auto;
+  margin-inline: auto;
+  border: 1px solid var(--rule); border-radius: var(--r); background: #fff;
+}
+.share-kit figcaption { margin-top: 8px; color: var(--mute); font-size: 0.85rem; }
+
+/* Said to a screen reader, shown to nobody - the copy button's result. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+
 /* A clip shown on its own, at a size a person can actually watch. The two on
    the गैलरी are opposite shapes - a 9:16 reel and a 16:9 one - so the cap is on
    BOTH sides: height holds the tall one to about a phone's worth of screen, and
@@ -616,11 +664,15 @@ body.lb-open { overflow: hidden; }
   .brand img { width: 46px; height: 40px; }
 }
 
-/* On its own band the menu fits to about 900px in Hindi (960 in English).
-   Below that the ☰ button in the top row opens it as a list. */
-@media (max-width: 960px) {
-  /* No band to pin below 960px - the ☰ sits in the top row, so the whole
-     header stays instead, and the menu is one tap away down a long list. */
+/* Below this the ☰ button in the top row opens the menu as a list.
+   1000px is measured, not guessed: with all eleven links the English band
+   wraps to a second row at 980px and holds at 1000px, Hindi holds down to
+   960px. The wider of the two wins, so Hindi collapses about 40px earlier
+   than it strictly must - one threshold for both languages is worth more
+   than those 40px. Add a twelfth link and this has to be measured again. */
+@media (max-width: 1000px) {
+  /* No band to pin here - the ☰ sits in the top row, so the whole header
+     stays instead, and the menu is one tap away down a long list. */
   .site-header { top: 0; }
   .site-header-inner { gap: 8px; }
   .brand { min-width: 0; }

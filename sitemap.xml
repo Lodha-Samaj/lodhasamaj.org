@@ -85,6 +85,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/parichay/"/>
   </url>
   <url>
+    <loc>https://lodhasamaj.org/hi/saajha/</loc>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/saajha/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/saajha/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/saajha/"/>
+  </url>
+  <url>
     <loc>https://lodhasamaj.org/hi/sampark/</loc>
     <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/sampark/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/sampark/"/>
@@ -185,6 +191,12 @@
     <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/parichay/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/parichay/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/parichay/"/>
+  </url>
+  <url>
+    <loc>https://lodhasamaj.org/en/saajha/</loc>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://lodhasamaj.org/hi/saajha/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lodhasamaj.org/en/saajha/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lodhasamaj.org/hi/saajha/"/>
   </url>
   <url>
     <loc>https://lodhasamaj.org/en/sampark/</loc>

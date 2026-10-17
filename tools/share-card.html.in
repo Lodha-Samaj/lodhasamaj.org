@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>लोधा समाज इंदौर — share card</title>
+  <!--
+    The square card for WhatsApp status and forwards. Like the reel's end card
+    this is a page, not something drawn by hand, so it carries the site's own
+    logo, colours and fonts - what people see before they tap is what they find
+    after.
+
+    It is a template, NOT a page of the site: tools/make_share_assets.py copies
+    it to .share-card.html at the root for one screenshot and removes it again.
+    A dot-path is skipped by Pages and by both of the repo's path guards. See
+    the same note in tools/reel-intro-endcard.html.in.
+
+    Rendered at 540x540 x2 -> 1080x1080.
+  -->
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0; display: grid; place-items: center; text-align: center;
+      background:
+        radial-gradient(120% 75% at 50% 0%, rgba(232, 163, 61, 0.24), transparent 64%),
+        var(--ind-d);
+      color: #fff;
+    }
+    .card { padding: 0 40px; }
+    .card > img { width: 104px; height: auto; margin-bottom: 14px; }
+    h1 { margin: 0; font-family: var(--head); font-weight: 400;
+         font-size: 2.15rem; line-height: 1.2; color: #fff; }
+    .tag { margin: 8px 0 18px; color: var(--mar); font-size: 0.98rem; letter-spacing: 0.05em; }
+    .what { margin: 0 auto 20px; max-width: 24em; color: #e6dff5;
+            font-size: 1.02rem; line-height: 1.55; }
+    .qr { display: inline-block; padding: 9px; background: #fff; border-radius: 8px; }
+    .qr img { display: block; width: 128px; height: 128px; image-rendering: pixelated; }
+    .url { margin: 16px 0 0; font-family: var(--body); font-weight: 700;
+           font-size: 1.4rem; color: #fff; }
+    .jai { margin: 16px 0 0; font-family: var(--head); font-size: 1.05rem; color: var(--gold); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="/assets/img/logo.png" alt="">
+    <h1>लोधा समाज इंदौर</h1>
+    <p class="tag">सेवा · शिक्षा · स्वास्थ्य</p>
+    <p class="what">आयोजनों की तिथियाँ, दानदाताओं की वर्षवार सूचियाँ,
+       शिक्षा और स्वास्थ्य की जानकारी, और समाज के चित्र — सब एक जगह।</p>
+    <span class="qr"><img src="/assets/img/share/qr-lodhasamaj.png" alt=""></span>
+    <p class="url">lodhasamaj.org</p>
+    <p class="jai">॥ जय माता दी ॥</p>
+  </div>
+</body>
+</html>

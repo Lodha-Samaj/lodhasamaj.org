@@ -9,6 +9,7 @@ export const NAV = [
   { href: 'gallery/',      hi: 'गैलरी',          en: 'Gallery' },
   { href: 'panjiyan/',     hi: 'पंजीयन',         en: 'Register' },
   { href: 'sampark/',      hi: 'संपर्क',         en: 'Contact' },
+  { href: 'saajha/',       hi: 'साझा कीजिए',     en: 'Share' },
 ];
 
 export const CONTACT = {
