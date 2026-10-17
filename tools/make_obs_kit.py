@@ -14,6 +14,7 @@
 thumbnail और परदे पर एक ही बात लिखी रहे; बदलनी हो तो वहीं बदलिए।
 """
 import argparse
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -35,6 +36,27 @@ CARDS = [
     ("card-dhanyavaad", "॥ जय माता दी ॥",
      "दर्शन के लिए\nधन्यवाद", "आपका स्नेह बना रहे"),
 ]
+
+# पदाधिकारी वाला पर्दा पदाधिकारी पन्ने से ही पढ़ा जाता है, अपनी सूची रखकर
+# नहीं: समाज जब पन्ने पर पदाधिकारी बदलेगा, पर्दा दोबारा बनाते ही बदल जाएगा।
+PADADHIKARI_PAGE = ROOT / "hi" / "padadhikari" / "index.html"
+PERSON = re.compile(
+    r'<img class="photo" src="(?P<photo>[^"]+)"[^>]*>\s*'
+    r'<h3>(?P<name>[^<]+)</h3>\s*'
+    r'<p class="role">(?P<role>[^<]+)</p>', re.S)
+
+
+def officials():
+    """पन्ने के "हमारे पदाधिकारी" खंड के पाँच — पूर्व पदाधिकारी इसमें नहीं आते।"""
+    page_html = PADADHIKARI_PAGE.read_text(encoding="utf-8")
+    start = page_html.index("<h2>हमारे पदाधिकारी</h2>")
+    end = page_html.index("<h2>हमारे पूर्व पदाधिकारी</h2>")
+    return [{"photo": m["photo"], "name": m["name"],
+             # हर पद के आगे "(लोधा समाज इंदौर)" लगा है; पर्दे पर समाज का नाम
+             # ऊपर पहले से है, सो यहाँ केवल पद रहता है।
+             "role": m["role"].split("(")[0].strip()}
+            for m in PERSON.finditer(page_html[start:end])]
+
 
 OVERLAY = """
   <figure class="screen overlay" id="overlay-{slug}">
@@ -70,6 +92,27 @@ CARD = """
     <div class="strip"></div>
   </figure>
 """
+
+PEOPLE = """
+  <figure class="screen card people" id="{slug}">
+    <img class="bg" src="/assets/img/gallery/2026/pratima-7.jpg" alt="">
+    <div class="veil"></div>
+    <div class="sheet">
+      <p class="kicker">नवदुर्गा महोत्सव 2026 · लोधा समाज इंदौर</p>
+      <h2>हमारे पदाधिकारी</h2>
+      <ul class="row">{people}</ul>
+      <p class="url">lodhasamaj.org</p>
+    </div>
+    <div class="strip"></div>
+  </figure>
+"""
+
+PERSON_CELL = """
+        <li>
+          <img src="{photo}" alt="">
+          <b>{name}</b>
+          <span>{role}</span>
+        </li>"""
 
 CAPTURE = r"""
 import pw from '%(playwright)s';
@@ -113,6 +156,9 @@ def screens():
     for slug, kicker, head, sub in CARDS:
         out.append((slug, CARD.format(slug=slug, kicker=kicker,
                                       head=head.replace("\n", "<br>"), sub=sub), False))
+    cells = "".join(PERSON_CELL.format(**person) for person in officials())
+    out.append(("card-padadhikari", PEOPLE.format(slug="card-padadhikari",
+                                                  people=cells), False))
     return out
 
 
@@ -152,6 +198,10 @@ OBS में कैसे लगाएँ
        प्रतीक्षा  →  card-pratiksha-1920x1080.jpg
        विश्राम   →  card-vishram-1920x1080.jpg
        धन्यवाद  →  card-dhanyavaad-1920x1080.jpg
+
+   पदाधिकारी वाला पर्दा — card-padadhikari-1920x1080.jpg — किसी भी दृश्य
+   में डालकर बीच-बीच में दिखाया जा सकता है, या उसका अपना एक दृश्य बना
+   लीजिए। उस पर पाँचों पदाधिकारी नाम और पद सहित हैं।
 
 हर रात का काम
 

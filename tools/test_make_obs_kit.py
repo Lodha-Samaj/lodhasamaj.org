@@ -10,8 +10,8 @@ import subprocess
 import pytest
 
 from make_live_thumb import NIGHTS
-from make_obs_kit import (CARDS, OUT, filename, overlay_slug, page, screens,
-                          text_kit, third_line)
+from make_obs_kit import (CARDS, OUT, PADADHIKARI_PAGE, filename, officials,
+                          overlay_slug, page, screens, text_kit, third_line)
 
 ALL = screens()
 IDS = [s[0] for s in ALL]
@@ -28,7 +28,9 @@ def test_har_raat_ka_overlay_hai_aur_naam_dohraya_nahi():
     assert len(set(IDS)) == len(IDS)
     for night in NIGHTS:
         assert overlay_slug(night) in IDS, night["slug"]
-    assert len(ALL) == len(NIGHTS) + len(CARDS)
+    # हर रात का overlay, CARDS के पर्दे, और पदाधिकारी वाला एक।
+    assert len(ALL) == len(NIGHTS) + len(CARDS) + 1
+    assert "card-padadhikari" in IDS
 
 
 def test_overlay_pardarshi_hai_aur_poore_parde_nahi():
@@ -116,3 +118,39 @@ def test_din_ka_naam_dohraya_nahi_jata():
     # विजयादशमी पर "दशमी" नाम में ही है, सो आगे दोबारा नहीं आता।
     dashami = next(n for n in NIGHTS if n["slug"] == "vijayadashami")
     assert third_line(dashami) == "विजयादशमी महोत्सव"
+
+
+def test_padadhikari_wale_parde_par_paanchon_hain():
+    people = officials()
+    assert len(people) == 5, "समाज के 2026 के पदाधिकारी पाँच हैं"
+    html = next(h for slug, h, _ in ALL if slug == "card-padadhikari")
+    for person in people:
+        assert person["name"] in html
+        assert person["role"] in html
+        assert person["photo"] in html
+        assert (OUT.parent.parent.parent / person["photo"].lstrip("/")).exists()
+
+
+def test_poorv_padadhikari_is_parde_par_nahi_aate():
+    # खंड की सीमा सही बँधी है या नहीं, यह इसी से पकड़ा जाता है: पन्ने पर
+    # पूर्व पदाधिकारी ठीक इसके नीचे हैं।
+    names = [p["name"] for p in officials()]
+    page_html = PADADHIKARI_PAGE.read_text(encoding="utf-8")
+    after = page_html[page_html.index("<h2>हमारे पूर्व पदाधिकारी</h2>"):]
+    for name in names:
+        assert name not in after, f"{name} पूर्व पदाधिकारी में भी है"
+    assert "ब्रह्मलीन" not in " ".join(names)
+
+
+def test_pad_ke_aage_samaj_ka_naam_dobara_nahi():
+    # पन्ने पर हर पद के आगे "(लोधा समाज इंदौर)" लगा है; पर्दे पर समाज का
+    # नाम ऊपर पहले से है।
+    for person in officials():
+        assert "(" not in person["role"], person["name"]
+
+
+def test_padadhikari_parda_jpeg_hai_aur_kit_me_likha_hai():
+    assert ("card-padadhikari", False) in [(s[0], s[2]) for s in ALL]
+    kit = text_kit(ALL)
+    assert "card-padadhikari-1920x1080.jpg" in kit
+    assert "पदाधिकारी" in kit
